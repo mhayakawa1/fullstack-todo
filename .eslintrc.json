@@ -1,0 +1,41 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "plugins": ["react", "import", "jsx-a11y"],
+  "rules": {
+    "no-unused-vars": "error", // Disallows unused variables and functions
+    "no-console": "error", // Disallows console.log statements
+    "prefer-const": "error", // Disallows let if variables are not reassigned
+    "quotes": ["error", "double"], // Enforces the use of double quotes over single quotes
+    "semi": ["error", "always"], // Enforces semicolons at the end of statements
+    "no-multiple-empty-lines": ["error", { "max": 1 }], // Disallows multiple empty lines
+    "no-extra-semi": "error", // Disallows unnecessary semicolons
+    "camelcase": "error", // Enforces camelCase naming convention
+    "react/react-in-jsx-scope": "off"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "globals": {
+    "test": "readonly",
+    "expect": "readonly"
+  }
+}
