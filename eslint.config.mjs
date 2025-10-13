@@ -6,11 +6,10 @@ export default [
   { files: ["**/*.{js,mjs,ts,tsx}"] },
   {
     files: ["**/*.{.js,mjs,ts,tsx}"],
-    languageOptions: { sourceType: "commonjs" }
-   
+    languageOptions: { sourceType: "commonjs" },
   },
   {
-     rules: {
+    rules: {
       "no-unused-vars": "error",
       "no-console": "error",
       "prefer-const": "error",
@@ -19,6 +18,7 @@ export default [
       "no-multiple-empty-lines": ["error", { max: 1 }],
       "no-extra-semi": "error",
       camelcase: "error",
+      "no-explicit-any": "off",
     },
   },
   { languageOptions: { globals: globals.browser } },
