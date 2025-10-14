@@ -7,12 +7,12 @@ interface TaskProps {
     text: string;
     complete: boolean;
   };
-  updateTasks: (date: object, newText: string | boolean | undefined) => void;
+  updateTasks: (id: string, newText: string | boolean | undefined) => void;
 }
 
 export default function Task(props: TaskProps) {
   const { data, updateTasks } = props;
-  const { date, text, complete } = data;
+  const { id, text, complete } = data;
   const [disabled, setDisabled] = useState(true);
   const [newText, setNewText] = useState(text);
 
@@ -23,7 +23,7 @@ export default function Task(props: TaskProps) {
   const toggleEdit = () => {
     setDisabled((current) => !current);
     if (!disabled) {
-      updateTasks(date, newText);
+      updateTasks(id, newText);
     }
   };
 
@@ -36,10 +36,10 @@ export default function Task(props: TaskProps) {
         value={newText}
       />
       <button onClick={toggleEdit}>{disabled ? "Edit" : "Save"}</button>
-      <button onClick={() => updateTasks(date, complete)}>
+      <button onClick={() => updateTasks(id, complete)}>
         {complete ? "Complete" : "Incomplete"}
       </button>
-      <button onClick={() => updateTasks(date, undefined)}>Delete</button>
+      <button onClick={() => updateTasks(id, undefined)}>Delete</button>
     </li>
   );
 }
