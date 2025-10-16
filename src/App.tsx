@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import Task from "./components/Task";
+import SearchBar from "./components/SearchBar";
 import SortDropdown from "./components/SortDropdown";
 
 interface TaskInterface {
@@ -14,8 +15,9 @@ type taskArray = TaskInterface[];
 
 function App() {
   const [tasks, setTasks] = useState<taskArray>([]);
-  const [displayTasks, setDisplayTasks] = useState<taskArray>([]);
+  const [sortedTasks, setSortedTasks] = useState<taskArray>([]);
   const [input, setInput] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [sortValue, setSortValue] = useState("Date (Ascending)");
 
   const sortTasks = (value: string, list: taskArray | undefined) => {
@@ -35,7 +37,7 @@ function App() {
         newDisplayTasks.reverse();
       }
     }
-    setDisplayTasks(newDisplayTasks);
+    setSortedTasks(newDisplayTasks);
   };
 
   const addTask = (event: { preventDefault: () => void }) => {
@@ -51,7 +53,7 @@ function App() {
       };
       newTasks.push(taskData);
       setTasks(newTasks);
-      setDisplayTasks(newTasks);
+      setSortedTasks(newTasks);
       setInput("");
       setSortValue("Date (Ascending)");
     }
@@ -72,9 +74,9 @@ function App() {
         newTask.text = input;
       } else {
         newTasks.splice(newTasks.indexOf(newTask), 1);
-        const newDisplayTasks = [...displayTasks];
+        const newDisplayTasks = [...sortedTasks];
         newDisplayTasks.splice(newDisplayTasks.indexOf(newTask), 1);
-        setDisplayTasks(newDisplayTasks);
+        setSortedTasks(newDisplayTasks);
       }
       setTasks(newTasks);
     }
@@ -96,11 +98,11 @@ function App() {
         </form>
       </div>
       <div className="flex justify-center p-4">
-        <input className="" placeholder="Search" />
+        <SearchBar setSearchValue={setSearchValue} />
         <SortDropdown sortValue={sortValue} sortTasks={sortTasks} />
       </div>
       <ul className="flex flex-col items-center list-none">
-        {displayTasks.map((task: TaskInterface) => (
+        {sortedTasks.filter((task: TaskInterface) => task.text.includes(searchValue)).map((task: TaskInterface) => (
           <Task key={task.id} data={task} updateTasks={updateTasks} />
         ))}
       </ul>
