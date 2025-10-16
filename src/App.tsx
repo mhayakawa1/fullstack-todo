@@ -102,9 +102,11 @@ function App() {
         <SortDropdown sortValue={sortValue} sortTasks={sortTasks} />
       </div>
       <ul className="flex flex-col items-center list-none">
-        {sortedTasks.filter((task: TaskInterface) => task.text.includes(searchValue)).map((task: TaskInterface) => (
-          <Task key={task.id} data={task} updateTasks={updateTasks} />
-        ))}
+        {sortedTasks
+          .filter((task: TaskInterface) => task.text.includes(searchValue))
+          .map((task: TaskInterface) => (
+            <Task key={task.id} data={task} updateTasks={updateTasks} />
+          ))}
       </ul>
     </div>
   );
