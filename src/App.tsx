@@ -15,12 +15,13 @@ function App() {
   return (
     <Router>
       <header className="flex justify-end p-4">
-        <nav className="w-full flex justify-end">
+        <header className="w-full flex justify-between">
+          <a>To Do List</a>
           <ul className="w-fit flex justify-between gap-2 list-none p-0">
             <NavLink path="login" name="Login" />
             <NavLink path="signup" name="Signup" />
           </ul>
-        </nav>
+        </header>
       </header>
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
