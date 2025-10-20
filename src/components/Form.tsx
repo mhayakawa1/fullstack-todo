@@ -52,12 +52,7 @@ export default function Form(props: FormProps) {
         />
         <FormButton handleSubmit={handleSubmit}>{formType}</FormButton>
         <FormButton handleSubmit={handleSubmit}>
-          <Link
-            to="/dashboard"
-            className="no-underline m-0 w-full h-full flex justify-center items-center"
-          >
-            <span>{formType} with Google</span>
-          </Link>
+          {formType} with Google
         </FormButton>
         <Link to={`/${path}`} className="no-underline hover:underline">
           {linkText}
