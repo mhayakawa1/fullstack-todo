@@ -5,22 +5,16 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
+import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-import NavLink from "./components/NavLink";
 import Error from "./components/Error";
 
 function App() {
   return (
     <Router>
-      <header className="w-full flex justify-between items-center box-border px-4">
-        <a>To Do List</a>
-        <ul className="w-fit flex justify-between gap-2 list-none p-0">
-          <NavLink path="login" name="Login" />
-          <NavLink path="signup" name="Signup" />
-        </ul>
-      </header>
+      <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/dashboard" Component={Dashboard} />

@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 
 interface LinkProps {
+  className: string;
   path: string;
   name: string;
 }
 export default function NavLink(props: LinkProps) {
-  const { path, name } = props;
+  const { className, path, name } = props;
   return (
-    <li>
-      <Link to={`/${path}`} className="border-solid no-underline">
+    <li className={className}>
+      <Link to={`/${path}`} className="no-underline">
         {name}
       </Link>
     </li>
