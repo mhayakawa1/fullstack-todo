@@ -5,9 +5,13 @@ import SortDropdown from "./SortDropdown";
 
 interface TaskInterface {
   id: string;
-  date: object;
-  text: string;
-  complete: boolean;
+  userId: string;
+  title: string;
+  description: string;
+  status: boolean;
+  dueDate: object;
+  createdAt: object;
+  updatedAt: object;
 }
 
 type taskArray = TaskInterface[];
@@ -23,15 +27,15 @@ export default function Dashboard() {
     setSortValue(value);
     let newDisplayTasks = list ? [...list] : [...tasks];
     if (value === "Complete") {
-      newDisplayTasks = [
-        ...tasks.filter((task: TaskInterface) => task.complete),
-      ];
+      newDisplayTasks = [...tasks.filter((task: TaskInterface) => task.status)];
     } else if (value === "Incomplete") {
       newDisplayTasks = [
-        ...tasks.filter((task: TaskInterface) => !task.complete),
+        ...tasks.filter((task: TaskInterface) => !task.status),
       ];
     } else if (value.includes("Date")) {
-      newDisplayTasks = [...tasks.sort((a, b) => (a.date > b.date ? 1 : -1))];
+      newDisplayTasks = [
+        ...tasks.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1)),
+      ];
       if (value.includes("Descending")) {
         newDisplayTasks.reverse();
       }
@@ -46,9 +50,13 @@ export default function Dashboard() {
       const date = new Date();
       const taskData = {
         id: date.toISOString() + date.getMilliseconds(),
-        date: date,
-        text: input,
-        complete: false,
+        userId: "",
+        title: input,
+        description: "",
+        status: false,
+        dueDate: date,
+        createdAt: date,
+        updatedAt: date,
       };
       newTasks.push(taskData);
       setTasks(newTasks);
@@ -68,9 +76,9 @@ export default function Dashboard() {
     const newTask = tasks.find((task: TaskInterface) => task.id === id);
     if (newTask !== undefined) {
       if (typeof input === "boolean") {
-        newTask.complete = !input;
+        newTask.status = !input;
       } else if (typeof input === "string") {
-        newTask.text = input;
+        newTask.title = input;
       } else {
         newTasks.splice(newTasks.indexOf(newTask), 1);
         const newDisplayTasks = [...sortedTasks];
@@ -95,7 +103,7 @@ export default function Dashboard() {
       </div>
       <ul className="flex flex-col items-center list-none">
         {sortedTasks
-          .filter((task: TaskInterface) => task.text.includes(searchValue))
+          .filter((task: TaskInterface) => task.title.includes(searchValue))
           .map((task: TaskInterface) => (
             <Task key={task.id} data={task} updateTasks={updateTasks} />
           ))}

@@ -3,18 +3,22 @@ import { useState } from "react";
 interface TaskProps {
   data: {
     id: string;
-    date: object;
-    text: string;
-    complete: boolean;
+    userId: string;
+    title: string;
+    description: string;
+    status: boolean;
+    dueDate: object;
+    createdAt: object;
+    updatedAt: object;
   };
   updateTasks: (id: string, newText: string | boolean | undefined) => void;
 }
 
 export default function Task(props: TaskProps) {
   const { data, updateTasks } = props;
-  const { id, text, complete } = data;
+  const { id, title, status } = data;
   const [disabled, setDisabled] = useState(true);
-  const [newText, setNewText] = useState(text);
+  const [newText, setNewText] = useState(title);
 
   const editText = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewText(event.target.value);
@@ -36,8 +40,8 @@ export default function Task(props: TaskProps) {
         value={newText}
       />
       <button onClick={toggleEdit}>{disabled ? "Edit" : "Save"}</button>
-      <button onClick={() => updateTasks(id, complete)}>
-        {complete ? "Complete" : "Incomplete"}
+      <button onClick={() => updateTasks(id, status)}>
+        {status ? "Complete" : "Incomplete"}
       </button>
       <button onClick={() => updateTasks(id, undefined)}>Delete</button>
     </li>
