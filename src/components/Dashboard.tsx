@@ -71,7 +71,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const {
       target: { id, value },
@@ -87,7 +87,7 @@ export default function Dashboard() {
   const updateTasks = (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => {
     const newTasks = [...tasks];
     const newTask = tasks.find((task: TaskInterface) => task.id === id);
@@ -145,7 +145,7 @@ export default function Dashboard() {
           .filter((task: TaskInterface) =>
             `${task.title} ${task.description}`
               .toLowerCase()
-              .includes(searchValue.toLowerCase())
+              .includes(searchValue.toLowerCase()),
           )
           .map((task: TaskInterface) => (
             <Task key={task.id} data={task} updateTasks={updateTasks} />

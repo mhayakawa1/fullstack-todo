@@ -14,7 +14,7 @@ interface TaskProps {
   updateTasks: (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => void;
 }
 
