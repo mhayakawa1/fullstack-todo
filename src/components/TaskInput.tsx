@@ -1,18 +1,21 @@
 interface InputProps {
   id: string;
+  isTitle: boolean;
   disabled: boolean;
-  editText: () => void;
+  editText: (event: React.ChangeEvent<HTMLInputElement>) => void;
   value: string;
 }
 
 export default function TaskInput(props: InputProps) {
-  const { id, disabled, editText, value } = props;
+  const { id, isTitle, disabled, editText, value } = props;
   return (
     <input
-      id={`${id}-title`}
+      id={`${id}-${isTitle ? "title" : "description"}`}
       disabled={disabled}
       onChange={editText}
-      className="border-solid border-x-transparent border-t-transparent border-b-[1px] outline-none"
+      className={`${
+        isTitle && "text-base"
+      } text-black border-none outline-none`}
       value={value}
     />
   );
