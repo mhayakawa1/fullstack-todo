@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface FormProps {
   type: string;
@@ -48,20 +49,20 @@ export default function FormInput(props: FormProps) {
           placeholder={`Enter your ${type}`}
           autoFocus={autoFocus}
           onBlur={checkValidation}
-          className="w-full h-[36px] box-border p-0 pl-2"
+          className="w-full h-10 px-4 border-none box-border rounded-lg bg-white bg-opacity-15 text-white placeholder-white placeholder-opacity-50"
           required
         />
         {isPassword ? (
           <button
             onClick={toggleView}
-            className="absolute m-0 top-1/2 transform -translate-y-1/2 right-1"
+            className="flex justify-center items-center text-xl border-none bg-transparent absolute m-0 mr-2 top-1/2 transform -translate-y-1/2 right-1 p-0 text-white"
           >
-            *
+            {isVisible ? <FaEye /> : <FaEyeSlash />}
           </button>
         ) : null}
       </div>
       {window.location.pathname === "/signup" ? (
-        <div className="h-4 p-0">
+        <div className="h-4 py-1">
           {isInvalid ? (
             <p className="text-red-500 m-0 text-xs">{errorMessage}</p>
           ) : null}

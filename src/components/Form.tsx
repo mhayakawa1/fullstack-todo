@@ -34,8 +34,8 @@ export default function Form(props: FormProps) {
 
   return (
     <div className="flex justify-center items-center">
-      <form className="border-solid flex flex-col gap-3 p-3">
-        <h1>{title}</h1>
+      <form className="flex flex-col gap-4 p-4 w-[400px] bg-white bg-opacity-25 box-border rounded-lg text-white">
+        <h1 className="text-center font-normal">{title}</h1>
         <FormInput
           type="email"
           label="Email"
@@ -54,7 +54,10 @@ export default function Form(props: FormProps) {
         <FormButton handleSubmit={handleSubmit}>
           {formType} with Google
         </FormButton>
-        <Link to={`/${path}`} className="no-underline hover:underline">
+        <Link
+          to={`/${path}`}
+          className="w-fit m-auto text-sm text-center no-underline hover:underline text-white"
+        >
           {linkText}
         </Link>
       </form>

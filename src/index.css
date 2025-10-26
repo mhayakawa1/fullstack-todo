@@ -4,9 +4,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   background-image: linear-gradient(to right, #a834ff, #00acf0, #42fcff);
+  font-family: "Poppins", sans-serif;
 }
 
-h1, h2, p, a, li, button, input, textarea {
+h1,
+h2,
+p,
+a,
+li,
+label,
+button,
+input,
+textarea {
   font-family: "Poppins", sans-serif;
 }
 
