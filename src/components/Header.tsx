@@ -12,7 +12,7 @@ export default function Header() {
 
   return (
     <header className="w-full h-16 flex justify-between items-center box-border p-3 pl-6">
-      <a href="#" className="no-underline">
+      <a href="#" className="no-underline text-white">
         To Do List
       </a>
       {isLoggedIn ? <UserMenu /> : null}
