@@ -1,5 +1,7 @@
 import { useState } from "react";
-import TaskInput from "./TaskInput";
+import { FaCheck } from "react-icons/fa";
+import TaskText from "./TaskText";
+import TaskContainer from "./TaskContainer";
 
 interface TaskProps {
   data: {
@@ -15,7 +17,7 @@ interface TaskProps {
   updateTasks: (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => void;
 }
 
@@ -26,7 +28,11 @@ export default function Task(props: TaskProps) {
   const [newTitle, setNewTitle] = useState(title);
   const [newDescription, setNewDescription] = useState(description);
 
-  const editText = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const editText = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const {
       target: { id, value },
     } = event;
@@ -48,37 +54,53 @@ export default function Task(props: TaskProps) {
   };
 
   return (
-    <li className="border-solid w-[400px] p-4">
-      <div className="flex justify-between gap-1">
-        <div className="flex flex-col grow">
-          <TaskInput
-            id={id}
-            isTitle={true}
-            editText={editText}
-            disabled={disabled}
-            value={newTitle}
-          />
-          <TaskInput
-            id={id}
-            isTitle={false}
-            editText={editText}
-            disabled={disabled}
-            value={newDescription}
-          />
+    <TaskContainer>
+      <li className="w-full flex flex-col gap-4">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-1 grow">
+            <TaskText
+              id={id}
+              isTitle={true}
+              editText={editText}
+              disabled={disabled}
+              value={newTitle}
+            />
+            <TaskText
+              id={id}
+              isTitle={false}
+              editText={editText}
+              disabled={disabled}
+              value={newDescription}
+            />
+          </div>
+          <div className="inline-flex items-center">
+            <label className="flex items-center cursor-pointer relative">
+              <input
+                type="checkbox"
+                onChange={() => updateTasks(id, !status, undefined)}
+                checked={status}
+                className="peer w-6 h-6 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border bg-white"
+                id="check"
+              />
+              <FaCheck className="absolute text-[#3f27c2] opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none" />{" "}
+            </label>
+          </div>
         </div>
-        <div className="flex items-center mb-4">
-          <input
-            onChange={() => updateTasks(id, !status, undefined)}
-            type="checkbox"
-            checked={status}
-            className="w-6 h-6 rounded-sm"
-          />
+        <div className="flex justify-end gap-1">
+          <button
+            onClick={toggleEdit}
+            className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white"
+          >
+            {disabled ? "Edit" : "Save"}
+          </button>
+          <button
+            onClick={() => updateTasks(id, undefined, undefined)}
+            className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white"
+          >
+            Delete
+          </button>
         </div>
-      </div>
-      <button onClick={toggleEdit}>{disabled ? "Edit" : "Save"}</button>
-      <button onClick={() => updateTasks(id, undefined, undefined)}>
-        Delete
-      </button>
-    </li>
+      </li>
+    </TaskContainer>
   );
 }

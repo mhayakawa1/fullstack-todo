@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
 import SortOption from "./SortOption";
 
 interface DropdownProps {
@@ -24,21 +25,21 @@ export default function SortDropdown(props: DropdownProps) {
   };
 
   return (
-    <div className="relative" onBlur={closeSortOptions}>
+    <div className="m-0 self-end" onBlur={closeSortOptions}>
       <button
-        className=""
+        className="flex items-center gap-2 border-none bg-transparent text-white"
         onClick={() => setListVisible((current) => !current)}
       >
-        <img src="null" alt="" />
-        <span>Sort By</span>
+        <span>Sort By: {sortValue}</span>
+        <FaChevronDown className="text-white" />
       </button>
       {listVisible ? (
-        <ul className="absolute bg-white list-none border-solid p-0">
-          {options.map((option: string) => (
+        <ul className="absolute bg-white list-none p-0 z-10 rounded-md">
+          {options.map((option: string, index: number) => (
             <SortOption
               key={option}
+              index={index}
               value={option}
-              sortValue={sortValue}
               sortTasks={sortTasks}
             />
           ))}

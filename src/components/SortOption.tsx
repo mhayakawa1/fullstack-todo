@@ -1,18 +1,20 @@
 interface OptionProps {
+  index: number;
   value: string;
-  sortValue: string;
   sortTasks: (value: string, list: undefined) => void;
 }
 
 export default function SortOption(props: OptionProps) {
-  const { value, sortValue, sortTasks } = props;
+  const { index, value, sortTasks } = props;
   return (
     <li>
       <button
-        className={`w-full ${sortValue === value && "bg-gray-500"}`}
+        className={`${index === 0 && "rounded-t-md"} ${
+          index === 3 && "rounded-b-md"
+        } grow w-full h-8 pl-4 pr-8 border-none text-left bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white`}
         onClick={() => sortTasks(value, undefined)}
       >
-        {value}
+        <span>{value}</span>
       </button>
     </li>
   );

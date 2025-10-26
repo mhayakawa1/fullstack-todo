@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { FaPlus } from "react-icons/fa";
 import Task from "./Task";
+import TaskContainer from "./TaskContainer";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 
@@ -71,7 +73,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -87,7 +89,7 @@ export default function Dashboard() {
   const updateTasks = (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTasks = [...tasks];
     const newTask = tasks.find((task: TaskInterface) => task.id === id);
@@ -113,44 +115,49 @@ export default function Dashboard() {
   };
 
   return (
-    <main>
-      <div className="flex flex-col items-center p-4">
-        <h1>TO DO LIST</h1>
+    <main className="flex flex-col items-center gap-6 pb-[16vh]">
+      <div className="flex flex-col items-center px-4 box-border">
+        <h1 className="text-white font-medium">TO DO LIST</h1>
         <form onSubmit={addTask} className="flex flex-col items-center gap-2">
-          <div className="border-solid flex flex-col gap-1 w-[400px] p-4">
-            <input
-              id="title"
-              onChange={handleChange}
-              value={title}
-              className="outline-none border-none text-base font-semibold"
-            />
-            <textarea
-              id="description"
-              onChange={handleChange}
-              value={description}
-              className="outline-none border-none h-20 resize-none"
-            />
-          </div>
-          <button onClick={addTask} className="m-auto">
-            +
-          </button>
+          <TaskContainer>
+            <div className="w-full flex flex-col items-center gap-1 m-0">
+              <input
+                id="title"
+                onChange={handleChange}
+                value={title}
+                className="w-full outline-none border-none text-white bg-transparent text-lg"
+              />
+              <textarea
+                id="description"
+                onChange={handleChange}
+                value={description}
+                className="w-full outline-none border-none text-white bg-transparent h-20 resize-none"
+              />
+            </div>
+            <button
+              onClick={addTask}
+              className="flex justify-center items-center m-auto p-0 w-8 h-8 text-base text-[#3f27c2] bg-white border-none rounded-sm"
+            >
+              <FaPlus />
+            </button>
+          </TaskContainer>
         </form>
       </div>
-      <div className="flex justify-center p-4">
-        <SearchBar setSearchValue={setSearchValue} />
+      <SearchBar setSearchValue={setSearchValue} />
+      <div className="flex flex-col items-center justify-center gap-2 w-[400px] ">
         <SortDropdown sortValue={sortValue} sortTasks={sortTasks} />
+        <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
+          {sortedTasks
+            .filter((task: TaskInterface) =>
+              `${task.title} ${task.description}`
+                .toLowerCase()
+                .includes(searchValue.toLowerCase())
+            )
+            .map((task: TaskInterface) => (
+              <Task key={task.id} data={task} updateTasks={updateTasks} />
+            ))}
+        </ul>
       </div>
-      <ul className="flex flex-col items-center list-none p-0">
-        {sortedTasks
-          .filter((task: TaskInterface) =>
-            `${task.title} ${task.description}`
-              .toLowerCase()
-              .includes(searchValue.toLowerCase()),
-          )
-          .map((task: TaskInterface) => (
-            <Task key={task.id} data={task} updateTasks={updateTasks} />
-          ))}
-      </ul>
     </main>
   );
 }
