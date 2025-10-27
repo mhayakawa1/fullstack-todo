@@ -17,7 +17,7 @@ interface TaskProps {
   updateTasks: (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => void;
 }
 
@@ -37,7 +37,7 @@ export default function Task(props: TaskProps) {
   const editText = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const {
       target: { id, value },
