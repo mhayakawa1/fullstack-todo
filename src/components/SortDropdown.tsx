@@ -8,8 +8,10 @@ interface DropdownProps {
 }
 
 const options = [
-  "Date (Ascending)",
-  "Date (Descending)",
+  "Date Created (Ascending)",
+  "Date Created (Descending)",
+  "Due Date (Ascending)",
+  "Due Date (Descending)",
   "Incomplete",
   "Complete",
 ];

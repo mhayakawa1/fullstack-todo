@@ -11,7 +11,7 @@ interface TaskInterface {
   title: string;
   description: string;
   status: boolean;
-  dueDate: object;
+  dueDate: string;
   createdAt: object;
   updatedAt: object;
 }
@@ -19,9 +19,11 @@ interface TaskInterface {
 type taskArray = TaskInterface[];
 
 export default function Dashboard() {
+  const today = new Date().toLocaleDateString("en-ca");
   const [tasks, setTasks] = useState<taskArray>([]);
   const [sortedTasks, setSortedTasks] = useState<taskArray>([]);
   const [title, setTitle] = useState("New Task");
+  const [dueDate, setDueDate] = useState(today);
   const [description, setDescription] = useState("Description");
   const [searchValue, setSearchValue] = useState("");
   const [sortValue, setSortValue] = useState("Date (Ascending)");
@@ -35,13 +37,17 @@ export default function Dashboard() {
       newDisplayTasks = [
         ...tasks.filter((task: TaskInterface) => !task.status),
       ];
-    } else if (value.includes("Date")) {
+    } else if (value.includes("Created")) {
       newDisplayTasks = [
         ...tasks.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1)),
       ];
-      if (value.includes("Descending")) {
-        newDisplayTasks.reverse();
-      }
+    } else if (value.includes("Due")) {
+      newDisplayTasks = [
+        ...tasks.sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1)),
+      ];
+    }
+    if (value.includes("Descending")) {
+      newDisplayTasks.reverse();
     }
     setSortedTasks(newDisplayTasks);
   };
@@ -57,7 +63,7 @@ export default function Dashboard() {
         title: title,
         description: description,
         status: false,
-        dueDate: date,
+        dueDate: dueDate,
         createdAt: date,
         updatedAt: date,
       };
@@ -65,6 +71,7 @@ export default function Dashboard() {
       setTasks(newTasks);
       setSortedTasks(newTasks);
       setTitle("New Task");
+      setDueDate(today);
       setDescription("Description");
       setSortValue("Date (Ascending)");
     }
@@ -73,7 +80,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -81,6 +88,8 @@ export default function Dashboard() {
     event.preventDefault();
     if (id === "title") {
       setTitle(value);
+    } else if (id === "due-date") {
+      setDueDate(value);
     } else {
       setDescription(value);
     }
@@ -89,7 +98,7 @@ export default function Dashboard() {
   const updateTasks = (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTasks = [...tasks];
     const newTask = tasks.find((task: TaskInterface) => task.id === id);
@@ -115,32 +124,46 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="flex flex-col items-center gap-6 pb-[16vh]">
+    <main className="flex flex-col items-center gap-6 pb-[64vh]">
       <div className="flex flex-col items-center px-4 box-border">
         <h1 className="text-white font-medium">TO DO LIST</h1>
-        <form onSubmit={addTask} className="flex flex-col items-center gap-2">
+        <form onSubmit={addTask} className="flex flex-col items-center gap-4">
           <TaskContainer>
             <div className="w-full flex flex-col items-center gap-1 m-0">
               <input
                 id="title"
                 onChange={handleChange}
                 value={title}
+                autoFocus
                 className="w-full outline-none border-none text-white bg-transparent text-lg"
               />
+              <div className="self-start flex items-center gap-1">
+                <label htmlFor="due-date" className="text-sm text-white">
+                  Due Date:
+                </label>
+                <input
+                  id="due-date"
+                  type="date"
+                  value={dueDate}
+                  onChange={handleChange}
+                  min={today}
+                  className="bg-transparent border-none outline-none text-white w-[112px]"
+                />
+              </div>
               <textarea
                 id="description"
                 onChange={handleChange}
                 value={description}
-                className="w-full outline-none border-none text-white bg-transparent h-20 resize-none"
+                className="w-full h-24 outline-none border-none text-white bg-white bg-opacity-25 resize-none rounded-lg p-2 box-border"
               />
             </div>
-            <button
-              onClick={addTask}
-              className="flex justify-center items-center m-auto p-0 w-8 h-8 text-base text-[#3f27c2] bg-white border-none rounded-sm"
-            >
-              <FaPlus />
-            </button>
           </TaskContainer>
+          <button
+            onClick={addTask}
+            className="flex justify-center items-center m-auto p-0 w-8 h-8 text-base text-[#3f27c2] bg-white border-none rounded-sm"
+          >
+            <FaPlus />
+          </button>
         </form>
       </div>
       <SearchBar setSearchValue={setSearchValue} />
@@ -151,7 +174,7 @@ export default function Dashboard() {
             .filter((task: TaskInterface) =>
               `${task.title} ${task.description}`
                 .toLowerCase()
-                .includes(searchValue.toLowerCase()),
+                .includes(searchValue.toLowerCase())
             )
             .map((task: TaskInterface) => (
               <Task key={task.id} data={task} updateTasks={updateTasks} />

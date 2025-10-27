@@ -5,7 +5,7 @@ interface InputProps {
   editText: (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => void;
   value: string;
 }
@@ -17,7 +17,9 @@ export default function TaskText(props: InputProps) {
     disabled: disabled,
     onChange: editText,
     className: `${
-      isTitle ? "text-lg" : "resize-none"
+      isTitle
+        ? "text-lg"
+        : "w-full h-24 resize-none bg-white bg-opacity-25 rounded-lg p-2 box-border"
     } text-white bg-transparent border-none outline-none`,
     value: value,
   };
