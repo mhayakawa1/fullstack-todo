@@ -40,14 +40,14 @@ export default function Form(props: FormProps) {
           type="email"
           label="Email"
           autoFocus={true}
-          errorMessage="Please enter a valid email."
+          errorMessage="Invalid email."
           toggleValid={toggleValid}
         />
         <FormInput
           type="password"
           label="Password"
           autoFocus={false}
-          errorMessage="Password must be at least 8 characters."
+          errorMessage="Must be at least 8 characters."
           toggleValid={toggleValid}
         />
         <FormButton handleSubmit={handleSubmit}>{formType}</FormButton>

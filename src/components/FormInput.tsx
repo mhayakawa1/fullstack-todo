@@ -49,7 +49,7 @@ export default function FormInput(props: FormProps) {
           placeholder={`Enter your ${type}`}
           autoFocus={autoFocus}
           onBlur={checkValidation}
-          className="w-full h-10 px-4 border-none box-border rounded-lg bg-white bg-opacity-15 text-white placeholder-white placeholder-opacity-50"
+          className="w-full h-10 px-4 border-none outline-none box-border rounded-lg bg-white bg-opacity-15 text-white placeholder-white placeholder-opacity-50"
           required
         />
         {isPassword ? (

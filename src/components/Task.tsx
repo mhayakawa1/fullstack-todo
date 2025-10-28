@@ -10,21 +10,21 @@ interface TaskProps {
     userId: string;
     title: string;
     description: string;
-    status: boolean;
+    completed: boolean;
     dueDate: string;
     createdAt: object;
     updatedAt: object;
   };
   updateTasks: (
     id: string,
-    newStatus: boolean | undefined,
+    newcompleted: boolean | undefined,
     newText: { title: string; description: string } | undefined
   ) => void;
 }
 
 export default function Task(props: TaskProps) {
   const { data, updateTasks } = props;
-  const { id, title, dueDate, description, status } = data;
+  const { id, title, dueDate, description, completed } = data;
   const today = new Date().toLocaleDateString("en-ca");
   const [disabled, setDisabled] = useState(true);
   const [newTitle, setNewTitle] = useState(title);
@@ -80,8 +80,8 @@ export default function Task(props: TaskProps) {
                 <label className="flex items-center cursor-pointer relative">
                   <input
                     type="checkbox"
-                    onChange={() => updateTasks(id, !status, undefined)}
-                    checked={status}
+                    onChange={() => updateTasks(id, !completed, undefined)}
+                    checked={completed}
                     className="peer w-6 h-6 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border bg-white"
                     id="check"
                   />

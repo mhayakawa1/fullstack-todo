@@ -11,7 +11,7 @@ interface TaskInterface {
   userId: string;
   title: string;
   description: string;
-  status: boolean;
+  completed: boolean;
   dueDate: string;
   createdAt: object;
   updatedAt: object;
@@ -33,10 +33,10 @@ export default function Dashboard() {
     setSortValue(value);
     let newDisplayTasks = list ? [...list] : [...tasks];
     if (value === "Complete") {
-      newDisplayTasks = [...tasks.filter((task: TaskInterface) => task.status)];
+      newDisplayTasks = [...tasks.filter((task: TaskInterface) => task.completed)];
     } else if (value === "Incomplete") {
       newDisplayTasks = [
-        ...tasks.filter((task: TaskInterface) => !task.status),
+        ...tasks.filter((task: TaskInterface) => !task.completed),
       ];
     } else if (value.includes("Created")) {
       newDisplayTasks = [
@@ -63,7 +63,7 @@ export default function Dashboard() {
         userId: "",
         title: title,
         description: description,
-        status: false,
+        completed: false,
         dueDate: dueDate.toISOString(),
         createdAt: date,
         updatedAt: date,
@@ -98,14 +98,14 @@ export default function Dashboard() {
 
   const updateTasks = (
     id: string,
-    newStatus: boolean | undefined,
+    newCompleted: boolean | undefined,
     newText: { title: string; description: string } | undefined
   ) => {
     const newTasks = [...tasks];
     const newTask = tasks.find((task: TaskInterface) => task.id === id);
     if (newTask !== undefined) {
-      if (newStatus !== undefined) {
-        newTask.status = newStatus;
+      if (newCompleted !== undefined) {
+        newTask.completed = newCompleted;
       } else if (newText) {
         const { title, description } = newText;
         if (title !== newTask.title) {
