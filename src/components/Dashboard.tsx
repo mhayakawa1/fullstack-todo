@@ -4,6 +4,7 @@ import Task from "./Task";
 import TaskContainer from "./TaskContainer";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
+import CharacterCounter from "./CharacterCounter";
 
 interface TaskInterface {
   id: string;
@@ -19,7 +20,7 @@ interface TaskInterface {
 type taskArray = TaskInterface[];
 
 export default function Dashboard() {
-  const today = new Date().toLocaleDateString("en-ca");
+  const today = new Date();
   const [tasks, setTasks] = useState<taskArray>([]);
   const [sortedTasks, setSortedTasks] = useState<taskArray>([]);
   const [title, setTitle] = useState("New Task");
@@ -63,7 +64,7 @@ export default function Dashboard() {
         title: title,
         description: description,
         status: false,
-        dueDate: dueDate,
+        dueDate: dueDate.toISOString(),
         createdAt: date,
         updatedAt: date,
       };
@@ -80,7 +81,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -89,7 +90,7 @@ export default function Dashboard() {
     if (id === "title") {
       setTitle(value);
     } else if (id === "due-date") {
-      setDueDate(value);
+      setDueDate(new Date(value));
     } else {
       setDescription(value);
     }
@@ -98,7 +99,7 @@ export default function Dashboard() {
   const updateTasks = (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTasks = [...tasks];
     const newTask = tasks.find((task: TaskInterface) => task.id === id);
@@ -130,13 +131,19 @@ export default function Dashboard() {
         <form onSubmit={addTask} className="flex flex-col items-center gap-4">
           <TaskContainer>
             <div className="w-full flex flex-col items-center gap-1 m-0">
-              <input
-                id="title"
-                onChange={handleChange}
-                value={title}
-                autoFocus
-                className="w-full outline-none border-none text-white bg-transparent text-lg"
-              />
+              <div className="w-full m-0 flex gap-2">
+                <input
+                  id="title"
+                  type="text"
+                  onChange={handleChange}
+                  value={title}
+                  autoFocus
+                  minLength={1}
+                  maxLength={120}
+                  className="grow h-4 p-0 outline-none border-none text-white bg-transparent text-lg m-0"
+                />
+                <CharacterCounter limit={120} length={title.length} />
+              </div>
               <div className="self-start flex items-center gap-1">
                 <label htmlFor="due-date" className="text-sm text-white">
                   Due Date:
@@ -144,18 +151,22 @@ export default function Dashboard() {
                 <input
                   id="due-date"
                   type="date"
-                  value={dueDate}
+                  value={dueDate.toLocaleDateString("en-ca")}
                   onChange={handleChange}
-                  min={today}
+                  min={today.toLocaleDateString("en-ca")}
                   className="bg-transparent border-none outline-none text-white w-[112px]"
                 />
               </div>
-              <textarea
-                id="description"
-                onChange={handleChange}
-                value={description}
-                className="w-full h-24 outline-none border-none text-white bg-white bg-opacity-25 resize-none rounded-lg p-2 box-border"
-              />
+              <div className="w-full flex flex-col gap-1">
+                <textarea
+                  id="description"
+                  onChange={handleChange}
+                  value={description}
+                  maxLength={2000}
+                  className="w-full m-0 h-24 outline-none border-none text-white bg-white bg-opacity-25 resize-none rounded-lg p-2 box-border"
+                />
+                <CharacterCounter limit={2000} length={description.length} />
+              </div>
             </div>
           </TaskContainer>
           <button
@@ -174,7 +185,7 @@ export default function Dashboard() {
             .filter((task: TaskInterface) =>
               `${task.title} ${task.description}`
                 .toLowerCase()
-                .includes(searchValue.toLowerCase()),
+                .includes(searchValue.toLowerCase())
             )
             .map((task: TaskInterface) => (
               <Task key={task.id} data={task} updateTasks={updateTasks} />

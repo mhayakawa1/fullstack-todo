@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import TaskText from "./TaskText";
 import TaskContainer from "./TaskContainer";
+import CharacterCounter from "./CharacterCounter";
 
 interface TaskProps {
   data: {
@@ -17,12 +18,8 @@ interface TaskProps {
   updateTasks: (
     id: string,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => void;
-}
-
-function createDate(dueDate: string) {
-  return new Date(dueDate.replaceAll("-", "/"));
 }
 
 export default function Task(props: TaskProps) {
@@ -31,13 +28,13 @@ export default function Task(props: TaskProps) {
   const today = new Date().toLocaleDateString("en-ca");
   const [disabled, setDisabled] = useState(true);
   const [newTitle, setNewTitle] = useState(title);
-  const [newDueDate, setNewDueDate] = useState(createDate(dueDate));
+  const [newDueDate, setNewDueDate] = useState(new Date(dueDate));
   const [newDescription, setNewDescription] = useState(description);
 
   const editText = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -45,7 +42,7 @@ export default function Task(props: TaskProps) {
     if (id.includes("title")) {
       setNewTitle(value);
     } else if (id === "due-date") {
-      setNewDueDate(createDate(value));
+      setNewDueDate(new Date(value.replaceAll("-", "/")));
     } else {
       setNewDescription(value);
     }
@@ -63,17 +60,22 @@ export default function Task(props: TaskProps) {
 
   return (
     <TaskContainer>
-      <li className="w-full flex flex-col gap-4">
+      <li className="w-full flex flex-col gap-1">
         <div className="flex justify-between items-start">
-          <div className="flex flex-col gap-1 grow">
+          <div className="flex flex-col gap-0 grow">
             <div className="w-full flex justify-between">
-              <TaskText
-                id={id}
-                isTitle={true}
-                editText={editText}
-                disabled={disabled}
-                value={newTitle}
-              />
+              <div className="grow w-full flex justify-between items-center">
+                <TaskText
+                  id={id}
+                  isTitle={true}
+                  editText={editText}
+                  disabled={disabled}
+                  value={newTitle}
+                />
+                {disabled ? null : (
+                  <CharacterCounter limit={120} length={newTitle.length} />
+                )}
+              </div>
               <div className="inline-flex items-center">
                 <label className="flex items-center cursor-pointer relative">
                   <input
@@ -87,7 +89,7 @@ export default function Task(props: TaskProps) {
                 </label>
               </div>
             </div>
-            <div className="self-start flex items-center gap-1">
+            <div className="self-start flex items-center gap-1 mb-1">
               <label htmlFor="due-date" className="text-sm text-white">
                 Due Date:
               </label>
@@ -101,13 +103,23 @@ export default function Task(props: TaskProps) {
                 className="bg-transparent border-none outline-none text-white w-[112px]"
               />
             </div>
-            <TaskText
-              id={id}
-              isTitle={false}
-              editText={editText}
-              disabled={disabled}
-              value={newDescription}
-            />
+            <div>
+              <TaskText
+                id={id}
+                isTitle={false}
+                editText={editText}
+                disabled={disabled}
+                value={newDescription}
+              />
+              <div className="h-4 flex justify-end">
+                {disabled ? null : (
+                  <CharacterCounter
+                    limit={2000}
+                    length={newDescription.length}
+                  />
+                )}
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex justify-end gap-1">
