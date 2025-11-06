@@ -1,13 +1,31 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 export default function UserMenu() {
+  const revokeTokenEndpoint = "https://oauth2.googleapis.com/revoke";
+  const { href } = window.location;
+  const accessToken = href.slice(
+    href.indexOf("access_token=") + 13,
+    href.indexOf("&token_type")
+  );
   const [isVisible, setIsVisible] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
       setIsVisible(false);
+    }
+  };
+
+  const logout = (
+    event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
+  ) => {
+    event.preventDefault();
+    const { submitter } = event.nativeEvent;
+    if (submitter) {
+      if (formRef.current) {
+        formRef.current.submit();
+      }
     }
   };
 
@@ -35,12 +53,21 @@ export default function UserMenu() {
               <span className="block w-full h-[1px] bg-[#3f27c2]"></span>
             </li>
             <li className="h-fit w-full flex">
-              <Link
-                to="login"
-                className="px-4 py-2 grow w-full h-full rounded-b-lg no-underline text-[#3f27c2] hover:bg-[#3f27c2] hover:text-white"
+              <form
+                ref={formRef}
+                onSubmit={logout}
+                method="post"
+                action={revokeTokenEndpoint}
+                className="w-full"
               >
-                Logout
-              </Link>
+                <input type="hidden" name="token" value={accessToken} />
+                <button
+                  type="submit"
+                  className="px-4 py-2 grow w-full h-full border-none rounded-b-lg no-underline text-left text-[#3f27c2] bg-white hover:bg-[#3f27c2] hover:text-white"
+                >
+                  Logout
+                </button>
+              </form>
             </li>
           </ul>
         </div>
