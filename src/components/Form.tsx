@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
@@ -32,8 +33,13 @@ export default function Form(props: FormProps) {
     }
   };
 
+  const login = useGoogleLogin({
+   // onSuccess: (tokenResponse) => console.log(tokenResponse),
+    flow: "auth-code",
+  });
+
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
       <form className="flex flex-col gap-4 p-4 w-[400px] bg-white bg-opacity-25 box-border rounded-lg text-white">
         <h1 className="text-center font-normal">{title}</h1>
         <FormInput
@@ -61,6 +67,7 @@ export default function Form(props: FormProps) {
           {linkText}
         </Link>
       </form>
+      <button onClick={() => login()}>Sign in with Google</button>
     </div>
   );
 }
