@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { googleLogout } from "@react-oauth/google";
 import { FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function UserIcon(props: { picture: string; className: string }) {
   const { picture, className } = props;
@@ -27,6 +27,7 @@ function UserIcon(props: { picture: string; className: string }) {
 export default function UserMenu() {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [userInfo, setUserInfo] = useState({
     email: "username@email.com",
     emailVerified: false,
@@ -50,7 +51,7 @@ export default function UserMenu() {
     const storageItem = localStorage.getItem("userInfo");
     if (storageItem) {
       const { email, emailVerified, name, picture } = JSON.parse(
-        storageItem.replace("email_verified", "emailVerified")
+        storageItem.replace("email_verified", "emailVerified"),
       );
 
       setUserInfo({
@@ -60,7 +61,19 @@ export default function UserMenu() {
         picture: picture,
       });
     }
-  }, []);
+    const urlParams = new URLSearchParams(location.search);
+    const code = urlParams.get("code");
+
+    if (code) {
+      // eslint-disable-next-line
+      console.log(code);
+    } else {
+      const error = urlParams.get("error");
+      if (error) {
+        console.error(error);
+      }
+    }
+  }, [location.search]);
 
   return (
     <div tabIndex={0} onBlur={closeMenu} className="relative">
