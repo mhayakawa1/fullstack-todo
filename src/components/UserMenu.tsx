@@ -70,6 +70,7 @@ export default function UserMenu() {
     } else {
       const error = urlParams.get("error");
       if (error) {
+        // eslint-disable-next-line
         console.error(error);
       }
     }
