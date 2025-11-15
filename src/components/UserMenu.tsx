@@ -1,9 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { googleLogout } from "@react-oauth/google";
 import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+function UserIcon(props: { picture: string; className: string }) {
+  const { picture, className } = props;
+  return (
+    <div className={`${className} p-0 flex justify-center items-center`}>
+      {picture.length ? (
+        <img
+          className={`${className} rounded-full object-contain m-0`}
+          src={picture}
+          alt=""
+        />
+      ) : (
+        <div
+          className={`${className} flex justify-center items-center rounded-full border-solid border-[#3f27c2] aspect-square`}
+        >
+          <FaUser className="w-[60%] h-[60%] text-[#3f27c2]" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function UserMenu() {
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({
+    email: "username@email.com",
+    emailVerified: false,
+    name: "",
+    picture: "",
+  });
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
@@ -11,36 +40,56 @@ export default function UserMenu() {
     }
   };
 
+  const handleLogout = () => {
+    googleLogout();
+    localStorage.clear();
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    const storageItem = localStorage.getItem("userInfo");
+    if (storageItem) {
+      const { email, emailVerified, name, picture } = JSON.parse(
+        storageItem.replace("email_verified", "emailVerified")
+      );
+
+      setUserInfo({
+        email: email,
+        emailVerified: emailVerified,
+        name: name,
+        picture: picture,
+      });
+    }
+  }, []);
+
   return (
     <div tabIndex={0} onBlur={closeMenu} className="relative">
       <button
         onClick={() => setIsVisible((current) => !current)}
-        className="flex justify-center items-center w-10 h-10 rounded-full border-none bg-white"
+        className="flex justify-center items-center w-10 h-10 p-0 rounded-full border-none outline-none bg-white"
       >
-        <FaUser className="w-5 h-5 text-[#3f27c2]" />
+        <UserIcon picture={userInfo.picture} className="w-full h-full" />
       </button>
       {isVisible ? (
         <div className="absolute bg-white rounded-lg right-0 mt-2">
           <ul className="m-0 p-0 list-none text-[#3f27c2]">
             <li className="flex justify-center items-center gap-2 px-4 py-6">
-              <div className="w-10 h-10 flex justify-center items-center rounded-full border-solid aspect-square">
-                <FaUser className="w-6 h-6" />
-              </div>
+              <UserIcon picture={userInfo.picture} className="w-12 h-12" />
               <ul className="p-0 list-none">
-                <li>Username</li>
-                <li className="text-sm">username@gmail.com</li>
+                <li>{userInfo.name}</li>
+                <li className="text-sm">{userInfo.email}</li>
               </ul>
             </li>
             <li className="w-full h-fit">
               <span className="block w-full h-[1px] bg-[#3f27c2]"></span>
             </li>
             <li className="h-fit w-full flex">
-              <Link
-                to="login"
-                className="px-4 py-2 grow w-full h-full rounded-b-lg no-underline text-[#3f27c2] hover:bg-[#3f27c2] hover:text-white"
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 grow w-full h-full rounded-b-lg no-underline text-[#3f27c2] bg-transparent hover:bg-[#3f27c2] hover:text-white border-none text-left"
               >
                 Logout
-              </Link>
+              </button>
             </li>
           </ul>
         </div>

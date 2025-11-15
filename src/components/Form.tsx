@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
+import { FaGoogle } from "react-icons/fa";
 import { useState } from "react";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
@@ -34,13 +35,16 @@ export default function Form(props: FormProps) {
   };
 
   const login = useGoogleLogin({
-    // onSuccess: (tokenResponse) => console.log(tokenResponse),
     flow: "auth-code",
+    // eslint-disable-next-line
+    ux_mode: "redirect",
+    // eslint-disable-next-line
+    redirect_uri: "http://localhost:3000/dashboard",
   });
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <form className="flex flex-col gap-4 p-4 w-[400px] bg-white bg-opacity-25 box-border rounded-lg text-white">
+    <div className="m-auto flex flex-col justify-center items-center gap-4 p-4 w-[364px] bg-white bg-opacity-25 rounded-lg">
+      <form className="w-full flex flex-col gap-4 text-white">
         <h1 className="text-center font-normal">{title}</h1>
         <FormInput
           type="email"
@@ -56,18 +60,18 @@ export default function Form(props: FormProps) {
           errorMessage="Password must be at least 8 characters."
           toggleValid={toggleValid}
         />
-        <FormButton handleSubmit={handleSubmit}>{formType}</FormButton>
-        <FormButton handleSubmit={handleSubmit}>
-          {formType} with Google
-        </FormButton>
-        <Link
-          to={`/${path}`}
-          className="w-fit m-auto text-sm text-center no-underline hover:underline text-white"
-        >
-          {linkText}
-        </Link>
+        <FormButton handleClick={handleSubmit}>{formType}</FormButton>
       </form>
-      <button onClick={() => login()}>Sign in with Google</button>
+      <FormButton handleClick={login}>
+        <FaGoogle />
+        <span>{formType} with Google</span>
+      </FormButton>
+      <Link
+        to={`/${path}`}
+        className="w-fit m-auto text-sm text-center no-underline hover:underline text-white"
+      >
+        {linkText}
+      </Link>
     </div>
   );
 }
