@@ -12,7 +12,7 @@ export const UserDataContext = createContext<Response>({
   name: "",
 });
 
-export const CounterProvider: React.FC<{ children: React.ReactNode }> = ({
+export const UserDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const userData = {

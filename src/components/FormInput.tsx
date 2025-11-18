@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import "../index.css";
 
 interface FormProps {
   type: string;
   label: string;
   autoFocus: boolean;
   errorMessage: string;
-  toggleValid: (isEmail: boolean, valid: boolean) => void;
+  updateInput: (label: string, value: string) => void;
+  password: string | null;
 }
 
 export default function FormInput(props: FormProps) {
-  const { type, label, autoFocus, errorMessage, toggleValid } = props;
+  const { type, label, autoFocus, errorMessage, updateInput, password } = props;
   const [isVisible, setIsVisible] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
-  const isPassword = type === "password";
+  const isPassword = label.includes("Password");
 
   const toggleView = (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -24,16 +26,18 @@ export default function FormInput(props: FormProps) {
     const {
       target: { value },
     } = event;
-    const isEmail = type === "email";
-    let valid;
-    if (isEmail) {
-      valid = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      setIsInvalid(valid);
-    } else {
-      valid = value.length < 8;
-      setIsInvalid(valid);
-    }
-    toggleValid(isEmail, !valid);
+    let isInvalid = false;
+    if (label === "Name") {
+      isInvalid = !value.length;
+    } else if (label === "Email") {
+      isInvalid = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    } else if (label === "Password") {
+      isInvalid = value.length < 8;
+    } else if (label === "Confirm Password") {
+      isInvalid = value !== password;
+    }    
+    setIsInvalid(isInvalid);
+    updateInput(label, value);
   };
 
   return (
@@ -46,7 +50,11 @@ export default function FormInput(props: FormProps) {
           id={type}
           type={isVisible ? "text" : type}
           name={type}
-          placeholder={`Enter your ${type}`}
+          placeholder={
+            type === "confirm password"
+              ? "Confirm password"
+              : `Enter your ${type}`
+          }
           autoFocus={autoFocus}
           onBlur={checkValidation}
           className="w-full h-10 px-4 border-none box-border rounded-lg bg-white bg-opacity-15 text-white placeholder-white placeholder-opacity-50"

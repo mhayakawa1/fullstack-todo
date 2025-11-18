@@ -7,7 +7,7 @@ import SortDropdown from "./SortDropdown";
 import CharacterCounter from "./CharacterCounter";
 
 interface TaskInterface {
-  id: string;
+  id: string | number;
   userId: string;
   title: string;
   description: string;
@@ -97,7 +97,7 @@ export default function Dashboard() {
   };
 
   const updateTasks = (
-    id: string,
+    id: string | number,
     newStatus: boolean | undefined,
     newText: { title: string; description: string } | undefined,
   ) => {

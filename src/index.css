@@ -7,6 +7,10 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+main{  
+  padding: 0 0 16vh 0;
+}
+
 h1,
 h2,
 p,
@@ -26,3 +30,12 @@ button {
 ::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0px 1000px rbg(255,255,255,.15) inset !important; 
+        -webkit-text-fill-color: white !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }

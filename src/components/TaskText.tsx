@@ -1,5 +1,5 @@
 interface InputProps {
-  id: string;
+  id: string | number;
   isTitle: boolean;
   disabled: boolean;
   editText: (

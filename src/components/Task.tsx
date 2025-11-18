@@ -6,7 +6,7 @@ import CharacterCounter from "./CharacterCounter";
 
 interface TaskProps {
   data: {
-    id: string;
+    id: string | number;
     userId: string;
     title: string;
     description: string;
@@ -16,7 +16,7 @@ interface TaskProps {
     updatedAt: object;
   };
   updateTasks: (
-    id: string,
+    id: string | number,
     newStatus: boolean | undefined,
     newText: { title: string; description: string } | undefined,
   ) => void;
