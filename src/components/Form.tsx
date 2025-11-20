@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
-import { FaGoogle } from "react-icons/fa";
+import { FaCheck, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
@@ -26,7 +26,10 @@ export default function Form(props: FormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isInvalid, setIsInvalid] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorText, setErrorText] = useState("Invalid email or password.");
+  const [errorVisible, setErrorVisible] = useState(false);
+  const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
 
@@ -35,38 +38,68 @@ export default function Form(props: FormProps) {
       setEmail(value);
     } else if (label === "Password") {
       setPassword(value);
+    } else if (label === "Confirm Password") {
+      setConfirmPassword(value);
     } else {
       setName(value);
     }
   };
 
-  async function verifyUser() {
-    const url = "https://f3e190faa41e444ca59dfb2bde65c42a.api.mockbin.io/";
+  function findUser(users: User[]) {
+    const user = users.find((user: User) => user.email === email);
+    if (isSignup || (user && user.password === password)) {
+      return user;
+    }
+    return undefined;
+  }
 
+  async function verifyUser() {
+    const url = "https://69021b50b208b24affe50764.mockapi.io/todo/users";
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const users = await response.json();
-    let user = users.find(
-      (user: User) => user.email === email && user.password === password
-    );
-    if (user) {
-      localStorage.setItem("userId", user.userId);
-      navigate("/dashboard");
-    } else {
-      if (isSignup) {
-        const userNumber = String(users.length + 1);
-        user = {
-          email: email,
-          name: name,
-          picture: "",
-          password: password,
-          userId: `userId${userNumber}`,
-          id: userNumber,
-        };
+    const user = findUser(users);
+    if (isSignup) {
+      if (user) {
+        setErrorVisible(true);
       } else {
-        setIsInvalid(true);
+        const userNum = users.length + 1;
+        const user = {
+          email: email,
+          id: userNum.toString(),
+          name: name,
+          password: password,
+          picture: "",
+          userId: `userId${userNum}`,
+        };
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            localStorage.setItem("userId", data.userId);
+            setSuccessVisible(true);
+          })
+          .catch((error) => {
+            setErrorText(error);
+          });
+      }
+    } else {
+      if (user) {
+        navigate("/dashboard");
+      } else {
+        setErrorVisible(true);
       }
     }
   }
@@ -80,6 +113,7 @@ export default function Form(props: FormProps) {
 
   const signup = (event: { preventDefault: () => void }) => {
     event.preventDefault();
+    verifyUser();
   };
 
   const loginWithGoogle = useGoogleLogin({
@@ -90,17 +124,14 @@ export default function Form(props: FormProps) {
     redirect_uri: "http://localhost:3000/dashboard",
   });
 
+  const toLogin = () => {
+    navigate("/login");
+  };
+
   return (
-    <div className="m-auto flex flex-col justify-center items-center gap-4 p-4 w-[364px] bg-white bg-opacity-25 rounded-lg">
-      <form className="w-full flex flex-col gap-3 text-white">
+    <div className="relative m-auto flex flex-col justify-center items-center gap-4 p-4 w-[364px] bg-white bg-opacity-25 rounded-lg">
+      <form className="w-full flex flex-col gap-2 text-white">
         <h1 className="text-center font-normal">{title}</h1>
-        {isInvalid ? (
-          <div className="w-full h-fit bg-white bg-opacity-40 rounded-lg">
-            <p className="text-xs text-center text-red-500">
-              Invalid email or password.
-            </p>
-          </div>
-        ) : null}
         {isSignup ? (
           <FormInput
             type="name"
@@ -108,7 +139,7 @@ export default function Form(props: FormProps) {
             autoFocus={true}
             errorMessage="Please enter your name."
             updateInput={updateInput}
-            password={null}
+            password=""
           />
         ) : null}
         <FormInput
@@ -117,7 +148,7 @@ export default function Form(props: FormProps) {
           autoFocus={!isSignup}
           errorMessage="Please enter a valid email."
           updateInput={updateInput}
-          password={null}
+          password=""
         />
         <FormInput
           type="password"
@@ -125,7 +156,7 @@ export default function Form(props: FormProps) {
           autoFocus={false}
           errorMessage="Password must be at least 8 characters."
           updateInput={updateInput}
-          password={null}
+          password={confirmPassword}
         />
         {isSignup ? (
           <FormInput
@@ -136,6 +167,11 @@ export default function Form(props: FormProps) {
             updateInput={updateInput}
             password={password}
           />
+        ) : null}
+        {errorVisible ? (
+          <div className="w-full h-fit mb-2 bg-white bg-opacity-40 rounded-lg">
+            <p className="text-xs text-center text-red-500">{errorText}</p>
+          </div>
         ) : null}
         <FormButton handleClick={isSignup ? signup : login}>
           {formType}
@@ -151,6 +187,17 @@ export default function Form(props: FormProps) {
       >
         {linkText}
       </Link>
+      {isSignup && successVisible ? (
+        <ul className="list-none text-white text-center w-full p-0 flex flex-col gap-4">
+          <li>Success!</li>
+          <li className="text-4xl border-solid rounded-full w-20 h-20 flex justify-center items-center mx-auto">
+            <FaCheck />
+          </li>
+          <li>
+            <FormButton handleClick={toLogin}>Continue</FormButton>
+          </li>
+        </ul>
+      ) : null}
     </div>
   );
 }

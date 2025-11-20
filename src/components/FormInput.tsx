@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCheck } from "react-icons/fa";
 import "../index.css";
 
 interface FormProps {
@@ -8,13 +8,14 @@ interface FormProps {
   autoFocus: boolean;
   errorMessage: string;
   updateInput: (label: string, value: string) => void;
-  password: string | null;
+  password: string;
 }
 
 export default function FormInput(props: FormProps) {
   const { type, label, autoFocus, errorMessage, updateInput, password } = props;
   const [isVisible, setIsVisible] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
+  const [checkVisible, setCheckVisible] = useState(false);
   const isPassword = label.includes("Password");
 
   const toggleView = (event: { preventDefault: () => void }) => {
@@ -35,15 +36,19 @@ export default function FormInput(props: FormProps) {
       isInvalid = value.length < 8;
     } else if (label === "Confirm Password") {
       isInvalid = value !== password;
-    }    
+      setCheckVisible(value === password);
+    }
     setIsInvalid(isInvalid);
     updateInput(label, value);
   };
 
   return (
     <div className="flex flex-col">
-      <label htmlFor={type} className="cursor-pointer">
-        {label}
+      <label htmlFor={type} className="cursor-pointer flex gap-2">
+        <span>{label}</span>
+        {checkVisible && label === "Confirm Password" ? (
+          <FaCheck className="text-sm my-auto" />
+        ) : null}
       </label>
       <div className="relative">
         <input
@@ -70,7 +75,7 @@ export default function FormInput(props: FormProps) {
         ) : null}
       </div>
       {window.location.pathname === "/signup" ? (
-        <div className="h-4 py-1">
+        <div className="h-3 py-1">
           {isInvalid ? (
             <p className="text-red-500 m-0 text-xs">{errorMessage}</p>
           ) : null}
