@@ -4,7 +4,7 @@ import SortOption from "./SortOption";
 
 interface DropdownProps {
   sortValue: string;
-  sortTasks: (value: string, list: undefined) => void;
+  sortTodos: (value: string, list: undefined) => void;
 }
 
 const options = [
@@ -17,7 +17,7 @@ const options = [
 ];
 
 export default function SortDropdown(props: DropdownProps) {
-  const { sortValue, sortTasks } = props;
+  const { sortValue, sortTodos } = props;
   const [listVisible, setListVisible] = useState(false);
 
   const closeSortOptions = () => {
@@ -42,7 +42,7 @@ export default function SortDropdown(props: DropdownProps) {
               key={option}
               index={index}
               value={option}
-              sortTasks={sortTasks}
+              sortTodos={sortTodos}
             />
           ))}
         </ul>

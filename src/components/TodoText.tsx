@@ -10,7 +10,7 @@ interface InputProps {
   value: string;
 }
 
-export default function TaskText(props: InputProps) {
+export default function TodoText(props: InputProps) {
   const { id, isTitle, disabled, editText, value } = props;
   const attributes = {
     id: `${id}-${isTitle ? "title" : "description"}`,

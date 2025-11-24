@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import TaskText from "./TaskText";
-import TaskContainer from "./TaskContainer";
+import TodoText from "./TodoText";
+import TodoContainer from "./TodoContainer";
 import CharacterCounter from "./CharacterCounter";
 
-interface TaskProps {
+interface TodoProps {
   data: {
     id: string | number;
     userId: string;
@@ -15,15 +15,15 @@ interface TaskProps {
     createdAt: object;
     updatedAt: object;
   };
-  updateTasks: (
+  updateTodos: (
     id: string | number,
     newStatus: boolean | undefined,
     newText: { title: string; description: string } | undefined,
   ) => void;
 }
 
-export default function Task(props: TaskProps) {
-  const { data, updateTasks } = props;
+export default function Todo(props: TodoProps) {
+  const { data, updateTodos } = props;
   const { id, title, dueDate, description, status } = data;
   const today = new Date().toLocaleDateString("en-ca");
   const [disabled, setDisabled] = useState(true);
@@ -51,7 +51,7 @@ export default function Task(props: TaskProps) {
   const toggleEdit = () => {
     setDisabled((current) => !current);
     if (!disabled) {
-      updateTasks(id, undefined, {
+      updateTodos(id, undefined, {
         title: newTitle,
         description: newDescription,
       });
@@ -59,13 +59,13 @@ export default function Task(props: TaskProps) {
   };
 
   return (
-    <TaskContainer>
+    <TodoContainer>
       <li className="w-full flex flex-col gap-1">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-0 grow">
             <div className="w-full flex justify-between">
               <div className="grow w-full flex justify-between items-center">
-                <TaskText
+                <TodoText
                   id={id}
                   isTitle={true}
                   editText={editText}
@@ -80,7 +80,7 @@ export default function Task(props: TaskProps) {
                 <label className="flex items-center cursor-pointer relative">
                   <input
                     type="checkbox"
-                    onChange={() => updateTasks(id, !status, undefined)}
+                    onChange={() => updateTodos(id, !status, undefined)}
                     checked={status}
                     className="peer w-6 h-6 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border bg-white"
                     id="check"
@@ -104,7 +104,7 @@ export default function Task(props: TaskProps) {
               />
             </div>
             <div>
-              <TaskText
+              <TodoText
                 id={id}
                 isTitle={false}
                 editText={editText}
@@ -130,13 +130,13 @@ export default function Task(props: TaskProps) {
             {disabled ? "Edit" : "Save"}
           </button>
           <button
-            onClick={() => updateTasks(id, undefined, undefined)}
+            onClick={() => updateTodos(id, undefined, undefined)}
             className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white"
           >
             Delete
           </button>
         </div>
       </li>
-    </TaskContainer>
+    </TodoContainer>
   );
 }
