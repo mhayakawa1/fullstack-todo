@@ -69,7 +69,9 @@ export default function Dashboard() {
     if (value === "Complete") {
       newDisplayTasks = [...todos.filter((task: TodoInterface) => task.status)];
     } else if (value === "Incomplete") {
-      newDisplayTasks = [...todos.filter((task: TodoInterface) => !task.status)];
+      newDisplayTasks = [
+        ...todos.filter((task: TodoInterface) => !task.status),
+      ];
     } else if (value.includes("Created")) {
       newDisplayTasks = [
         ...todos.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1)),
@@ -119,7 +121,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const {
       target: { id, value },
@@ -137,7 +139,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -243,7 +245,7 @@ export default function Dashboard() {
             .filter((task: TodoInterface) =>
               `${task.title} ${task.description}`
                 .toLowerCase()
-                .includes(searchValue.toLowerCase())
+                .includes(searchValue.toLowerCase()),
             )
             .map((task: TodoInterface) => (
               <Todo key={task.id} data={task} updateTodos={updateTodos} />
