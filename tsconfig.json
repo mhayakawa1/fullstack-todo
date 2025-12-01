@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-   "ts-node": {
+  "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },

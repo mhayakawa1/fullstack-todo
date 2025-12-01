@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -42,7 +42,7 @@ function createTodo(
   status: boolean,
   dueDate: string,
   createdAt: string,
-  updatedAt: string
+  updatedAt: string,
 ) {
   return {
     id: id,
@@ -64,7 +64,7 @@ const todos = [
     true,
     "2025-11-18T00:05:56.330Z",
     "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z"
+    "2025-11-18T00:05:56.330Z",
   ),
   createTodo(
     2,
@@ -74,7 +74,7 @@ const todos = [
     false,
     "2025-11-22T01:43:16.000Z",
     "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z"
+    "2025-11-22T01:45:00.889Z",
   ),
   createTodo(
     3,
@@ -84,7 +84,7 @@ const todos = [
     false,
     "2025-11-24T00:46:52.757Z",
     "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z"
+    "2025-11-24T00:55:10.616Z",
   ),
 ];
 
@@ -124,7 +124,7 @@ app.post("/todos", (req: Request, res: Response) => {
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt
+      data.updatedAt,
     );
     todos.push(newTodo);
     res.status(201).json(newTodo);
