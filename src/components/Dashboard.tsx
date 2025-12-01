@@ -21,7 +21,7 @@ type taskArray = TodoInterface[];
 
 export default function Dashboard() {
   const today = new Date();
-  const url = "https://69021b50b208b24affe50764.mockapi.io/todo/usertodos";
+  const url = "http://localhost:8080/todos";
   const [todos, setTodos] = useState<taskArray>([]);
   const [sortedTodos, setSortedTodos] = useState<taskArray>([]);
   const [title, setTitle] = useState("New Task");
@@ -121,7 +121,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -139,7 +139,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -168,7 +168,7 @@ export default function Dashboard() {
           }
         }
         makeRequest(`${url}/${newTodo.id}`, {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -245,7 +245,7 @@ export default function Dashboard() {
             .filter((task: TodoInterface) =>
               `${task.title} ${task.description}`
                 .toLowerCase()
-                .includes(searchValue.toLowerCase()),
+                .includes(searchValue.toLowerCase())
             )
             .map((task: TodoInterface) => (
               <Todo key={task.id} data={task} updateTodos={updateTodos} />
