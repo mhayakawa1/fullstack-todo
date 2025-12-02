@@ -92,15 +92,16 @@ export default function Dashboard() {
     if (title.length) {
       const newTodos = [...todos];
       const date = new Date();
+      const id = Math.max(...todos.map((element) => Number(element.id))) + 1;
       const todoData = {
-        userId: "",
+        userId: "userId1",
         title: title,
         description: description,
         status: false,
         dueDate: dueDate.toISOString(),
         createdAt: date,
         updatedAt: date,
-        id: date.toISOString() + date.getMilliseconds(),
+        id: id,
       };
       newTodos.push(todoData);
       updateArrays(newTodos);
@@ -121,7 +122,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -139,7 +140,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -245,7 +246,7 @@ export default function Dashboard() {
             .filter((task: TodoInterface) =>
               `${task.title} ${task.description}`
                 .toLowerCase()
-                .includes(searchValue.toLowerCase()),
+                .includes(searchValue.toLowerCase())
             )
             .map((task: TodoInterface) => (
               <Todo key={task.id} data={task} updateTodos={updateTodos} />

@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -42,7 +42,7 @@ function createTodo(
   status: boolean,
   dueDate: string,
   createdAt: string,
-  updatedAt: string,
+  updatedAt: string
 ) {
   return {
     id: id,
@@ -64,7 +64,7 @@ const todos = [
     true,
     "2025-11-18T00:05:56.330Z",
     "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z",
+    "2025-11-18T00:05:56.330Z"
   ),
   createTodo(
     2,
@@ -74,7 +74,7 @@ const todos = [
     false,
     "2025-11-22T01:43:16.000Z",
     "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z",
+    "2025-11-22T01:45:00.889Z"
   ),
   createTodo(
     3,
@@ -84,15 +84,15 @@ const todos = [
     false,
     "2025-11-24T00:46:52.757Z",
     "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z",
+    "2025-11-24T00:55:10.616Z"
   ),
 ];
 
-app.get("/todos", (req: Request, res: Response) => {
+app.get("/api/todos", (req: Request, res: Response) => {
   res.status(200).json(todos);
 });
 
-app.get("/todos/:id", (req: Request, res: Response) => {
+app.get("/api/todos/:id", (req: Request, res: Response) => {
   const id = req.params.id;
   const todo = todos.find((element) => element.id == id);
   if (todo) {
@@ -102,7 +102,7 @@ app.get("/todos/:id", (req: Request, res: Response) => {
   }
 });
 
-app.post("/todos", (req: Request, res: Response) => {
+app.post("/api/todos", (req: Request, res: Response) => {
   app.use(express.json());
   const data = req.body;
   if (
@@ -110,21 +110,20 @@ app.post("/todos", (req: Request, res: Response) => {
     data.userId &&
     data.title &&
     data.description &&
-    data.status &&
+    typeof data.status === "boolean" &&
     data.dueDate &&
     data.createdAt &&
     data.updatedAt
   ) {
-    const newId = todos.length + 1;
     const newTodo = createTodo(
-      newId,
+      data.id,
       data.userId,
       data.title,
       data.description,
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt,
+      data.updatedAt
     );
     todos.push(newTodo);
     res.status(201).json(newTodo);
@@ -133,7 +132,7 @@ app.post("/todos", (req: Request, res: Response) => {
   }
 });
 
-app.patch("/todos/:id", (req: Request, res: Response) => {
+app.patch("/api/todos/:id", (req: Request, res: Response) => {
   app.use(express.json());
   const id = JSON.parse(JSON.stringify(req.params)).id;
   const data = req.body;
@@ -164,6 +163,17 @@ app.patch("/todos/:id", (req: Request, res: Response) => {
   } else {
     res.status(400).send("Invalid data");
   }
+});
+
+app.delete("/api/todos/:id", (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const index = todos.findIndex((element) => element.id === id);
+  if (index === -1) {
+    return res.status(404).send("Data not found");
+  }
+  todos.splice(index, 1);
+
+  res.json({ message: "Data deleted successfully" });
 });
 
 app.use(express.static(path.join(__dirname, "public")));
