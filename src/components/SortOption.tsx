@@ -1,7 +1,7 @@
 interface OptionProps {
   index: number;
   value: string;
-  sortTodos: (value: string, list: undefined) => void;
+  sortTodos: (value: string) => void;
 }
 
 export default function SortOption(props: OptionProps) {
@@ -12,7 +12,7 @@ export default function SortOption(props: OptionProps) {
         className={`${index === 0 && "rounded-t-md"} ${
           index === 5 && "rounded-b-md"
         } grow w-full h-8 pl-4 pr-8 border-none text-left bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white`}
-        onClick={() => sortTodos(value, undefined)}
+        onClick={() => sortTodos(value)}
       >
         <span>{value}</span>
       </button>

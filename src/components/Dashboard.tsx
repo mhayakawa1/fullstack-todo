@@ -11,7 +11,7 @@ interface TodoInterface {
   userId: string;
   title: string;
   description: string;
-  status: boolean;
+  status: string;
   dueDate: string;
   createdAt: object;
   updatedAt: object;
@@ -21,14 +21,14 @@ type taskArray = TodoInterface[];
 
 export default function Dashboard() {
   const today = new Date();
-  const url = "http://localhost:8080/todos";
+  const url = "http://localhost:8080/api/todos";
   const [todos, setTodos] = useState<taskArray>([]);
   const [sortedTodos, setSortedTodos] = useState<taskArray>([]);
   const [title, setTitle] = useState("New Task");
   const [dueDate, setDueDate] = useState(today);
   const [description, setDescription] = useState("Description");
   const [searchValue, setSearchValue] = useState("");
-  const [sortValue, setSortValue] = useState("Date (Ascending)");
+  const [sortValue, setSortValue] = useState("Date Created (Ascending)");
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorText, setErrorText] = useState("");
 
@@ -52,7 +52,9 @@ export default function Dashboard() {
         setErrorVisible(false);
       })
       .catch((error) => {
-        setErrorText(JSON.stringify(error));
+        if (error.message) {
+          setErrorText(error.message);
+        }
         setErrorVisible(true);
       });
   }
@@ -63,28 +65,11 @@ export default function Dashboard() {
     }
   }, [makeRequest, todos.length]);
 
-  const sortTodos = (value: string, list: taskArray | undefined) => {
+  const sortTodos = (value: string) => {
     setSortValue(value);
-    let newDisplayTasks = list ? [...list] : [...todos];
-    if (value === "Complete") {
-      newDisplayTasks = [...todos.filter((task: TodoInterface) => task.status)];
-    } else if (value === "Incomplete") {
-      newDisplayTasks = [
-        ...todos.filter((task: TodoInterface) => !task.status),
-      ];
-    } else if (value.includes("Created")) {
-      newDisplayTasks = [
-        ...todos.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1)),
-      ];
-    } else if (value.includes("Due")) {
-      newDisplayTasks = [
-        ...todos.sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1)),
-      ];
-    }
-    if (value.includes("Descending")) {
-      newDisplayTasks.reverse();
-    }
-    setSortedTodos(newDisplayTasks);
+    const sortedUrl =
+      url + "/" + value.toLowerCase().replaceAll(" ", "-").replace(/[()]/g, "");
+    makeRequest(sortedUrl, { method: "GET" });
   };
 
   const addTodo = (event: { preventDefault: () => void }) => {
@@ -97,7 +82,7 @@ export default function Dashboard() {
         userId: "userId1",
         title: title,
         description: description,
-        status: false,
+        status: "incomplete",
         dueDate: dueDate.toISOString(),
         createdAt: date,
         updatedAt: date,
@@ -108,7 +93,7 @@ export default function Dashboard() {
       setTitle("New Task");
       setDueDate(today);
       setDescription("Description");
-      setSortValue("Date (Ascending)");
+      setSortValue("Date Created (Ascending)");
       makeRequest(url, {
         method: "POST",
         headers: {
@@ -122,7 +107,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const {
       target: { id, value },
@@ -140,7 +125,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -158,7 +143,7 @@ export default function Dashboard() {
         });
       } else {
         if (newStatus !== undefined) {
-          newTodo.status = newStatus;
+          newTodo.status = newStatus ? "complete" : "incomplete";
         } else if (newText) {
           const { title, description } = newText;
           if (title !== newTodo.title) {
@@ -185,7 +170,7 @@ export default function Dashboard() {
       <div className="flex flex-col items-center px-4 gap-4 box-border">
         <h1 className="text-white font-medium">TO DO LIST</h1>
         {errorVisible ? (
-          <div className="flex flex-col justify-center items-center gap-4 w-[400px] h-fit box-border rounded-lg p-0 bg-white bg-opacity-25">
+          <div className="flex flex-col justify-center items-center gap-4 w-[400px] h-fit box-border rounded-lg px-4 bg-white bg-opacity-25">
             <p className="text-red-500">{errorText}</p>
           </div>
         ) : null}
@@ -246,7 +231,7 @@ export default function Dashboard() {
             .filter((task: TodoInterface) =>
               `${task.title} ${task.description}`
                 .toLowerCase()
-                .includes(searchValue.toLowerCase())
+                .includes(searchValue.toLowerCase()),
             )
             .map((task: TodoInterface) => (
               <Todo key={task.id} data={task} updateTodos={updateTodos} />

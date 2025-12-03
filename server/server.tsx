@@ -4,6 +4,7 @@ import cors from "cors";
 import path from "node:path";
 const app = express();
 const port = 8080;
+
 const allowedOrigins = [
   "http://localhost:3000",
   "https://fullstack-todo-kappa.vercel.app/",
@@ -15,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -39,10 +40,10 @@ function createTodo(
   userId: string,
   title: string,
   description: string,
-  status: boolean,
+  status: string,
   dueDate: string,
   createdAt: string,
-  updatedAt: string
+  updatedAt: string,
 ) {
   return {
     id: id,
@@ -61,42 +62,81 @@ const todos = [
     "userId1",
     "Grocery Shopping",
     "Bread, eggs, milk, tomatoes, lettuce",
-    true,
+    "complete",
     "2025-11-18T00:05:56.330Z",
     "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z"
+    "2025-11-18T00:05:56.330Z",
   ),
   createTodo(
     2,
     "userId1",
     "Make Dinner",
     "Pasta, salad, tea",
-    false,
+    "incomplete",
     "2025-11-22T01:43:16.000Z",
     "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z"
+    "2025-11-22T01:45:00.889Z",
   ),
   createTodo(
     3,
     "userId1",
     "Chores",
     "Laundry, dishes",
-    false,
+    "incomplete",
     "2025-11-24T00:46:52.757Z",
     "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z"
+    "2025-11-24T00:55:10.616Z",
   ),
 ];
+
+function sort(value: string) {
+  let newTodos = [...todos];
+  if (value === "complete") {
+    newTodos = [...todos.filter((todo) => todo.status === "complete")];
+  } else if (value === "incomplete") {
+    newTodos = [...todos.filter((todo) => !(todo.status === "complete"))];
+  } else if (value.includes("created")) {
+    newTodos = [...todos.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))];
+  } else if (value.includes("due")) {
+    newTodos = [...todos.sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1))];
+  }
+  if (value.includes("descending")) {
+    newTodos.reverse();
+  }
+  return newTodos;
+}
 
 app.get("/api/todos", (req: Request, res: Response) => {
   res.status(200).json(todos);
 });
 
+const sortValues = [
+  "complete",
+  "incomplete",
+  "date-created-ascending",
+  "date-created-descending",
+  "due-date-ascending",
+  "due-date-descending",
+];
+
+function sortedRoutes() {
+  const routes = [];
+  for (let i = 0; i < sortValues.length; i++) {
+    routes.push(
+      app.get(`/api/todos/${sortValues[i]}`, (req: Request, res: Response) => {
+        res.status(200).json(sort(sortValues[i]));
+      }),
+    );
+  }
+  return routes;
+}
+sortedRoutes();
+
 app.get("/api/todos/:id", (req: Request, res: Response) => {
   const id = req.params.id;
   const todo = todos.find((element) => element.id == id);
   if (todo) {
-    res.json(todo);
+    res.status(200).json(todo);
   } else {
     res.status(404).send("Todo not found");
   }
@@ -110,7 +150,7 @@ app.post("/api/todos", (req: Request, res: Response) => {
     data.userId &&
     data.title &&
     data.description &&
-    typeof data.status === "boolean" &&
+    data.status &&
     data.dueDate &&
     data.createdAt &&
     data.updatedAt
@@ -123,9 +163,9 @@ app.post("/api/todos", (req: Request, res: Response) => {
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt
+      data.updatedAt,
     );
-    todos.push(newTodo);
+    todos.unshift(newTodo);
     res.status(201).json(newTodo);
   } else {
     res.status(400).send("Invalid data");
@@ -141,7 +181,7 @@ app.patch("/api/todos/:id", (req: Request, res: Response) => {
     data.userId &&
     data.title &&
     data.description &&
-    typeof data.status === "boolean" &&
+    data.status &&
     data.dueDate &&
     data.createdAt &&
     data.updatedAt
@@ -172,8 +212,7 @@ app.delete("/api/todos/:id", (req: Request, res: Response) => {
     return res.status(404).send("Data not found");
   }
   todos.splice(index, 1);
-
-  res.json({ message: "Data deleted successfully" });
+  res.status(204).send("Data deleted successfully");
 });
 
 app.use(express.static(path.join(__dirname, "public")));

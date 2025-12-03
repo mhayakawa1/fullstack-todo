@@ -10,14 +10,14 @@ interface TodoProps {
     userId: string;
     title: string;
     description: string;
-    status: boolean;
+    status: string;
     dueDate: string;
     createdAt: object;
     updatedAt: object;
   };
   updateTodos: (
     id: string | number,
-    newStatus: boolean | undefined,
+    newchecked: boolean | undefined,
     newText: { title: string; description: string } | undefined,
   ) => void;
 }
@@ -30,6 +30,7 @@ export default function Todo(props: TodoProps) {
   const [newTitle, setNewTitle] = useState(title);
   const [newDueDate, setNewDueDate] = useState(new Date(dueDate));
   const [newDescription, setNewDescription] = useState(description);
+  const checked = status === "complete";
 
   const editText = (
     event:
@@ -80,8 +81,8 @@ export default function Todo(props: TodoProps) {
                 <label className="flex items-center cursor-pointer relative">
                   <input
                     type="checkbox"
-                    onChange={() => updateTodos(id, !status, undefined)}
-                    checked={status}
+                    onChange={() => updateTodos(id, !checked, undefined)}
+                    checked={checked}
                     className="peer w-6 h-6 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border bg-white"
                     id="check"
                   />

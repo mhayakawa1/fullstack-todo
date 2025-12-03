@@ -4,7 +4,7 @@ import SortOption from "./SortOption";
 
 interface DropdownProps {
   sortValue: string;
-  sortTodos: (value: string, list: undefined) => void;
+  sortTodos: (value: string) => void;
 }
 
 const options = [
