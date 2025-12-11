@@ -7,7 +7,7 @@ export default function Signup() {
         title="Create account"
         formType="Sign up"
         path="login"
-        linkText="Have and account? Log in"
+        linkText="Have an account? Log in"
       />
     </main>
   );

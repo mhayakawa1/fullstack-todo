@@ -29,7 +29,7 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const [userInfo, setUserInfo] = useState({
-    email: "username@email.com",
+    email: "",
     emailVerified: false,
     name: "",
     picture: "",
@@ -44,6 +44,7 @@ export default function UserMenu() {
   const handleLogout = () => {
     googleLogout();
     localStorage.clear();
+    sessionStorage.clear();
     navigate("/login");
   };
 
@@ -53,7 +54,6 @@ export default function UserMenu() {
       const { email, emailVerified, name, picture } = JSON.parse(
         storageItem.replace("email_verified", "emailVerified"),
       );
-
       setUserInfo({
         email: email,
         emailVerified: emailVerified,

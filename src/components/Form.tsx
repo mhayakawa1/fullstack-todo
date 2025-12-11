@@ -12,13 +12,10 @@ interface FormProps {
   linkText: string;
 }
 
-interface User {
+interface Body {
   email: string;
-  id: string;
-  name: string;
+  name?: string;
   password: string;
-  picture: string;
-  userId: string;
 }
 
 export default function Form(props: FormProps) {
@@ -27,9 +24,7 @@ export default function Form(props: FormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorText, setErrorText] = useState("Invalid email or password.");
   const [errorVisible, setErrorVisible] = useState(false);
-  const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
 
@@ -45,75 +40,43 @@ export default function Form(props: FormProps) {
     }
   };
 
-  function findUser(users: User[]) {
-    const user = users.find((user: User) => user.email === email);
-    if (isSignup || (user && user.password === password)) {
-      return user;
-    }
-    return undefined;
-  }
-
-  async function verifyUser() {
-    const url = "https://69021b50b208b24affe50764.mockapi.io/todo/users";
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const users = await response.json();
-    const user = findUser(users);
-    if (isSignup) {
-      if (user) {
+  async function makeRequest(body: Body, path: string) {
+    fetch(`http://localhost:8080/api/auth/${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (path === "login") {
+          sessionStorage.setItem("token", data.token);
+          navigate("/dashboard");
+        }
+      })
+      .catch(() => {
         setErrorVisible(true);
-      } else {
-        const userNum = users.length + 1;
-        const user = {
-          email: email,
-          id: userNum.toString(),
-          name: name,
-          password: password,
-          picture: "",
-          userId: `userId${userNum}`,
-        };
-        fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(user),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
-          .then((data) => {
-            localStorage.setItem("userId", data.userId);
-            setSuccessVisible(true);
-          })
-          .catch((error) => {
-            setErrorText(error);
-          });
-      }
-    } else {
-      if (user) {
-        navigate("/dashboard");
-      } else {
-        setErrorVisible(true);
-      }
-    }
+      });
   }
 
   const login = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (email && password) {
-      verifyUser();
+      makeRequest({ email: email, password: password }, "login");
     }
   };
 
   const signup = (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    verifyUser();
+    if (name && email && password) {
+      makeRequest({ name: name, email: email, password: password }, "signup");
+    }
   };
 
   const loginWithGoogle = useGoogleLogin({
@@ -170,7 +133,9 @@ export default function Form(props: FormProps) {
         ) : null}
         {errorVisible ? (
           <div className="w-full h-fit mb-2 bg-white bg-opacity-40 rounded-lg">
-            <p className="text-xs text-center text-red-500">{errorText}</p>
+            <p className="text-xs text-center text-red-500">
+              Invalid email or password.
+            </p>
           </div>
         ) : null}
         <FormButton handleClick={isSignup ? signup : login}>
@@ -187,7 +152,7 @@ export default function Form(props: FormProps) {
       >
         {linkText}
       </Link>
-      {isSignup && successVisible ? (
+      {isSignup ? (
         <ul className="list-none text-white text-center w-full p-0 flex flex-col gap-4">
           <li>Success!</li>
           <li className="text-4xl border-solid rounded-full w-20 h-20 flex justify-center items-center mx-auto">

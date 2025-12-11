@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Todo from "./Todo";
 import TodoContainer from "./TodoContainer";
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const [sortValue, setSortValue] = useState("Date Created (Ascending)");
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const navigate = useNavigate();
 
   const updateArrays = (newTodos: taskArray) => {
     setTodos(newTodos);
@@ -40,13 +42,16 @@ export default function Dashboard() {
   async function makeRequest(url: string, options: RequestInit) {
     fetch(url, options)
       .then((response) => {
+        if (!sessionStorage.getItem("token")) return navigate("/login");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
       .then((data) => {
-        if (options.method === "GET") {
+        if (data.invalidToken) {
+          navigate("/login");
+        } else if (options.method === "GET") {
           updateArrays(data);
         }
         setErrorVisible(false);
@@ -61,7 +66,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!todos.length) {
-      makeRequest(url, { method: "GET" });
+      makeRequest(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
     }
   }, [makeRequest, todos.length]);
 

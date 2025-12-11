@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
+import bodyParser from "body-parser";
 import express from "express";
+import jwt from "jsonwebtoken";
 import cors from "cors";
 import path from "node:path";
+import bcrypt from "bcryptjs";
+import checkAuthorization from "./authMiddleware";
+const secret = process.env.CLIENT_SECRET;
 const app = express();
 const port = 8080;
 
@@ -10,6 +15,7 @@ const allowedOrigins = [
   "https://fullstack-todo-kappa.vercel.app/",
 ];
 
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -35,6 +41,9 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+const router = express.Router();
+router.use(checkAuthorization);
+
 function createTodo(
   id: number | string,
   userId: string,
@@ -56,6 +65,7 @@ function createTodo(
     updatedAt: updatedAt,
   };
 }
+
 const todos = [
   createTodo(
     1,
@@ -106,7 +116,7 @@ function sort(value: string) {
   return newTodos;
 }
 
-app.get("/api/todos", (req: Request, res: Response) => {
+app.get("/api/todos", checkAuthorization, (req: Request, res: Response) => {
   res.status(200).json(todos);
 });
 
@@ -132,7 +142,7 @@ function sortedRoutes() {
 }
 sortedRoutes();
 
-app.get("/api/todos/:id", (req: Request, res: Response) => {
+app.get("/api/todos/:id", checkAuthorization, (req: Request, res: Response) => {
   const id = req.params.id;
   const todo = todos.find((element) => element.id == id);
   if (todo) {
@@ -142,7 +152,7 @@ app.get("/api/todos/:id", (req: Request, res: Response) => {
   }
 });
 
-app.post("/api/todos", (req: Request, res: Response) => {
+app.post("/api/todos", checkAuthorization, (req: Request, res: Response) => {
   app.use(express.json());
   const data = req.body;
   if (
@@ -172,47 +182,114 @@ app.post("/api/todos", (req: Request, res: Response) => {
   }
 });
 
-app.patch("/api/todos/:id", (req: Request, res: Response) => {
-  app.use(express.json());
-  const id = JSON.parse(JSON.stringify(req.params)).id;
-  const data = req.body;
-  if (
-    data.id &&
-    data.userId &&
-    data.title &&
-    data.description &&
-    data.status &&
-    data.dueDate &&
-    data.createdAt &&
-    data.updatedAt
-  ) {
-    const todo = todos.find((element) => element.id == id);
-    if (todo) {
-      todo.id = data.id;
-      todo.userId = data.userId;
-      todo.title = data.title;
-      todo.description = data.description;
-      todo.status = data.status;
-      todo.dueDate = data.dueDate;
-      todo.createdAt = data.createdAt;
-      todo.updatedAt = data.updatedAt;
-      res.status(200).json(todo);
+app.patch(
+  "/api/todos/:id",
+  checkAuthorization,
+  (req: Request, res: Response) => {
+    app.use(express.json());
+    const id = JSON.parse(JSON.stringify(req.params)).id;
+    const data = req.body;
+    if (
+      data.id &&
+      data.userId &&
+      data.title &&
+      data.description &&
+      data.status &&
+      data.dueDate &&
+      data.createdAt &&
+      data.updatedAt
+    ) {
+      const todo = todos.find((element) => element.id == id);
+      if (todo) {
+        todo.id = data.id;
+        todo.userId = data.userId;
+        todo.title = data.title;
+        todo.description = data.description;
+        todo.status = data.status;
+        todo.dueDate = data.dueDate;
+        todo.createdAt = data.createdAt;
+        todo.updatedAt = data.updatedAt;
+        res.status(200).json(todo);
+      } else {
+        res.status(404).send("Todo not found");
+      }
     } else {
-      res.status(404).send("Todo not found");
+      res.status(400).send("Invalid data");
     }
-  } else {
-    res.status(400).send("Invalid data");
-  }
+  },
+);
+
+app.delete(
+  "/api/todos/:id",
+  checkAuthorization,
+  (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const index = todos.findIndex((element) => element.id === id);
+    if (index === -1) {
+      return res.status(404).send("Data not found");
+    }
+    todos.splice(index, 1);
+    res.status(204).send("Data deleted successfully");
+  },
+);
+
+function createUser(
+  id: number | string,
+  userId: string,
+  name: string,
+  password: string,
+  email: string,
+  picture: string,
+) {
+  return {
+    id: id,
+    userId: userId,
+    name: name,
+    password: password,
+    email: email,
+    picture: picture,
+  };
+}
+
+interface User {
+  id: number | string;
+  userId: string;
+  name: string;
+  password: string;
+  email: string;
+  picture: string;
+}
+
+const users: User[] = [];
+
+app.post("/api/auth/signup", async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = createUser(
+    "4",
+    "userId",
+    name,
+    hashedPassword,
+    email,
+    "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
+  );
+  users.push(newUser);
+  res.status(201).json({ message: "User registered." });
 });
 
-app.delete("/api/todos/:id", (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
-  const index = todos.findIndex((element) => element.id === id);
-  if (index === -1) {
-    return res.status(404).send("Data not found");
+app.post("/api/auth/login", async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const user = users.find((element) => element.email === email);
+  if (!user) {
+    return res.status(400).json({ message: "Invalid credentials" });
+  } else if (secret) {
+    const { name } = user;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid)
+      return res.status(400).json({ message: "Invalid credentials" });
+    const token = jwt.sign({ name }, secret, { expiresIn: "1h" });
+    res.json({ token: token });
   }
-  todos.splice(index, 1);
-  res.status(204).send("Data deleted successfully");
 });
 
 app.use(express.static(path.join(__dirname, "public")));
