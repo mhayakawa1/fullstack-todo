@@ -1,16 +1,32 @@
-import { Request, NextFunction, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import "dotenv/config";
 const secret = process.env.CLIENT_SECRET;
 
-function checkAuthorization(req: Request, res: Response, next: NextFunction) {
-  const token = req.headers.authorization;
+interface UserPayload extends JwtPayload {
+  id: string | number;
+}
+
+function checkAuthorization(
+  req: Request & { user?: object },
+  res: Response,
+  next: NextFunction
+) {
+  const token = req.cookies.accessToken;
+  const errorResult = () => {
+    return res.status(403).send("User not verified.");
+  };
+  if (!token) {
+    errorResult();
+  }
   if (token && secret) {
-    const verified = jwt.verify(token.split(" ")[1], secret);
-    if (verified) {
+    try {
+      const user = jwt.verify(token, secret) as UserPayload;
+      req.user = user;
       next();
-    } else {
-      res.status(400).json({ invalidToken: true });
+    } catch {
+      errorResult();
     }
   }
 }

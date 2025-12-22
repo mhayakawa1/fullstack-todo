@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { googleLogout } from "@react-oauth/google";
 import { FaUser } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -41,18 +41,61 @@ export default function UserMenu() {
     }
   };
 
-  const handleLogout = () => {
+  const getUserInfo = useCallback(async () => {
+    fetch("https://localhost:8080/api/userInfo", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const newUserInfo = userInfo;
+        newUserInfo.email = data.email;
+        newUserInfo.name = data.name;
+        setUserInfo(newUserInfo);
+      })
+      .catch((error) => {
+         throw new Error(`HTTP error! status: ${error.message}`);
+      });
+  }, []);
+
+  async function handleLogout() {
     googleLogout();
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/login");
-  };
+    fetch("https://localhost:8080/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((error) => {
+        if (error.message) {
+          throw new Error(`HTTP error! status: ${error.message}`);
+        }
+      });
+  }
 
   useEffect(() => {
     const storageItem = localStorage.getItem("userInfo");
     if (storageItem) {
       const { email, emailVerified, name, picture } = JSON.parse(
-        storageItem.replace("email_verified", "emailVerified"),
+        storageItem.replace("email_verified", "emailVerified")
       );
       setUserInfo({
         email: email,
@@ -63,7 +106,9 @@ export default function UserMenu() {
     }
     const urlParams = new URLSearchParams(location.search);
     const code = urlParams.get("code");
-
+    if (location.pathname === "/dashboard") {
+      getUserInfo();
+    }
     if (code) {
       // eslint-disable-next-line
       console.log(code);
@@ -87,7 +132,7 @@ export default function UserMenu() {
       {isVisible ? (
         <div className="absolute bg-white rounded-lg right-0 mt-2">
           <ul className="m-0 p-0 list-none text-[#3f27c2]">
-            <li className="flex justify-center items-center gap-2 px-4 py-6">
+            <li className="flex justify-center items-center gap-3 px-4 py-6">
               <UserIcon picture={userInfo.picture} className="w-12 h-12" />
               <ul className="p-0 list-none">
                 <li>{userInfo.name}</li>

@@ -25,6 +25,7 @@ export default function Form(props: FormProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorVisible, setErrorVisible] = useState(false);
+  const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
 
@@ -41,11 +42,12 @@ export default function Form(props: FormProps) {
   };
 
   async function makeRequest(body: Body, path: string) {
-    fetch(`http://localhost:8080/api/auth/${path}`, {
+    fetch(`https://localhost:8080/api/auth/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(body),
     })
       .then((response) => {
@@ -55,9 +57,12 @@ export default function Form(props: FormProps) {
         return response.json();
       })
       .then((data) => {
-        if (path === "login") {
-          sessionStorage.setItem("token", data.token);
+        if (data.message === "Cookie sent.") {
           navigate("/dashboard");
+        }
+        if (data.message === "User registered.") {
+          setSuccessVisible(true);
+          setErrorVisible(false);
         }
       })
       .catch(() => {
@@ -92,8 +97,8 @@ export default function Form(props: FormProps) {
   };
 
   return (
-    <div className="relative m-auto flex flex-col justify-center items-center gap-4 p-4 w-[364px] bg-white bg-opacity-25 rounded-lg">
-      <form className="w-full flex flex-col gap-2 text-white">
+    <div className="relative m-auto flex flex-col justify-center items-center gap-3 p-4 w-[364px] bg-white bg-opacity-25 rounded-lg">
+      <form className="w-full flex flex-col gap-3 text-white">
         <h1 className="text-center font-normal">{title}</h1>
         {isSignup ? (
           <FormInput
@@ -148,12 +153,12 @@ export default function Form(props: FormProps) {
       </FormButton>
       <Link
         to={`/${path}`}
-        className="w-fit m-auto text-sm text-center no-underline hover:underline text-white"
+        className="w-fit m-0 text-sm text-center no-underline hover:underline text-white"
       >
         {linkText}
       </Link>
-      {isSignup ? (
-        <ul className="list-none text-white text-center w-full p-0 flex flex-col gap-4">
+      {isSignup && successVisible ? (
+        <ul className="m-0 list-none text-white text-center w-full p-0 flex flex-col gap-4">
           <li>Success!</li>
           <li className="text-4xl border-solid rounded-full w-20 h-20 flex justify-center items-center mx-auto">
             <FaCheck />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Todo from "./Todo";
@@ -22,7 +22,7 @@ type taskArray = TodoInterface[];
 
 export default function Dashboard() {
   const today = new Date();
-  const url = "http://localhost:8080/api/todos";
+  const url = "https://localhost:8080/api/";
   const [todos, setTodos] = useState<taskArray>([]);
   const [sortedTodos, setSortedTodos] = useState<taskArray>([]);
   const [title, setTitle] = useState("New Task");
@@ -39,10 +39,9 @@ export default function Dashboard() {
     setSortedTodos(newTodos);
   };
 
-  async function makeRequest(url: string, options: RequestInit) {
+  const makeRequest = useCallback(async (url: string, options: RequestInit) => {
     fetch(url, options)
       .then((response) => {
-        if (!sessionStorage.getItem("token")) return navigate("/login");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -51,7 +50,7 @@ export default function Dashboard() {
       .then((data) => {
         if (data.invalidToken) {
           navigate("/login");
-        } else if (options.method === "GET") {
+        } else {
           updateArrays(data);
         }
         setErrorVisible(false);
@@ -62,15 +61,13 @@ export default function Dashboard() {
         }
         setErrorVisible(true);
       });
-  }
+  }, []);
 
   useEffect(() => {
     if (!todos.length) {
-      makeRequest(url, {
+      makeRequest(`${url}todos`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
+        credentials: "include",
       });
     }
   }, [makeRequest, todos.length]);
@@ -78,8 +75,8 @@ export default function Dashboard() {
   const sortTodos = (value: string) => {
     setSortValue(value);
     const sortedUrl =
-      url + "/" + value.toLowerCase().replaceAll(" ", "-").replace(/[()]/g, "");
-    makeRequest(sortedUrl, { method: "GET" });
+      url + value.toLowerCase().replaceAll(" ", "-").replace(/[()]/g, "");
+    makeRequest(sortedUrl, { method: "GET", credentials: "include" });
   };
 
   const addTodo = (event: { preventDefault: () => void }) => {
@@ -106,9 +103,7 @@ export default function Dashboard() {
       setSortValue("Date Created (Ascending)");
       makeRequest(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        credentials: "include",
         body: JSON.stringify(todoData),
       });
     }
@@ -117,7 +112,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -135,7 +130,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -145,8 +140,9 @@ export default function Dashboard() {
         const newDisplayTasks = [...sortedTodos];
         newDisplayTasks.splice(newDisplayTasks.indexOf(newTodo), 1);
         setSortedTodos(newDisplayTasks);
-        makeRequest(`${url}/${newTodo.id}`, {
+        makeRequest(`${url}${newTodo.id}`, {
           method: "DELETE",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -163,12 +159,13 @@ export default function Dashboard() {
             newTodo.description = description;
           }
         }
-        makeRequest(`${url}/${newTodo.id}`, {
+        makeRequest(`${url}${newTodo.id}`, {
           method: "PATCH",
+          credentials: "include",
+          body: JSON.stringify(newTodo),
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(newTodo),
         });
       }
       setTodos(newTodos);
@@ -237,15 +234,17 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center gap-2 w-[400px] ">
         <SortDropdown sortValue={sortValue} sortTodos={sortTodos} />
         <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
-          {sortedTodos
-            .filter((task: TodoInterface) =>
-              `${task.title} ${task.description}`
-                .toLowerCase()
-                .includes(searchValue.toLowerCase()),
-            )
-            .map((task: TodoInterface) => (
-              <Todo key={task.id} data={task} updateTodos={updateTodos} />
-            ))}
+          {sortedTodos.length
+            ? sortedTodos
+                .filter((task: TodoInterface) =>
+                  `${task.title} ${task.description}`
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase())
+                )
+                .map((task: TodoInterface) => (
+                  <Todo key={task.id} data={task} updateTodos={updateTodos} />
+                ))
+            : null}
         </ul>
       </div>
     </main>

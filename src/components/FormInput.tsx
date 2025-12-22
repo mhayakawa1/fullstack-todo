@@ -52,7 +52,7 @@ export default function FormInput(props: FormProps) {
       </label>
       <div className="relative">
         <input
-          id={type}
+          id={label.toLowerCase().replace(" ", "")}
           type={isVisible ? "text" : type}
           name={type}
           placeholder={

@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "jwt-decode": "^4.0.0",
     "react": "^19.2.0",
@@ -27,7 +28,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -56,7 +57,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.25",
     "@types/jsonwebtoken": "^9.0.10",
     "autoprefixer": "^10.4.21",
     "eslint": "^8.57.1",
