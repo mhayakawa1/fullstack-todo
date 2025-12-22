@@ -62,7 +62,7 @@ export default function UserMenu() {
         setUserInfo(newUserInfo);
       })
       .catch((error) => {
-         throw new Error(`HTTP error! status: ${error.message}`);
+        throw new Error(`HTTP error! status: ${error.message}`);
       });
   }, []);
 
@@ -95,7 +95,7 @@ export default function UserMenu() {
     const storageItem = localStorage.getItem("userInfo");
     if (storageItem) {
       const { email, emailVerified, name, picture } = JSON.parse(
-        storageItem.replace("email_verified", "emailVerified")
+        storageItem.replace("email_verified", "emailVerified"),
       );
       setUserInfo({
         email: email,

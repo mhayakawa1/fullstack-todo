@@ -11,7 +11,7 @@ interface UserPayload extends JwtPayload {
 function checkAuthorization(
   req: Request & { user?: object },
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const token = req.cookies.accessToken;
   const errorResult = () => {
