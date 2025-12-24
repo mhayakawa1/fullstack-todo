@@ -35,13 +35,13 @@ app.use(
         "connect-src": ["'self'", "https://localhost:8080"],
       },
     },
-  }),
+  })
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -65,7 +65,7 @@ function createUser(
   name: string,
   password: string,
   email: string,
-  picture: string,
+  picture: string
 ) {
   return {
     id: id,
@@ -93,7 +93,7 @@ const users: User[] = [
     "First Last",
     "asdfghjkl",
     "email@email.com",
-    "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
+    "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
   ),
 ];
 
@@ -105,7 +105,7 @@ function createTodo(
   status: string,
   dueDate: string,
   createdAt: string,
-  updatedAt: string,
+  updatedAt: string
 ) {
   return {
     id: id,
@@ -128,7 +128,7 @@ const todos = [
     "complete",
     "2025-11-18T00:05:56.330Z",
     "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z",
+    "2025-11-18T00:05:56.330Z"
   ),
   createTodo(
     2,
@@ -138,7 +138,7 @@ const todos = [
     "incomplete",
     "2025-11-22T01:43:16.000Z",
     "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z",
+    "2025-11-22T01:45:00.889Z"
   ),
   createTodo(
     3,
@@ -148,7 +148,7 @@ const todos = [
     "incomplete",
     "2025-11-24T00:46:52.757Z",
     "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z",
+    "2025-11-24T00:55:10.616Z"
   ),
 ];
 
@@ -188,7 +188,7 @@ function sortedRoutes() {
     routes.push(
       app.get(`/api/todos/${sortValues[i]}`, (req: Request, res: Response) => {
         res.status(200).json(sort(sortValues[i]));
-      }),
+      })
     );
   }
   return routes;
@@ -226,7 +226,7 @@ app.post("/api/todos", checkAuthorization, (req: Request, res: Response) => {
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt,
+      data.updatedAt
     );
     todos.unshift(newTodo);
     res.status(201).json(newTodo);
@@ -269,7 +269,7 @@ app.patch(
     } else {
       res.status(400).send("Invalid data");
     }
-  },
+  }
 );
 
 app.delete(
@@ -284,7 +284,7 @@ app.delete(
       todos.splice(index, 1);
       return res.status(202).json({ message: "Item deleted." });
     }
-  },
+  }
 );
 
 app.get(
@@ -292,7 +292,7 @@ app.get(
   checkAuthorization,
   (
     req: Request & { user?: object & { id?: string | number } },
-    res: Response,
+    res: Response
   ) => {
     const { user } = req;
     if (user) {
@@ -305,7 +305,7 @@ app.get(
     } else {
       res.status(404).send("User not found");
     }
-  },
+  }
 );
 
 app.post("/api/auth/signup", async (req: Request, res: Response) => {
@@ -320,7 +320,7 @@ app.post("/api/auth/signup", async (req: Request, res: Response) => {
       name,
       hashedPassword,
       email,
-      "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
+      "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg"
     );
     users.push(newUser);
     res.status(201).json({ message: "User registered." });
