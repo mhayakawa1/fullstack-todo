@@ -152,48 +152,24 @@ const todos = [
   ),
 ];
 
-function sort(value: string) {
+app.get("/api/todos", checkAuthorization, (req: Request, res: Response) => {
+  const query = JSON.parse(JSON.stringify(req.query));
+  const { sortBy } = query;
   let newTodos = [...todos];
-  if (value === "complete") {
-    newTodos = [...todos.filter((todo) => todo.status === "complete")];
-  } else if (value === "incomplete") {
-    newTodos = [...todos.filter((todo) => !(todo.status === "complete"))];
-  } else if (value.includes("created")) {
+  if (sortBy.includes("created")) {
     newTodos = [...todos.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))];
-  } else if (value.includes("due")) {
+  } else if (sortBy.includes("due")) {
     newTodos = [...todos.sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1))];
+  } else if (sortBy === "incomplete") {
+    newTodos = [...newTodos.filter((todo) => todo.status === "incomplete")];
+  } else if (sortBy === "complete") {
+    newTodos = [...newTodos.filter((todo) => todo.status === "complete")];
   }
-  if (value.includes("descending")) {
+  if (sortBy.includes("descending")) {
     newTodos.reverse();
   }
-  return newTodos;
-}
-
-app.get("/api/todos", checkAuthorization, (req: Request, res: Response) => {
-  return res.status(200).json(todos);
+  return res.status(200).json(newTodos);
 });
-
-const sortValues = [
-  "complete",
-  "incomplete",
-  "date-created-ascending",
-  "date-created-descending",
-  "due-date-ascending",
-  "due-date-descending",
-];
-
-function sortedRoutes() {
-  const routes = [];
-  for (let i = 0; i < sortValues.length; i++) {
-    routes.push(
-      app.get(`/api/todos/${sortValues[i]}`, (req: Request, res: Response) => {
-        res.status(200).json(sort(sortValues[i]));
-      }),
-    );
-  }
-  return routes;
-}
-sortedRoutes();
 
 app.get("/api/todos/:id", checkAuthorization, (req: Request, res: Response) => {
   const id = req.params.id;

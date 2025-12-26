@@ -65,7 +65,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!todos.length) {
-      makeRequest(`${url}todos`, {
+      makeRequest(`${url}todos?sortBy=date-created-ascending`, {
         method: "GET",
         credentials: "include",
       });
@@ -74,8 +74,11 @@ export default function Dashboard() {
 
   const sortTodos = (value: string) => {
     setSortValue(value);
-    const sortedUrl =
-      url + value.toLowerCase().replaceAll(" ", "-").replace(/[()]/g, "");
+    const sortedUrl = `
+      ${url}todos?sortBy=${value
+        .toLowerCase()
+        .replaceAll(" ", "-")
+        .replace(/[()]/g, "")}`;
     makeRequest(sortedUrl, { method: "GET", credentials: "include" });
   };
 
