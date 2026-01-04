@@ -11,6 +11,7 @@ import https from "https";
 import helmet from "helmet";
 import checkAuthorization from "./authMiddleware";
 import "dotenv/config";
+const clientId = process.env.CLIENT_ID;
 const secret = process.env.CLIENT_SECRET;
 const app = express();
 const port = 8080;
@@ -25,9 +26,9 @@ const allowedOrigins = [
   "https://fullstack-todo-kappa.vercel.app/",
 ];
 
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -35,13 +36,14 @@ app.use(
         "connect-src": ["'self'", "https://localhost:8080"],
       },
     },
-  }),
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  })
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -66,6 +68,7 @@ function createUser(
   password: string,
   email: string,
   picture: string,
+  isGoogleAccount: boolean
 ) {
   return {
     id: id,
@@ -74,6 +77,7 @@ function createUser(
     password: password,
     email: email,
     picture: picture,
+    isGoogleAccount: isGoogleAccount,
   };
 }
 
@@ -94,6 +98,7 @@ const users: User[] = [
     "asdfghjkl",
     "email@email.com",
     "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
+    false
   ),
 ];
 
@@ -105,7 +110,7 @@ function createTodo(
   status: string,
   dueDate: string,
   createdAt: string,
-  updatedAt: string,
+  updatedAt: string
 ) {
   return {
     id: id,
@@ -128,7 +133,7 @@ const todos = [
     "complete",
     "2025-11-18T00:05:56.330Z",
     "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z",
+    "2025-11-18T00:05:56.330Z"
   ),
   createTodo(
     2,
@@ -138,7 +143,7 @@ const todos = [
     "incomplete",
     "2025-11-22T01:43:16.000Z",
     "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z",
+    "2025-11-22T01:45:00.889Z"
   ),
   createTodo(
     3,
@@ -148,7 +153,7 @@ const todos = [
     "incomplete",
     "2025-11-24T00:46:52.757Z",
     "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z",
+    "2025-11-24T00:55:10.616Z"
   ),
 ];
 
@@ -202,7 +207,7 @@ app.post("/api/todos", checkAuthorization, (req: Request, res: Response) => {
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt,
+      data.updatedAt
     );
     todos.unshift(newTodo);
     res.status(201).json(newTodo);
@@ -245,7 +250,7 @@ app.patch(
     } else {
       res.status(400).send("Invalid data");
     }
-  },
+  }
 );
 
 app.delete(
@@ -258,9 +263,9 @@ app.delete(
       return res.status(404).send("Data not found");
     } else {
       todos.splice(index, 1);
-      return res.status(202).json({ message: "Item deleted." });
+      return res.status(204).json({ message: "Item deleted." });
     }
-  },
+  }
 );
 
 app.get(
@@ -268,20 +273,19 @@ app.get(
   checkAuthorization,
   (
     req: Request & { user?: object & { id?: string | number } },
-    res: Response,
+    res: Response
   ) => {
     const { user } = req;
     if (user) {
       const { id } = user;
       const userInfo = users.find((element) => element.id == id);
       if (userInfo) {
-        const { name, email } = userInfo;
-        res.status(200).json({ name: name, email: email });
+        res.status(200).json(userInfo);
       }
     } else {
       res.status(404).send("User not found");
     }
-  },
+  }
 );
 
 app.post("/api/auth/signup", async (req: Request, res: Response) => {
@@ -297,6 +301,7 @@ app.post("/api/auth/signup", async (req: Request, res: Response) => {
       hashedPassword,
       email,
       "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
+      false
     );
     users.push(newUser);
     res.status(201).json({ message: "User registered." });
@@ -305,9 +310,27 @@ app.post("/api/auth/signup", async (req: Request, res: Response) => {
   }
 });
 
+function findUser(email: string) {
+  return users.find((element) => element.email === email);
+}
+
+function createCookie(res: Response, token: string, isGoogleAccount: boolean) {
+  const tokenInfo = {
+    token: token,
+    isGoogleAccount: isGoogleAccount,
+  };
+  res.cookie("accessToken", tokenInfo, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+  res.send(200).json({ message: "Cookie sent." });
+}
+
 app.post("/api/auth/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const user = users.find((element) => element.email === email);
+  const user = findUser(email);
   if (!user) {
     return res.status(400).json({ message: "Invalid credentials" });
   } else if (secret) {
@@ -317,20 +340,40 @@ app.post("/api/auth/login", async (req: Request, res: Response) => {
       return res.status(201).json({ message: "Invalid credentials" });
     }
     const token = jwt.sign({ id }, secret, { expiresIn: "24h" });
-    res.cookie("accessToken", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-    res.json({ message: "Cookie sent." });
-    res.send();
+    createCookie(res, token, false);
+  }
+});
+
+app.post("/api/auth/google/callback", async (req: Request, res: Response) => {
+  const { tokenResponse, userProfile } = req.body;
+  if (clientId && secret && tokenResponse && userProfile) {
+    try {
+      //eslint-disable-next-line
+      const { access_token } = tokenResponse;
+      const { sub, name, picture, email } = userProfile;
+      const preexistingUser = findUser(email);
+      if (!preexistingUser) {
+        const newUser = createUser(
+          Number(sub),
+          sub,
+          name,
+          "",
+          email,
+          picture,
+          true
+        );
+        users.push(newUser);
+        //eslint-disable-next-line
+        createCookie(res, access_token, true);
+      }
+    } catch {
+      return res.status(403).send("Error receiving access token.");
+    }
   }
 });
 
 app.post("/api/auth/logout", async (req: Request, res: Response) => {
-  res.clearCookie("accessToken");
-  res.send(204);
+  res.send(204).clearCookie("accessToken");
 });
 
 app.use(express.static(path.join(__dirname, "public")));

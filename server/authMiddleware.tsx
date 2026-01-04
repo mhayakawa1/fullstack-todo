@@ -2,32 +2,44 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
 import "dotenv/config";
+import { OAuth2Client } from "google-auth-library";
+const client = new OAuth2Client();
 const secret = process.env.CLIENT_SECRET;
 
 interface UserPayload extends JwtPayload {
   id: string | number;
+  isGoogleAccount: boolean;
 }
 
-function checkAuthorization(
+async function checkAuthorization(
   req: Request & { user?: object },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) {
-  const token = req.cookies.accessToken;
-  const errorResult = () => {
-    return res.status(403).send("User not verified.");
-  };
-  if (!token) {
-    errorResult();
+  const { accessToken } = req.cookies;
+  if (!accessToken) {
+    return res.status(403).send({ message: "Invalid access token." });
   }
-  if (token && secret) {
-    try {
-      const user = jwt.verify(token, secret) as UserPayload;
-      req.user = user;
+  const { token, isGoogleAccount } = req.cookies.accessToken;
+  try {
+    if (token && secret) {
+      if (isGoogleAccount) {
+        const tokenInfo = await client.getTokenInfo(token);
+        if (tokenInfo) {
+          // eslint-disable-next-line
+          const { sub, expiry_date } = tokenInfo;
+          // eslint-disable-next-line
+          const user = { id: sub, iat: "", exp: expiry_date };
+          req.user = user;
+        }
+      } else {
+        const user = jwt.verify(token, secret) as UserPayload;
+        req.user = user;
+      }
       next();
-    } catch {
-      errorResult();
     }
+  } catch {
+    return res.status(403).send("User not verified.");
   }
 }
 

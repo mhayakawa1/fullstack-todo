@@ -13,9 +13,32 @@ interface FormProps {
 }
 
 interface Body {
-  email: string;
+  email?: string;
   name?: string;
-  password: string;
+  password?: string;
+  tokenResponse?: {
+    //eslint-disable-next-line
+    access_token: string;
+    authuser?: string;
+    //eslint-disable-next-line
+    expires_in: number;
+    prompt: string;
+    scope: string;
+    //eslint-disable-next-line
+    token_type: string;
+  };
+  userProfile?: {
+    email: string;
+    //eslint-disable-next-line
+    email_verified: boolean;
+    //eslint-disable-next-line
+    family_name: string;
+    //eslint-disable-next-line
+    given_name: string;
+    name: string;
+    picture: string;
+    sub: string;
+  };
 }
 
 export default function Form(props: FormProps) {
@@ -58,6 +81,8 @@ export default function Form(props: FormProps) {
       })
       .then((data) => {
         if (data.message === "Cookie sent.") {
+          //eslint-disable-next-line
+          console.clear();
           navigate("/dashboard");
         }
         if (data.message === "User registered.") {
@@ -84,12 +109,32 @@ export default function Form(props: FormProps) {
     }
   };
 
+  async function getUserProfile(accessToken: string) {
+    const response = await fetch(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const data = await response.json();
+    return data;
+  }
+
   const loginWithGoogle = useGoogleLogin({
-    flow: "auth-code",
-    // eslint-disable-next-line
-    ux_mode: "redirect",
-    // eslint-disable-next-line
-    redirect_uri: "http://localhost:3000/dashboard",
+    onSuccess: async (tokenResponse) => {
+      //eslint-disable-next-line
+      const { access_token } = tokenResponse;
+      //eslint-disable-next-line
+      const userProfile = await getUserProfile(access_token);
+      if (userProfile) {
+        makeRequest(
+          { tokenResponse: tokenResponse, userProfile: userProfile },
+          "google/callback"
+        );
+      }
+    },
   });
 
   const toLogin = () => {
