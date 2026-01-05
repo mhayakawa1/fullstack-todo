@@ -37,13 +37,13 @@ app.use(
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  })
+  }),
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -62,17 +62,15 @@ const router = express.Router();
 router.use(checkAuthorization);
 
 function createUser(
-  id: number,
-  userId: string,
+  id: string,
   name: string,
   password: string,
   email: string,
   picture: string,
-  isGoogleAccount: boolean
+  isGoogleAccount: boolean,
 ) {
   return {
     id: id,
-    userId: userId,
     name: name,
     password: password,
     email: email,
@@ -82,23 +80,22 @@ function createUser(
 }
 
 interface User {
-  id: number;
-  userId: string;
+  id: string;
   name: string;
   password: string;
   email: string;
   picture: string;
+  isGoogleAccount: boolean;
 }
 
 const users: User[] = [
   createUser(
-    1,
-    "userId",
+    "1",
     "First Last",
     "asdfghjkl",
     "email@email.com",
     "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
-    false
+    false,
   ),
 ];
 
@@ -110,7 +107,7 @@ function createTodo(
   status: string,
   dueDate: string,
   createdAt: string,
-  updatedAt: string
+  updatedAt: string,
 ) {
   return {
     id: id,
@@ -133,7 +130,7 @@ const todos = [
     "complete",
     "2025-11-18T00:05:56.330Z",
     "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z"
+    "2025-11-18T00:05:56.330Z",
   ),
   createTodo(
     2,
@@ -143,7 +140,7 @@ const todos = [
     "incomplete",
     "2025-11-22T01:43:16.000Z",
     "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z"
+    "2025-11-22T01:45:00.889Z",
   ),
   createTodo(
     3,
@@ -153,7 +150,7 @@ const todos = [
     "incomplete",
     "2025-11-24T00:46:52.757Z",
     "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z"
+    "2025-11-24T00:55:10.616Z",
   ),
 ];
 
@@ -207,7 +204,7 @@ app.post("/api/todos", checkAuthorization, (req: Request, res: Response) => {
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt
+      data.updatedAt,
     );
     todos.unshift(newTodo);
     res.status(201).json(newTodo);
@@ -225,7 +222,6 @@ app.patch(
     const data = req.body;
     if (
       data.id &&
-      data.userId &&
       data.title &&
       data.description &&
       data.status &&
@@ -236,7 +232,6 @@ app.patch(
       const todo = todos.find((element) => element.id == id);
       if (todo) {
         todo.id = data.id;
-        todo.userId = data.userId;
         todo.title = data.title;
         todo.description = data.description;
         todo.status = data.status;
@@ -250,7 +245,7 @@ app.patch(
     } else {
       res.status(400).send("Invalid data");
     }
-  }
+  },
 );
 
 app.delete(
@@ -265,16 +260,13 @@ app.delete(
       todos.splice(index, 1);
       return res.status(204).json({ message: "Item deleted." });
     }
-  }
+  },
 );
 
 app.get(
   "/api/userInfo",
   checkAuthorization,
-  (
-    req: Request & { user?: object & { id?: string | number } },
-    res: Response
-  ) => {
+  (req: Request & { user?: object & { id?: string } }, res: Response) => {
     const { user } = req;
     if (user) {
       const { id } = user;
@@ -285,7 +277,7 @@ app.get(
     } else {
       res.status(404).send("User not found");
     }
-  }
+  },
 );
 
 app.post("/api/auth/signup", async (req: Request, res: Response) => {
@@ -293,15 +285,14 @@ app.post("/api/auth/signup", async (req: Request, res: Response) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const preexistingUser = users.find((user) => user.email === email);
   if (!preexistingUser) {
-    const idNumber = Math.max(...todos.map((user) => Number(user.id))) + 1;
+    const uuid = crypto.randomUUID();
     const newUser = createUser(
-      idNumber,
-      `userId${idNumber}`,
+      uuid,
       name,
       hashedPassword,
       email,
       "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
-      false
+      false,
     );
     users.push(newUser);
     res.status(201).json({ message: "User registered." });
@@ -314,8 +305,14 @@ function findUser(email: string) {
   return users.find((element) => element.email === email);
 }
 
-function createCookie(res: Response, token: string, isGoogleAccount: boolean) {
+function createCookie(
+  res: Response,
+  id: string,
+  token: string,
+  isGoogleAccount: boolean,
+) {
   const tokenInfo = {
+    id: id,
     token: token,
     isGoogleAccount: isGoogleAccount,
   };
@@ -325,7 +322,7 @@ function createCookie(res: Response, token: string, isGoogleAccount: boolean) {
     sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000,
   });
-  res.send(200).json({ message: "Cookie sent." });
+  return res.send(200);
 }
 
 app.post("/api/auth/login", async (req: Request, res: Response) => {
@@ -340,7 +337,7 @@ app.post("/api/auth/login", async (req: Request, res: Response) => {
       return res.status(201).json({ message: "Invalid credentials" });
     }
     const token = jwt.sign({ id }, secret, { expiresIn: "24h" });
-    createCookie(res, token, false);
+    createCookie(res, id, token, false);
   }
 });
 
@@ -350,22 +347,18 @@ app.post("/api/auth/google/callback", async (req: Request, res: Response) => {
     try {
       //eslint-disable-next-line
       const { access_token } = tokenResponse;
-      const { sub, name, picture, email } = userProfile;
+      const { name, picture, email } = userProfile;
       const preexistingUser = findUser(email);
+      const uuid = crypto.randomUUID();
+      let id;
       if (!preexistingUser) {
-        const newUser = createUser(
-          Number(sub),
-          sub,
-          name,
-          "",
-          email,
-          picture,
-          true
-        );
+        const newUser = createUser(uuid, name, "", email, picture, true);
         users.push(newUser);
         //eslint-disable-next-line
-        createCookie(res, access_token, true);
+      } else {
+        id = preexistingUser.id;
       }
+      createCookie(res, id || uuid, access_token, true);
     } catch {
       return res.status(403).send("Error receiving access token.");
     }
@@ -373,7 +366,8 @@ app.post("/api/auth/google/callback", async (req: Request, res: Response) => {
 });
 
 app.post("/api/auth/logout", async (req: Request, res: Response) => {
-  res.send(204).clearCookie("accessToken");
+  res.clearCookie("accessToken");
+  res.send(204);
 });
 
 app.use(express.static(path.join(__dirname, "public")));

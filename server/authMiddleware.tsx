@@ -14,22 +14,22 @@ interface UserPayload extends JwtPayload {
 async function checkAuthorization(
   req: Request & { user?: object },
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { accessToken } = req.cookies;
   if (!accessToken) {
     return res.status(403).send({ message: "Invalid access token." });
   }
-  const { token, isGoogleAccount } = req.cookies.accessToken;
+  const { id, token, isGoogleAccount } = req.cookies.accessToken;
   try {
     if (token && secret) {
       if (isGoogleAccount) {
         const tokenInfo = await client.getTokenInfo(token);
         if (tokenInfo) {
           // eslint-disable-next-line
-          const { sub, expiry_date } = tokenInfo;
+          const { expiry_date } = tokenInfo;
           // eslint-disable-next-line
-          const user = { id: sub, iat: "", exp: expiry_date };
+          const user = { id: id, iat: "", exp: expiry_date };
           req.user = user;
         }
       } else {

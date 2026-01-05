@@ -80,7 +80,7 @@ export default function Form(props: FormProps) {
         return response.json();
       })
       .then((data) => {
-        if (data.message === "Cookie sent.") {
+        if (data === 200) {
           //eslint-disable-next-line
           console.clear();
           navigate("/dashboard");
@@ -116,7 +116,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
     const data = await response.json();
     return data;
@@ -131,7 +131,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback"
+          "google/callback",
         );
       }
     },
