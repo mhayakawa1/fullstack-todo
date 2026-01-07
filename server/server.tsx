@@ -2,10 +2,8 @@ import { Request, Response } from "express";
 import bodyParser from "body-parser";
 import express from "express";
 import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken";
 import cors from "cors";
 import path from "node:path";
-import bcrypt from "bcryptjs";
 import fs from "fs";
 import https from "https";
 import helmet from "helmet";
@@ -21,7 +19,6 @@ import signupRouter from "./api/auth/signup";
 import loginRouter from "./api/auth/login";
 import googleRouter from "./api/auth/google";
 import logoutRouter from "./api/auth/logout";
-const secret = process.env.CLIENT_SECRET;
 const app = express();
 const port = 8080;
 
@@ -46,13 +43,13 @@ app.use(
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  })
+  }),
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -69,190 +66,6 @@ app.use(cookieParser());
 
 const router = express.Router();
 router.use(checkAuthorization);
-
-function createTodo(
-  id: number | string,
-  userId: string,
-  title: string,
-  description: string,
-  status: string,
-  dueDate: string,
-  createdAt: string,
-  updatedAt: string
-) {
-  return {
-    id: id,
-    userId: userId,
-    title: title,
-    description: description,
-    status: status,
-    dueDate: dueDate,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-  };
-}
-{
-  /*
-const todos = [
-  createTodo(
-    1,
-    "userId1",
-    "Grocery Shopping",
-    "Bread, eggs, milk, tomatoes, lettuce",
-    "complete",
-    "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z",
-    "2025-11-18T00:05:56.330Z"
-  ),
-  createTodo(
-    2,
-    "userId1",
-    "Make Dinner",
-    "Pasta, salad, tea",
-    "incomplete",
-    "2025-11-22T01:43:16.000Z",
-    "2025-11-22T01:45:00.889Z",
-    "2025-11-22T01:45:00.889Z"
-  ),
-  createTodo(
-    3,
-    "userId1",
-    "Chores",
-    "Laundry, dishes",
-    "incomplete",
-    "2025-11-24T00:46:52.757Z",
-    "2025-11-24T00:55:10.616Z",
-    "2025-11-24T00:55:10.616Z"
-  ),
-];
-*/
-}
-{
-  /*function sort(value: string) {
-  let newTodos = [...todos];
-  if (value === "complete") {
-    newTodos = [...todos.filter((todo) => todo.status === "complete")];
-  } else if (value === "incomplete") {
-    newTodos = [...todos.filter((todo) => !(todo.status === "complete"))];
-  } else if (value.includes("created")) {
-    newTodos = [...todos.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))];
-  } else if (value.includes("due")) {
-    newTodos = [...todos.sort((a, b) => (a.dueDate > b.dueDate ? 1 : -1))];
-  }
-  if (value.includes("descending")) {
-    newTodos.reverse();
-  }
-  return newTodos;
-}
-
-app.get("/api/todos", checkAuthorization, (req: Request, res: Response) => {
-  return res.status(200).json(todos);
-});
-*/
-}
-{
-  /*
-app.get("/api/todos/:id", checkAuthorization, (req: Request, res: Response) => {
-  const id = req.params.id;
-  const todo = todos.find((element) => element.id == id);
-  if (todo) {
-    res.status(200).json(todo);
-  } else {
-    res.status(404).send("Todo not found");
-  }
-});
-*/
-}
-{
-  /*
-app.post("/api/todos", checkAuthorization, (req: Request, res: Response) => {
-  app.use(express.json());
-  const data = req.body;
-  if (
-    data.id &&
-    data.userId &&
-    data.title &&
-    data.description &&
-    data.status &&
-    data.dueDate &&
-    data.createdAt &&
-    data.updatedAt
-  ) {
-    const newTodo = createTodo(
-      data.id,
-      data.userId,
-      data.title,
-      data.description,
-      data.status,
-      data.dueDate,
-      data.createdAt,
-      data.updatedAt
-    );
-    todos.unshift(newTodo);
-    res.status(201).json(newTodo);
-  } else {
-    res.status(400).send("Invalid data");
-  }
-});
-*/
-}
-
-{
-  /*
-app.patch(
-  "/api/todos/:id",
-  checkAuthorization,
-  (req: Request, res: Response) => {
-    app.use(express.json());
-    const id = JSON.parse(JSON.stringify(req.params)).id;
-    const data = req.body;
-    if (
-      data.id &&
-      data.userId &&
-      data.title &&
-      data.description &&
-      data.status &&
-      data.dueDate &&
-      data.createdAt &&
-      data.updatedAt
-    ) {
-      const todo = todos.find((element) => element.id == id);
-      if (todo) {
-        todo.id = data.id;
-        todo.userId = data.userId;
-        todo.title = data.title;
-        todo.description = data.description;
-        todo.status = data.status;
-        todo.dueDate = data.dueDate;
-        todo.createdAt = data.createdAt;
-        todo.updatedAt = data.updatedAt;
-        res.status(200).json(todo);
-      } else {
-        res.status(404).send("Todo not found");
-      }
-    } else {
-      res.status(400).send("Invalid data");
-    }
-  }
-);*/
-}
-{
-  /*
-app.delete(
-  "/api/todos/:id",
-  checkAuthorization,
-  (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const index = todos.findIndex((element) => element.id === id);
-    if (index === -1) {
-      return res.status(404).send("Data not found");
-    } else {
-      todos.splice(index, 1);
-      return res.status(202).json({ message: "Item deleted." });
-    }
-  }
-);*/
-}
 
 app.use("/api/todos", todosRouter);
 app.use("/api/todos", todoRouter);

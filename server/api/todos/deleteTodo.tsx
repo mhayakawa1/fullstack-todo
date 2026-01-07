@@ -15,7 +15,7 @@ deleteTodoRouter.delete(
       todos.splice(index, 1);
       return res.status(204);
     }
-  }
+  },
 );
 
 export default deleteTodoRouter;
