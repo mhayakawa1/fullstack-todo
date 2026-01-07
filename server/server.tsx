@@ -32,9 +32,9 @@ const allowedOrigins = [
   "https://fullstack-todo-kappa.vercel.app/",
 ];
 
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -42,6 +42,7 @@ app.use(
         "connect-src": ["'self'", "https://localhost:8080"],
       },
     },
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
   }),
 );

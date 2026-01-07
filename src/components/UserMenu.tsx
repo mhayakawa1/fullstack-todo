@@ -24,16 +24,18 @@ function UserIcon(props: { picture: string; className: string }) {
   );
 }
 
+const emptyUserData = {
+  email: "",
+  emailVerified: false,
+  name: "",
+  picture: "",
+};
+
 export default function UserMenu() {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const [userInfo, setUserInfo] = useState({
-    email: "",
-    emailVerified: false,
-    name: "",
-    picture: "",
-  });
+  const [userInfo, setUserInfo] = useState(emptyUserData);
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
@@ -56,13 +58,19 @@ export default function UserMenu() {
         return response.json();
       })
       .then((data) => {
-        const newUserInfo = userInfo;
-        newUserInfo.email = data.email;
-        newUserInfo.name = data.name;
-        setUserInfo(newUserInfo);
+        if (data) {
+          const newUserInfo = userInfo;
+          newUserInfo.email = data.email;
+          newUserInfo.name = data.name;
+          newUserInfo.picture = data.picture;
+          newUserInfo.emailVerified = true;
+          setUserInfo(newUserInfo);
+        }
       })
-      .catch((error) => {
-        throw new Error(`HTTP error! status: ${error.message}`);
+      .catch(() => {
+        //eslint-disable-next-line
+        console.clear();
+        setUserInfo(emptyUserData);
       });
   }, []);
 
@@ -92,32 +100,8 @@ export default function UserMenu() {
   }
 
   useEffect(() => {
-    const storageItem = localStorage.getItem("userInfo");
-    if (storageItem) {
-      const { email, emailVerified, name, picture } = JSON.parse(
-        storageItem.replace("email_verified", "emailVerified"),
-      );
-      setUserInfo({
-        email: email,
-        emailVerified: emailVerified,
-        name: name,
-        picture: picture,
-      });
-    }
-    const urlParams = new URLSearchParams(location.search);
-    const code = urlParams.get("code");
     if (location.pathname === "/dashboard") {
       getUserInfo();
-    }
-    if (code) {
-      // eslint-disable-next-line
-      console.log(code);
-    } else {
-      const error = urlParams.get("error");
-      if (error) {
-        // eslint-disable-next-line
-        console.error(error);
-      }
     }
   }, [location.search]);
 

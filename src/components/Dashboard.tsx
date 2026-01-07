@@ -48,9 +48,7 @@ export default function Dashboard() {
         return response.json();
       })
       .then((data) => {
-        if (data.invalidToken) {
-          navigate("/login");
-        } else {
+        if (data) {
           updateArrays(data);
         }
         setErrorVisible(false);
@@ -58,6 +56,11 @@ export default function Dashboard() {
       .catch((error) => {
         if (error.message) {
           setErrorText(error.message);
+          if (error.message.includes("403")) {
+            //eslint-disable-next-line
+            console.clear();
+            navigate("/login");
+          }
         }
         setErrorVisible(true);
       });
@@ -65,24 +68,29 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!todos.length) {
-      makeRequest(`${url}todos`, {
+      makeRequest(`${url}todos?sortBy=date-created-ascending`, {
         method: "GET",
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
     }
   }, [makeRequest, todos.length]);
 
   const sortTodos = (value: string) => {
     setSortValue(value);
-    const sortedUrl =
-      url + value.toLowerCase().replaceAll(" ", "-").replace(/[()]/g, "");
+    const sortedUrl = `
+      ${url}todos?sortBy=${value
+        .toLowerCase()
+        .replaceAll(" ", "-")
+        .replace(/[()]/g, "")}`;
     makeRequest(sortedUrl, { method: "GET", credentials: "include" });
   };
 
   const addTodo = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (title.length) {
-      const newTodos = [...todos];
       const date = new Date();
       const id = Math.max(...todos.map((element) => Number(element.id))) + 1;
       const todoData = {
@@ -95,16 +103,17 @@ export default function Dashboard() {
         updatedAt: date,
         id: id,
       };
-      newTodos.push(todoData);
-      updateArrays(newTodos);
       setTitle("New Task");
       setDueDate(today);
       setDescription("Description");
       setSortValue("Date Created (Ascending)");
-      makeRequest(url, {
+      makeRequest(`${url}todos`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(todoData),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
     }
   };
@@ -140,7 +149,7 @@ export default function Dashboard() {
         const newDisplayTasks = [...sortedTodos];
         newDisplayTasks.splice(newDisplayTasks.indexOf(newTodo), 1);
         setSortedTodos(newDisplayTasks);
-        makeRequest(`${url}${newTodo.id}`, {
+        makeRequest(`${url}todos/${newTodo.id}`, {
           method: "DELETE",
           credentials: "include",
           headers: {
@@ -159,7 +168,7 @@ export default function Dashboard() {
             newTodo.description = description;
           }
         }
-        makeRequest(`${url}${newTodo.id}`, {
+        makeRequest(`${url}todos/${newTodo.id}`, {
           method: "PATCH",
           credentials: "include",
           body: JSON.stringify(newTodo),
