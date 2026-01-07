@@ -43,7 +43,6 @@ app.use(
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
   }),
 );
 
