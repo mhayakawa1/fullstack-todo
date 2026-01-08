@@ -95,4 +95,4 @@ server.listen(port, () => {
   console.log(`Server running at https://localhost:${port}/`);
 });
 
-module.exports = app;
+export default app;
