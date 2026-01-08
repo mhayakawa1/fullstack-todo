@@ -25,7 +25,7 @@ addTodoRouter.post("/", checkAuthorization, (req: Request, res: Response) => {
       data.status,
       data.dueDate,
       data.createdAt,
-      data.updatedAt
+      data.updatedAt,
     );
     todos.unshift(newTodo);
     res.status(201).json(newTodo);

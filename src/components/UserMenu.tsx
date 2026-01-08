@@ -59,7 +59,7 @@ export default function UserMenu() {
       })
       .then((data) => {
         if (data) {
-          const newUserInfo = {...userInfo};
+          const newUserInfo = { ...userInfo };
           newUserInfo.email = data.email;
           newUserInfo.name = data.name;
           newUserInfo.picture = data.picture;
