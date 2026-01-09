@@ -4,7 +4,7 @@ export function createCookie(
   res: Response,
   id: string,
   token: string,
-  isGoogleAccount: boolean
+  isGoogleAccount: boolean,
 ) {
   const tokenInfo = {
     id: id,

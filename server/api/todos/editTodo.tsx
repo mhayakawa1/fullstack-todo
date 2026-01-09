@@ -35,7 +35,7 @@ editTodoRouter.patch(
     } else {
       res.status(400).send("Invalid data");
     }
-  }
+  },
 );
 
 export default editTodoRouter;

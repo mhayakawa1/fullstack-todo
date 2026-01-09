@@ -17,7 +17,7 @@ userInfoRouter.get(
     } else {
       res.status(404).send("User not found");
     }
-  }
+  },
 );
 
 export default userInfoRouter;
