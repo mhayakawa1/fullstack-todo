@@ -44,7 +44,7 @@ export default function UserMenu() {
   };
 
   const getUserInfo = useCallback(async () => {
-    fetch("https://localhost:8080/api/userInfo", {
+    fetch("https://localhost:8080/api/auth/userInfo", {
       method: "GET",
       credentials: "include",
       headers: {
@@ -59,11 +59,12 @@ export default function UserMenu() {
       })
       .then((data) => {
         if (data) {
-          const newUserInfo = userInfo;
+          const newUserInfo = { ...userInfo };
           newUserInfo.email = data.email;
           newUserInfo.name = data.name;
           newUserInfo.picture = data.picture;
           newUserInfo.emailVerified = true;
+          // console.log(data)
           setUserInfo(newUserInfo);
         }
       })
@@ -72,7 +73,7 @@ export default function UserMenu() {
         console.clear();
         setUserInfo(emptyUserData);
       });
-  }, []);
+  }, [userInfo]);
 
   async function handleLogout() {
     googleLogout();

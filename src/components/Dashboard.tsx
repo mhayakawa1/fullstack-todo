@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Todo from "./Todo";
@@ -18,83 +18,119 @@ interface TodoInterface {
   updatedAt: object;
 }
 
-type taskArray = TodoInterface[];
+type TodosArray = TodoInterface[];
+
+interface Options {
+  name: string;
+  params: {
+    status?: string;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  };
+  page?: number;
+  limit?: number;
+}
 
 export default function Dashboard() {
   const today = new Date();
   const url = "https://localhost:8080/api/";
-  const [todos, setTodos] = useState<taskArray>([]);
-  const [sortedTodos, setSortedTodos] = useState<taskArray>([]);
+  const defaultSortValue = {
+    name: "Date Created (Asc)",
+    params: {
+      sortBy: "created",
+      sortOrder: "asc",
+    },
+  };
+  const [todos, setTodos] = useState<TodosArray>([]);
+  const [sortedTodos, setSortedTodos] = useState<TodosArray>([]);
   const [title, setTitle] = useState("New Task");
   const [dueDate, setDueDate] = useState(today);
   const [description, setDescription] = useState("Description");
   const [searchValue, setSearchValue] = useState("");
-  const [sortValue, setSortValue] = useState("Date Created (Ascending)");
+  const [sortOptions, setSortOptions] = useState<Options>(defaultSortValue);
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const todosRef = useRef<TodosArray>([]);
   const navigate = useNavigate();
 
-  const updateArrays = (newTodos: taskArray) => {
+  const updateArrays = (newTodos: TodosArray) => {
     setTodos(newTodos);
     setSortedTodos(newTodos);
+    todosRef.current = newTodos;
   };
 
-  const makeRequest = useCallback(async (url: string, options: RequestInit) => {
-    fetch(url, options)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data) {
-          updateArrays(data);
-        }
-        setErrorVisible(false);
-      })
-      .catch((error) => {
-        if (error.message) {
-          setErrorText(error.message);
-          if (error.message.includes("403")) {
-            //eslint-disable-next-line
-            console.clear();
-            navigate("/login");
+  const makeRequest = useCallback(
+    async (url: string, options: RequestInit, Options: Options | null) => {
+      if (Options && Options.params) {
+        Object.entries(Options.params).forEach((entry, index) => {
+          return (url =
+            url + `${index !== 0 ? "&" : ""}${entry[0]}=${entry[1]}`);
+        });
+      }
+      fetch(url, options)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
-        }
-        setErrorVisible(true);
-      });
-  }, []);
+          return response.json();
+        })
+        .then((data) => {
+          if (options.method === "PATCH") {
+            const newTodos = [...todosRef.current];
+            const index = newTodos.findIndex((todo) => todo.id === data.id);
+            newTodos.splice(index, 10, data);
+            updateArrays(newTodos);
+            setTitle("");
+            setDescription("");
+          } else if (data.items) {
+            updateArrays(data.items);
+          }
+          setErrorVisible(false);
+        })
+        .catch((error) => {
+          if (error.message) {
+            setErrorText(error.message);
+            if (error.message.includes("403")) {
+              //eslint-disable-next-line
+              console.clear();
+              navigate("/login");
+            }
+          }
+          setErrorVisible(true);
+        });
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!todos.length) {
-      makeRequest(`${url}todos?sortBy=date-created-ascending`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      makeRequest(
+        `${url}todos?`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+        defaultSortValue,
+      );
     }
   }, [makeRequest, todos.length]);
 
-  const sortTodos = (value: string) => {
-    setSortValue(value);
-    const sortedUrl = `
-      ${url}todos?sortBy=${value
-        .toLowerCase()
-        .replaceAll(" ", "-")
-        .replace(/[()]/g, "")}`;
-    makeRequest(sortedUrl, { method: "GET", credentials: "include" });
+  const sortTodos = (options: Options) => {
+    setSortOptions(options);
+    const sortedUrl = `${url}todos?`;
+    makeRequest(sortedUrl, { method: "GET", credentials: "include" }, options);
   };
 
   const addTodo = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (title.length) {
       const date = new Date();
-      const id = Math.max(...todos.map((element) => Number(element.id))) + 1;
+      const id = crypto.randomUUID();
       const todoData = {
-        userId: "userId1",
         title: title,
         description: description,
         status: "incomplete",
@@ -106,15 +142,19 @@ export default function Dashboard() {
       setTitle("New Task");
       setDueDate(today);
       setDescription("Description");
-      setSortValue("Date Created (Ascending)");
-      makeRequest(`${url}todos`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(todoData),
-        headers: {
-          "Content-Type": "application/json",
+      setSortOptions(defaultSortValue);
+      makeRequest(
+        `${url}todos`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify(todoData),
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+        null,
+      );
     }
   };
 
@@ -145,17 +185,26 @@ export default function Dashboard() {
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
     if (newTodo !== undefined) {
       if (!newText && newStatus === undefined) {
-        newTodos.splice(newTodos.indexOf(newTodo), 1);
-        const newDisplayTasks = [...sortedTodos];
-        newDisplayTasks.splice(newDisplayTasks.indexOf(newTodo), 1);
-        setSortedTodos(newDisplayTasks);
-        makeRequest(`${url}todos/${newTodo.id}`, {
-          method: "DELETE",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
+        makeRequest(
+          `${url}todos/${newTodo.id}`,
+          {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        });
+          null,
+        )
+          .then(() => {
+            newTodos.splice(newTodos.indexOf(newTodo), 1);
+            const newDisplayTasks = [...sortedTodos];
+            newDisplayTasks.splice(newDisplayTasks.indexOf(newTodo), 1);
+            setSortedTodos(newDisplayTasks);
+          })
+          .catch(() => {
+            setErrorText("Delete unsuccessful");
+          });
       } else {
         if (newStatus !== undefined) {
           newTodo.status = newStatus ? "complete" : "incomplete";
@@ -168,16 +217,21 @@ export default function Dashboard() {
             newTodo.description = description;
           }
         }
-        makeRequest(`${url}todos/${newTodo.id}`, {
-          method: "PATCH",
-          credentials: "include",
-          body: JSON.stringify(newTodo),
-          headers: {
-            "Content-Type": "application/json",
+        const date = new Date();
+        newTodo.updatedAt = date;
+        makeRequest(
+          `${url}todos/${newTodo.id}`,
+          {
+            method: "PATCH",
+            credentials: "include",
+            body: JSON.stringify(newTodo),
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        });
+          null,
+        );
       }
-      setTodos(newTodos);
     }
   };
 
@@ -241,17 +295,17 @@ export default function Dashboard() {
       </div>
       <SearchBar setSearchValue={setSearchValue} />
       <div className="flex flex-col items-center justify-center gap-2 w-[400px] ">
-        <SortDropdown sortValue={sortValue} sortTodos={sortTodos} />
+        <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
         <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
           {sortedTodos.length
             ? sortedTodos
-                .filter((task: TodoInterface) =>
-                  `${task.title} ${task.description}`
+                .filter((todo: TodoInterface) =>
+                  `${todo.title} ${todo.description}`
                     .toLowerCase()
                     .includes(searchValue.toLowerCase()),
                 )
-                .map((task: TodoInterface) => (
-                  <Todo key={task.id} data={task} updateTodos={updateTodos} />
+                .map((todo: TodoInterface) => (
+                  <Todo key={todo.id} data={todo} updateTodos={updateTodos} />
                 ))
             : null}
         </ul>

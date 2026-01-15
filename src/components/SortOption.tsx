@@ -1,7 +1,16 @@
+interface Options {
+  name: string;
+  params: {
+    status?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  };
+}
+
 interface OptionProps {
   index: number;
-  value: string;
-  sortTodos: (value: string) => void;
+  value: Options;
+  sortTodos: (value: Options) => void;
 }
 
 export default function SortOption(props: OptionProps) {
@@ -14,7 +23,7 @@ export default function SortOption(props: OptionProps) {
         } grow w-full h-8 pl-4 pr-8 border-none text-left bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white`}
         onClick={() => sortTodos(value)}
       >
-        <span>{value}</span>
+        <span>{value.name}</span>
       </button>
     </li>
   );

@@ -6,9 +6,8 @@ const addTodoRouter = express.Router();
 addTodoRouter.post("/", checkAuthorization, (req: Request, res: Response) => {
   addTodoRouter.use(express.json());
   const data = req.body;
+  const { id } = req.cookies.accessToken;
   if (
-    data.id &&
-    data.userId &&
     data.title &&
     data.description &&
     data.status &&
@@ -18,7 +17,7 @@ addTodoRouter.post("/", checkAuthorization, (req: Request, res: Response) => {
   ) {
     const newTodo = createTodo(
       data.id,
-      data.userId,
+      id,
       data.title,
       data.description,
       data.status,
@@ -26,8 +25,9 @@ addTodoRouter.post("/", checkAuthorization, (req: Request, res: Response) => {
       data.createdAt,
       data.updatedAt,
     );
-    todos.unshift(newTodo);
-    res.status(201).json(newTodo);
+    const index = todos.findIndex((element) => element.userId === id);
+    todos[index].items.push(newTodo);
+    res.status(201).json(todos[index]);
   } else {
     res.status(400).send("Invalid data");
   }

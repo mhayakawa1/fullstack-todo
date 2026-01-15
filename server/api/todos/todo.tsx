@@ -5,7 +5,7 @@ const todoRouter = express.Router();
 
 todoRouter.get("/:id", checkAuthorization, (req: Request, res: Response) => {
   const id = req.params.id;
-  const todo = todos.find((element) => element.id == id);
+  const todo = todos.find((element) => element.userId == id);
   if (todo) {
     res.status(200).json(todo);
   } else {

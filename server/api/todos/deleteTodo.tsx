@@ -7,12 +7,18 @@ deleteTodoRouter.delete(
   "/:id",
   checkAuthorization,
   (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const index = todos.findIndex((element) => element.id === id);
+    const { id } = req.cookies.accessToken;
+    const todoId = JSON.parse(JSON.stringify(req.params)).id;
+    const index = todos.findIndex((element) => element.userId === id);
+    const newTodos = todos.find((element) => element.userId === id);
+
     if (index === -1) {
       return res.status(404).send("Data not found");
-    } else {
-      todos.splice(index, 1);
+    } else if (newTodos) {
+      const todoIndex = todos[index].items.findIndex(
+        (todo) => todo.id === todoId,
+      );
+      todos[index].items.splice(todoIndex, 1);
       return res.status(204);
     }
   },

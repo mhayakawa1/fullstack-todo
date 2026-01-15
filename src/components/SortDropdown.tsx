@@ -2,22 +2,39 @@ import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import SortOption from "./SortOption";
 
+interface Options {
+  name: string;
+  params: {
+    status?: string;
+    sortBy?: string;
+    sortOrder?: string;
+  };
+  page?: number;
+  limit?: number;
+}
+
 interface DropdownProps {
-  sortValue: string;
-  sortTodos: (value: string) => void;
+  sortOptions: Options;
+  sortTodos: (value: Options) => void;
 }
 
 const options = [
-  "Date Created (Ascending)",
-  "Date Created (Descending)",
-  "Due Date (Ascending)",
-  "Due Date (Descending)",
-  "Incomplete",
-  "Complete",
+  {
+    name: "Date Created (Asc)",
+    params: { sortBy: "createdAt", sortOrder: "asc" },
+  },
+  {
+    name: "Date Created (Desc)",
+    params: { sortBy: "createdAt", sortOrder: "desc" },
+  },
+  { name: "Due Date (Asc)", params: { sortBy: "dueDate", sortOrder: "asc" } },
+  { name: "Due Date (Desc)", params: { sortBy: "dueDate", sortOrder: "desc" } },
+  { name: "Incomplete", params: { status: "incomplete" } },
+  { name: "Complete", params: { status: "complete" } },
 ];
 
 export default function SortDropdown(props: DropdownProps) {
-  const { sortValue, sortTodos } = props;
+  const { sortOptions, sortTodos } = props;
   const [listVisible, setListVisible] = useState(false);
 
   const closeSortOptions = () => {
@@ -32,14 +49,14 @@ export default function SortDropdown(props: DropdownProps) {
         className="flex items-center gap-2 border-none bg-transparent text-white"
         onClick={() => setListVisible((current) => !current)}
       >
-        <span>Sort By: {sortValue}</span>
+        <span>Sort By: {sortOptions.name}</span>
         <FaChevronDown className="text-white" />
       </button>
       {listVisible ? (
         <ul className="absolute bg-white list-none p-0 z-10 rounded-md">
-          {options.map((option: string, index: number) => (
+          {options.map((option: Options, index: number) => (
             <SortOption
-              key={option}
+              key={option.name}
               index={index}
               value={option}
               sortTodos={sortTodos}

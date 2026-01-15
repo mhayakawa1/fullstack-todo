@@ -8,7 +8,8 @@ editTodoRouter.patch(
   checkAuthorization,
   (req: Request, res: Response) => {
     editTodoRouter.use(express.json());
-    const id = JSON.parse(JSON.stringify(req.params)).id;
+    const { id } = req.cookies.accessToken;
+    const todoId = JSON.parse(JSON.stringify(req.params)).id;
     const data = req.body;
     if (
       data.id &&
@@ -19,16 +20,17 @@ editTodoRouter.patch(
       data.createdAt &&
       data.updatedAt
     ) {
-      const todo = todos.find((element) => element.id == id);
-      if (todo) {
-        todo.id = data.id;
-        todo.title = data.title;
-        todo.description = data.description;
-        todo.status = data.status;
-        todo.dueDate = data.dueDate;
-        todo.createdAt = data.createdAt;
-        todo.updatedAt = data.updatedAt;
-        res.status(200).json(todo);
+      const userTodos = todos.find((element) => element.userId == id);
+      if (userTodos) {
+        const todo = userTodos.items.find((element) => element.id === todoId);
+        if (todo) {
+          todo.title = data.title;
+          todo.description = data.description;
+          todo.status = data.status;
+          todo.dueDate = data.dueDate;
+          todo.updatedAt = data.updatedAt;
+          res.status(200).json(todo);
+        }
       } else {
         res.status(404).send("Todo not found");
       }
