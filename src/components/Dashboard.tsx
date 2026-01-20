@@ -109,7 +109,7 @@ export default function Dashboard() {
           setErrorVisible(true);
         });
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        defaultSortValue
+        defaultSortValue,
       );
     }
   }, [makeRequest, todos.length]);
@@ -163,7 +163,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        null
+        null,
       );
     }
   };
@@ -171,7 +171,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const {
       target: { id, value },
@@ -189,7 +189,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -204,7 +204,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null
+          null,
         )
           .then(() => {
             newTodos.splice(newTodos.indexOf(newTodo), 1);
@@ -239,7 +239,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null
+          null,
         );
       }
     }
@@ -261,7 +261,7 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      newSortOptions
+      newSortOptions,
     );
   };
 
@@ -332,7 +332,7 @@ export default function Dashboard() {
                 .filter((todo: TodoInterface) =>
                   `${todo.title} ${todo.description}`
                     .toLowerCase()
-                    .includes(searchValue.toLowerCase())
+                    .includes(searchValue.toLowerCase()),
                 )
                 .map((todo: TodoInterface) => (
                   <Todo key={todo.id} data={todo} updateTodos={updateTodos} />

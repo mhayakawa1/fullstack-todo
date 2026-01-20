@@ -19,7 +19,7 @@ interface TodoProps {
     id: string | number,
     newchecked: boolean | undefined,
     newText: { title: string; description: string } | undefined,
-    newPage: number
+    newPage: number,
   ) => void;
 }
 
@@ -53,10 +53,15 @@ export default function Todo(props: TodoProps) {
   const toggleEdit = () => {
     setDisabled((current) => !current);
     if (!disabled) {
-      updateTodos(id, undefined, {
-        title: newTitle,
-        description: newDescription,
-      }, 1);
+      updateTodos(
+        id,
+        undefined,
+        {
+          title: newTitle,
+          description: newDescription,
+        },
+        1,
+      );
     }
   };
 

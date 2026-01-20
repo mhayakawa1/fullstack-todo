@@ -6,7 +6,7 @@ export function createTodo(
   status: string,
   dueDate: string,
   createdAt: string,
-  updatedAt: string
+  updatedAt: string,
 ) {
   return {
     id: id,
@@ -54,7 +54,7 @@ export const todos = [
         "incomplete",
         "2025-11-24T00:46:52.757Z",
         "2025-11-24T00:55:10.616Z",
-        "2025-11-24T00:55:10.616Z"
+        "2025-11-24T00:55:10.616Z",
       ),
     ],
   },
