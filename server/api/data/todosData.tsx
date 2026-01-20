@@ -20,6 +20,28 @@ export function createTodo(
   };
 }
 
+interface TodoInterface {
+  id: string | number;
+  userId: string;
+  title: string;
+  description: string;
+  status: string;
+  dueDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+type TodosArray = TodoInterface[];
+
+export function paginate(todosList: TodosArray, length: number) {
+  const paginatedTodos = [];
+  for (let i = 0; i < length; i += 2) {
+    const chunk = todosList.slice(i, i + 2);
+    paginatedTodos.push(chunk);
+  }
+  return paginatedTodos;
+}
+
 export const todos = [
   {
     userId: "userId1",

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Todo from "./Todo";
 import TodoContainer from "./TodoContainer";
+import ListButtons from "./ListButtons";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 import CharacterCounter from "./CharacterCounter";
@@ -27,9 +28,9 @@ interface Options {
     search?: string;
     sortBy?: string;
     sortOrder?: string;
+    page?: number;
+    limit?: number;
   };
-  page?: number;
-  limit?: number;
 }
 
 export default function Dashboard() {
@@ -40,6 +41,7 @@ export default function Dashboard() {
     params: {
       sortBy: "created",
       sortOrder: "asc",
+      page: 1,
     },
   };
   const [todos, setTodos] = useState<TodosArray>([]);
@@ -51,6 +53,8 @@ export default function Dashboard() {
   const [sortOptions, setSortOptions] = useState<Options>(defaultSortValue);
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
   const todosRef = useRef<TodosArray>([]);
   const navigate = useNavigate();
 
@@ -61,14 +65,14 @@ export default function Dashboard() {
   };
 
   const makeRequest = useCallback(
-    async (url: string, options: RequestInit, Options: Options | null) => {
-      if (Options && Options.params) {
-        Object.entries(Options.params).forEach((entry, index) => {
+    async (url: string, request: RequestInit, options: Options | null) => {
+      if (options && options.params) {
+        Object.entries(options.params).forEach((entry, index) => {
           return (url =
             url + `${index !== 0 ? "&" : ""}${entry[0]}=${entry[1]}`);
         });
       }
-      fetch(url, options)
+      fetch(url, request)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -76,15 +80,20 @@ export default function Dashboard() {
           return response.json();
         })
         .then((data) => {
-          if (options.method === "PATCH") {
+          const { items, total } = data;
+          if (request.method === "PATCH") {
             const newTodos = [...todosRef.current];
             const index = newTodos.findIndex((todo) => todo.id === data.id);
-            newTodos.splice(index, 10, data);
+            newTodos.splice(index, 1, data);
             updateArrays(newTodos);
-            setTitle("");
-            setDescription("");
-          } else if (data.items) {
-            updateArrays(data.items);
+            setTitle("New Task");
+            setDescription("Description");
+          } else if (items) {
+            setPage(data.page);
+            if (total) {
+              setTotal(Math.ceil(data.total / 2));
+            }
+            updateArrays(items);
           }
           setErrorVisible(false);
         })
@@ -100,7 +109,7 @@ export default function Dashboard() {
           setErrorVisible(true);
         });
     },
-    [],
+    []
   );
 
   useEffect(() => {
@@ -114,12 +123,13 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        defaultSortValue,
+        defaultSortValue
       );
     }
   }, [makeRequest, todos.length]);
 
   const sortTodos = (options: Options) => {
+    options.params.page = 1;
     setSortOptions(options);
     const sortedUrl = `${url}todos?`;
     makeRequest(sortedUrl, { method: "GET", credentials: "include" }, options);
@@ -153,7 +163,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        null,
+        null
       );
     }
   };
@@ -161,7 +171,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -179,7 +189,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -194,7 +204,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null,
+          null
         )
           .then(() => {
             newTodos.splice(newTodos.indexOf(newTodo), 1);
@@ -229,10 +239,30 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null,
+          null
         );
       }
     }
+  };
+
+  const updatePage = (isLeft: boolean) => {
+    const sortedUrl = `${url}todos?`;
+    let newPage = page;
+    if (isLeft && page !== 1) {
+      newPage -= 1;
+      setPage(newPage);
+    } else if (!isLeft && page < total) {
+      newPage += 1;
+      setPage(newPage);
+    }
+    const newSortOptions = { ...sortOptions };
+    newSortOptions.params.page = newPage;
+    setSortOptions(sortOptions);
+    makeRequest(
+      sortedUrl,
+      { method: "GET", credentials: "include" },
+      newSortOptions
+    );
   };
 
   return (
@@ -302,13 +332,16 @@ export default function Dashboard() {
                 .filter((todo: TodoInterface) =>
                   `${todo.title} ${todo.description}`
                     .toLowerCase()
-                    .includes(searchValue.toLowerCase()),
+                    .includes(searchValue.toLowerCase())
                 )
                 .map((todo: TodoInterface) => (
                   <Todo key={todo.id} data={todo} updateTodos={updateTodos} />
                 ))
             : null}
         </ul>
+        {sortedTodos.length ? (
+          <ListButtons page={page} total={total} updatePage={updatePage} />
+        ) : null}
       </div>
     </main>
   );

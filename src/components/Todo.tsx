@@ -19,6 +19,7 @@ interface TodoProps {
     id: string | number,
     newchecked: boolean | undefined,
     newText: { title: string; description: string } | undefined,
+    newPage: number
   ) => void;
 }
 
@@ -55,7 +56,7 @@ export default function Todo(props: TodoProps) {
       updateTodos(id, undefined, {
         title: newTitle,
         description: newDescription,
-      });
+      }, 1);
     }
   };
 
@@ -81,7 +82,7 @@ export default function Todo(props: TodoProps) {
                 <label className="flex items-center cursor-pointer relative">
                   <input
                     type="checkbox"
-                    onChange={() => updateTodos(id, !checked, undefined)}
+                    onChange={() => updateTodos(id, !checked, undefined, 1)}
                     checked={checked}
                     className="peer w-6 h-6 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border bg-white"
                     id="check"
@@ -131,7 +132,7 @@ export default function Todo(props: TodoProps) {
             {disabled ? "Edit" : "Save"}
           </button>
           <button
-            onClick={() => updateTodos(id, undefined, undefined)}
+            onClick={() => updateTodos(id, undefined, undefined, 1)}
             className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white"
           >
             Delete
