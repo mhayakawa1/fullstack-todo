@@ -23,6 +23,7 @@ googleRouter.post("/google/callback", async (req: Request, res: Response) => {
       }
       //eslint-disable-next-line
       createCookie(res, id || uuid, access_token, true);
+      return res.status(200);
     } catch {
       return res.status(403).send("Error receiving access token.");
     }

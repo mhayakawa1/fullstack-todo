@@ -42,5 +42,4 @@ async function checkAuthorization(
     return res.status(403).send("User not verified.");
   }
 }
-
 export default checkAuthorization;

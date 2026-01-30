@@ -20,7 +20,7 @@ export function createTodo(
   };
 }
 
-interface TodoInterface {
+export interface TodoInterface {
   id: string | number;
   userId: string;
   title: string;

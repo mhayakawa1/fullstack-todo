@@ -94,3 +94,5 @@ server.listen(port, () => {
   //eslint-disable-next-line
   console.log(`Server running at https://localhost:${port}/`);
 });
+
+export default app;

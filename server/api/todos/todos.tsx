@@ -4,15 +4,17 @@ import checkAuthorization from "../../authMiddleware";
 const todosRouter = express.Router();
 
 todosRouter.get("/", checkAuthorization, (req: Request, res: Response) => {
+  if (!req.cookies.accessToken) {
+    return res.status(401).json({ message: "Access denied." });
+  }
   const query = JSON.parse(JSON.stringify(req.query));
   const { status, sortBy, sortOrder, page } = query;
   const { id } = req.cookies.accessToken;
   const userTodos = todos.find((element) => element.userId === id);
-
   if (userTodos) {
     const { items } = userTodos;
     let newTodos = [...items];
-    if (items.length) {
+    if (items && items.length) {
       if (status === "incomplete") {
         newTodos = [...newTodos.filter((todo) => todo.status === "incomplete")];
       } else if (status === "complete") {
