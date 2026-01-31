@@ -97,7 +97,7 @@ describe("GET /api/todos", () => {
         page: 1,
         limit: 2,
         total: expect.any(Number),
-      }),
+      })
     );
     expect(response.body.items[0]).toEqual(
       expect.objectContaining({
@@ -109,12 +109,12 @@ describe("GET /api/todos", () => {
         dueDate: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      }),
+      })
     );
     expect(
       response.body.items.every(
-        (item: TodoInterface) => item.userId === userInfo.id,
-      ),
+        (item: TodoInterface) => item.userId === userInfo.id
+      )
     ).toEqual(true);
   });
 
@@ -155,7 +155,7 @@ describe("POST /api/todos", () => {
         page: 1,
         limit: 2,
         total: expect.any(Number),
-      }),
+      })
     );
     expect(response.body.items[0]).toEqual(
       expect.objectContaining({
@@ -167,8 +167,39 @@ describe("POST /api/todos", () => {
         dueDate: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      }),
+      })
     );
     expect(response.status).toEqual(201);
+  });
+});
+
+describe("GET /api/todos/:id", () => {
+  it("should fetch todo belonging to the user", async () => {
+    const response = await request(app)
+      .get(`/api/todos/${3}`)
+      .set("Cookie", `accessToken=${cookieValue}`);
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: expect.any(Number),
+        userId: userInfo.id,
+        title: expect.any(String),
+        description: expect.any(String),
+        status: expect.any(String),
+        dueDate: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      })
+    );
+  });
+
+  it("should prevent user from accessing others' todo", async () => {
+    const response = await request(app)
+      .get("/api/todos/:id")
+      .query({
+        id: "123",
+      })
+      .set("Cookie", `accessToken=${cookieValue}`);
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Todo not found.");
   });
 });

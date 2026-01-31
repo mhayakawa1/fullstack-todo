@@ -6,7 +6,7 @@ export function createTodo(
   status: string,
   dueDate: string,
   createdAt: string,
-  updatedAt: string,
+  updatedAt: string
 ) {
   return {
     id: id,
@@ -47,6 +47,16 @@ export const todos = [
     userId: "userId1",
     items: [
       createTodo(
+        2,
+        "userId1",
+        "Grocery Shopping",
+        "Bread, milk, apples",
+        "incomplete",
+        "2025-11-24T00:46:52.757Z",
+        "2025-11-24T00:55:10.616Z",
+        "2025-11-24T00:55:10.616Z"
+      ),
+      createTodo(
         3,
         "userId1",
         "Chores",
@@ -54,7 +64,22 @@ export const todos = [
         "incomplete",
         "2025-11-24T00:46:52.757Z",
         "2025-11-24T00:55:10.616Z",
+        "2025-11-24T00:55:10.616Z"
+      ),
+    ],
+  },
+  {
+    userId: "userId2",
+    items: [
+      createTodo(
+        "123",
+        "userId2",
+        "Jobhunting",
+        "Resume revision, networking, company research",
+        "incomplete",
+        "2025-11-24T00:46:52.757Z",
         "2025-11-24T00:55:10.616Z",
+        "2025-11-24T00:55:10.616Z"
       ),
     ],
   },
