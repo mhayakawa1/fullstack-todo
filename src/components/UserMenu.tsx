@@ -103,7 +103,7 @@ export default function UserMenu() {
     if (location.pathname === "/dashboard") {
       getUserInfo();
     }
-  }, [location.search]);
+  }, [location.search, location.pathname, getUserInfo]);
 
   return (
     <div tabIndex={0} onBlur={closeMenu} className="relative">
