@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import Todo from "./Todo";
@@ -36,14 +36,18 @@ interface Options {
 export default function Dashboard() {
   const today = new Date();
   const url = "https://localhost:8080/api/";
-  const defaultSortValue = {
-    name: "Date Created (Asc)",
-    params: {
-      sortBy: "created",
-      sortOrder: "asc",
-      page: 1,
-    },
-  };
+  const defaultSortValue = useMemo(
+    () => ({
+      name: "Date Created (Asc)",
+      params: {
+        sortBy: "created",
+        sortOrder: "asc",
+        page: 1,
+      },
+    }),
+    []
+  );
+  const [initialRender, setInitialRender] = useState(true);
   const [todos, setTodos] = useState<TodosArray>([]);
   const [sortedTodos, setSortedTodos] = useState<TodosArray>([]);
   const [title, setTitle] = useState("New Task");
@@ -108,11 +112,11 @@ export default function Dashboard() {
           setErrorVisible(true);
         });
     },
-    [navigate],
+    [navigate]
   );
 
   useEffect(() => {
-    if (!todos.length) {
+    if (initialRender) {
       makeRequest(
         `${url}todos?`,
         {
@@ -122,10 +126,11 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        defaultSortValue,
+        defaultSortValue
       );
+      setInitialRender(false);
     }
-  }, [makeRequest, todos.length, navigate, defaultSortValue]);
+  }, [makeRequest, todos.length, navigate, defaultSortValue, initialRender]);
 
   const sortTodos = (options: Options) => {
     options.params.page = 1;
@@ -162,7 +167,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        null,
+        null
       );
     }
   };
@@ -170,7 +175,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -188,7 +193,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -203,7 +208,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null,
+          null
         )
           .then(() => {
             newTodos.splice(newTodos.indexOf(newTodo), 1);
@@ -238,7 +243,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null,
+          null
         );
       }
     }
@@ -260,13 +265,13 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      newSortOptions,
+      newSortOptions
     );
   };
 
   const searchTodos = (
     event: React.FormEvent<HTMLFormElement>,
-    input: string,
+    input: string
   ) => {
     event.preventDefault();
     const sortedUrl = `${url}todos?search=${input}&`;
@@ -274,7 +279,7 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      sortOptions,
+      sortOptions
     );
     // setSearchValue(input);
   };

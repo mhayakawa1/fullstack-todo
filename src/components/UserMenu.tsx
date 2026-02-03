@@ -64,7 +64,6 @@ export default function UserMenu() {
           newUserInfo.name = data.name;
           newUserInfo.picture = data.picture;
           newUserInfo.emailVerified = true;
-          // console.log(data)
           setUserInfo(newUserInfo);
         }
       })
