@@ -17,7 +17,7 @@ todosRouter.get("/", checkAuthorization, (req: Request, res: Response) => {
     if (items && items.length) {
       if (search) {
         newTodos = newTodos.filter((todo) =>
-          `${todo.title} ${todo.description}`.toLowerCase().includes(search)
+          `${todo.title} ${todo.description}`.toLowerCase().includes(search),
         );
       }
       if (status === "incomplete") {

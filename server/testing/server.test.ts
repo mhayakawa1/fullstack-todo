@@ -97,7 +97,7 @@ describe("GET /api/todos", () => {
         page: 1,
         limit: 2,
         total: expect.any(Number),
-      })
+      }),
     );
     expect(response.body.items[0]).toEqual(
       expect.objectContaining({
@@ -109,12 +109,12 @@ describe("GET /api/todos", () => {
         dueDate: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      })
+      }),
     );
     expect(
       response.body.items.every(
-        (item: TodoInterface) => item.userId === userInfo.id
-      )
+        (item: TodoInterface) => item.userId === userInfo.id,
+      ),
     ).toEqual(true);
   });
 
@@ -155,7 +155,7 @@ describe("POST /api/todos", () => {
         page: 1,
         limit: 2,
         total: expect.any(Number),
-      })
+      }),
     );
     expect(response.body.items[0]).toEqual(
       expect.objectContaining({
@@ -167,7 +167,7 @@ describe("POST /api/todos", () => {
         dueDate: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      })
+      }),
     );
     expect(response.status).toEqual(201);
   });
@@ -188,7 +188,7 @@ describe("GET /api/todos/:id", () => {
         dueDate: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      })
+      }),
     );
   });
 

@@ -4,7 +4,7 @@ export function createUser(
   password: string,
   email: string,
   picture: string,
-  isGoogleAccount: boolean
+  isGoogleAccount: boolean,
 ) {
   return {
     id: id,
@@ -32,7 +32,7 @@ const users: User[] = [
     "$2a$12$gW5TayKOvi5rE9ll6LSE4eGnxrdXkacc6R8dQFPqPQ40/TRXaZTfO",
     "email@email.com",
     "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
-    false
+    false,
   ),
   createUser(
     "49d41bdb-3da6-43f0-a623-ced157e777df",
