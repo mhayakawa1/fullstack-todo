@@ -2,28 +2,33 @@ import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 
 interface SearchProps {
-  setSearchValue: (input: string) => void;
+  searchTodos: (event: React.FormEvent<HTMLFormElement>, input: string) => void;
 }
 
 export default function SearchBar(props: SearchProps) {
-  const { setSearchValue } = props;
+  const { searchTodos } = props;
   const [input, setInput] = useState("");
   const [debouncedValue, setDebouncedValue] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    setInput(event.target.value);
+    setInput(event.target.value.toLowerCase());
   };
 
   useEffect(() => {
     setTimeout(() => {
       setDebouncedValue(input);
-      setSearchValue(input);
     }, 50);
-  }, [input, setSearchValue]);
+  }, [input]);
 
   return (
-    <div className="w-[400px] grow flex items-center gap-2 bg-white rounded-lg h-10 pl-4 box-border">
+    <form
+      onSubmit={(event) => {
+        searchTodos(event, input);
+        setInput("");
+      }}
+      className="w-[400px] grow flex items-center gap-2 bg-white rounded-lg h-10 pl-4 box-border"
+    >
       <FaSearch className="text-[#3f27c2]" />
       <input
         className="w-full bg-transparent border-none outline-none text-[#3f27c2]"
@@ -31,6 +36,6 @@ export default function SearchBar(props: SearchProps) {
         placeholder="Search"
         value={debouncedValue}
       />
-    </div>
+    </form>
   );
 }
