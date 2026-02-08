@@ -32,13 +32,6 @@ const allowedOrigins = [
   "https://fullstack-todo-kappa.vercel.app/",
 ];
 
-const getBaseUrl = () => {
-  if (process.env.NODE_ENV === "development") {
-    return `http://localhost:${port}`;
-  }
-  return `https://${process.env.VERCEL_URL}`;
-};
-
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -46,7 +39,7 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        "connect-src": ["'self'", getBaseUrl()],
+        "connect-src": ["'self'", "https://fullstack-todo-server.vercel.app/"],
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
@@ -56,7 +49,7 @@ app.use(
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
