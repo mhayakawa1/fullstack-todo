@@ -1,7 +1,7 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "server/api/(.*)", "destination": "server/api/server.tsx" },
+    { "source": "server/api/(.*)", "destination": "server.tsx" },
     {
       "source": "/(.*)",
       "destination": "https://fullstack-todo-server.vercel.app"
