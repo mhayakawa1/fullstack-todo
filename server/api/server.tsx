@@ -7,18 +7,18 @@ import path from "node:path";
 import fs from "fs";
 import https from "https";
 import helmet from "helmet";
-import checkAuthorization from "./authMiddleware";
+import checkAuthorization from "../authMiddleware";
 import "dotenv/config";
-import todosRouter from "./api/todos/todos";
-import todoRouter from "./api/todos/todo";
-import addTodoRouter from "./api/todos/addTodo";
-import editTodoRouter from "./api/todos/editTodo";
-import deleteTodoRouter from "./api/todos/deleteTodo";
-import userInfoRouter from "./api/auth/userInfo";
-import signupRouter from "./api/auth/signup";
-import loginRouter from "./api/auth/login";
-import googleRouter from "./api/auth/google";
-import logoutRouter from "./api/auth/logout";
+import todosRouter from "./todos/todos";
+import todoRouter from "./todos/todo";
+import addTodoRouter from "./todos/addTodo";
+import editTodoRouter from "./todos/editTodo";
+import deleteTodoRouter from "./todos/deleteTodo";
+import userInfoRouter from "./auth/userInfo";
+import signupRouter from "./auth/signup";
+import loginRouter from "./auth/login";
+import googleRouter from "./auth/google";
+import logoutRouter from "./auth/logout";
 const app = express();
 const port = 8080;
 
@@ -43,13 +43,13 @@ app.use(
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  })
+  }),
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
