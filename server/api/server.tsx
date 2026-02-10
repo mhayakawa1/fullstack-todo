@@ -79,14 +79,14 @@ app.use("/api/auth", loginRouter);
 app.use("/api/auth", googleRouter);
 app.use("/api/auth", logoutRouter);
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 app.get("/*path", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "..", "index.html"));
 });
 
 const serverOptions = {
-  key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
-  cert: fs.readFileSync(path.join(__dirname, "localhost+2.pem")),
+  key: fs.readFileSync(path.join(__dirname, "..", "localhost+2-key.pem")),
+  cert: fs.readFileSync(path.join(__dirname, "..", "localhost+2.pem")),
 };
 
 const server = https.createServer(serverOptions, app);

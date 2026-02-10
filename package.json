@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
-    "dev": "nodemon server/server.tsx",
+    "dev": "nodemon server/api/server.tsx",
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
