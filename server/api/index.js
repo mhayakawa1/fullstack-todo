@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import bodyParser from "body-parser";
 import express from "express";
 import cookieParser from "cookie-parser";
@@ -48,8 +47,8 @@ app.use(
 
 const corsOptions = {
   origin: function (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    origin,
+    callback,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -80,7 +79,7 @@ app.use("/api/auth", googleRouter);
 app.use("/api/auth", logoutRouter);
 
 app.use(express.static(path.join(__dirname, "..", "public")));
-app.get("/*path", (req: Request, res: Response) => {
+app.get("/*path", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "..", "index.html"));
 });
 

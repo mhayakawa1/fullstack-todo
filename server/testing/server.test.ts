@@ -5,7 +5,7 @@ jest.mock("../authMiddleware.tsx", () => {
     next();
   });
 });
-import app from "../api/server.tsx";
+import app from "../api/index.js";
 import { TodoInterface } from "../api/data/todosData.tsx";
 
 const userInfo = {
