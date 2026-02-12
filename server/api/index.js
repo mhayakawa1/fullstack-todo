@@ -38,7 +38,10 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        "connect-src": ["'self'", "https://fullstack-todo-server-git-deploy-server-makihayas-projects.vercel.app/"],
+        "connect-src": [
+          "'self'",
+          "https://fullstack-todo-server-git-deploy-server-makihayas-projects.vercel.app/",
+        ],
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
