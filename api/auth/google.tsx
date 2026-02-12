@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { addUser, createUser, findUser } from "../data/users";
-import { createCookie } from "../../createCookie";
+import { createCookie } from "../../server/createCookie";
 const googleRouter = express.Router();
 const clientId = process.env.CLIENT_ID;
 const secret = process.env.CLIENT_SECRET;

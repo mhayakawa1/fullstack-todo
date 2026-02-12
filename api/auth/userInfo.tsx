@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import users from "../data/users";
 const userInfoRouter = express.Router();
-import checkAuthorization from "../../authMiddleware";
+import checkAuthorization from "../../server/authMiddleware";
 
 userInfoRouter.get(
   "/userInfo",
