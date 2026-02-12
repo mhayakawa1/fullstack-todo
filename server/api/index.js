@@ -38,7 +38,7 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        "connect-src": ["'self'", "https://localhost:8080"],
+        "connect-src": ["'self'", "https://fullstack-todo-server-git-deploy-server-makihayas-projects.vercel.app/"],
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
@@ -46,10 +46,7 @@ app.use(
 );
 
 const corsOptions = {
-  origin: function (
-    origin,
-    callback,
-  ) {
+  origin: function (origin, callback) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
