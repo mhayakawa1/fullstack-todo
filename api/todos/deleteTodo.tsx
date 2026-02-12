@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { todos } from "../data/todosData";
-import checkAuthorization from "../../authMiddleware";
+import checkAuthorization from "../../server/authMiddleware";
 const deleteTodoRouter = express.Router();
 
 deleteTodoRouter.delete(
