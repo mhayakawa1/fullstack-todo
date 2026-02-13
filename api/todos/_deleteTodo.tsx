@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { todos } from "../data/todosData";
+import { todos } from "../data/_todosData";
 import checkAuthorization from "../../server/authMiddleware";
 const deleteTodoRouter = express.Router();
 

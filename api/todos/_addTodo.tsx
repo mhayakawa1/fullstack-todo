@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { todos, createTodo, paginate } from "../data/todosData";
+import { todos, createTodo, paginate } from "../data/_todosData";
 import checkAuthorization from "../../server/authMiddleware";
 const addTodoRouter = express.Router();
 

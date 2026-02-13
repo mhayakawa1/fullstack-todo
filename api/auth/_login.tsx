@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { createCookie } from "../../server/createCookie";
-import { findUser } from "../data/users";
+import { findUser } from "../data/_users";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 const secret = process.env.CLIENT_SECRET;
