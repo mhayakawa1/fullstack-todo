@@ -8,7 +8,9 @@ export default async function handler(req, res) {
     const { default: fs } = await import("fs");
     const { default: https } = await import("https");
     const { default: helmet } = await import("helmet");
-    const { default: checkAuthorization } = await import("../server/authMiddleware");
+    const { default: checkAuthorization } = await import(
+      "../server/authMiddleware.tsx"
+    );
     const { default: todoRouter } = await import("./todos/_todo");
     const { default: todosRouter } = await import("./todos/_todos");
     const { default: addTodoRouter } = await import("./todos/_addTodo");
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
           },
         },
         crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-      })
+      }),
     );
 
     const corsOptions = {
