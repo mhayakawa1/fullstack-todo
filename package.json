@@ -29,8 +29,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set HTTPS=true&&set SSL_CRT_FILE=api/localhost+2.pem&&set SSL_KEY_FILE=api/localhost+2-key.pem&&react-scripts start && node dist/api/index.js",
-    "dev": "nodemon api/index.js && concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=api/localhost+2.pem&&set SSL_KEY_FILE=api/localhost+2-key.pem&&react-scripts start",
+    "start:server": "node dist/api/index.js",
+    "dev": "nodemon api/index.js",
+    "dev:server": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build:client": "react-scripts build",
     "build:server": "tsc",
     "test": "jest",
