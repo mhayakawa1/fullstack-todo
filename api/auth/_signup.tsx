@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import users, { createUser } from "../data/_users";
+import users, { createUser } from "../data/_users.js";
 import bcrypt from "bcryptjs";
 const signupRouter = express.Router();
 
