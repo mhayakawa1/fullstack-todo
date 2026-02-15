@@ -11,7 +11,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "typeRoots": ["./node_modules/@types", "src/@types"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
