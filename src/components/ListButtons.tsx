@@ -1,4 +1,4 @@
-import ListButton from "./ListButton";
+import ListButton from "./ListButton.js";
 
 interface ButtonsProps {
   page: number;

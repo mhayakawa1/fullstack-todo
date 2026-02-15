@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import UserMenu from "./UserMenu";
+import UserMenu from "./UserMenu.js";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

@@ -1,4 +1,4 @@
-import Form from "./Form";
+import Form from "./Form.js";
 
 export default function Signup() {
   return (

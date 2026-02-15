@@ -15,7 +15,9 @@ export default async function handler(req, res) {
     const { default: todosRouter } = await import("./todos/_todos.js");
     const { default: addTodoRouter } = await import("./todos/_addTodo.js");
     const { default: editTodoRouter } = await import("./todos/_editTodo.js");
-    const { default: deleteTodoRouter } = await import("./todos/_deleteTodo.js");
+    const { default: deleteTodoRouter } = await import(
+      "./todos/_deleteTodo.js"
+    );
     const { default: userInfoRouter } = await import("./todos/_userInfo.js");
     const { default: signupRouter } = await import("./todos/_signup.js");
     const { default: loginRouter } = await import("./todos/_login.js");

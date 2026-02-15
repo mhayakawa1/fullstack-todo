@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
-import Todo from "./Todo";
-import TodoContainer from "./TodoContainer";
-import ListButtons from "./ListButtons";
-import SearchBar from "./SearchBar";
-import SortDropdown from "./SortDropdown";
-import CharacterCounter from "./CharacterCounter";
+import Todo from "./Todo.js";
+import TodoContainer from "./TodoContainer.js";
+import ListButtons from "./ListButtons.js";
+import SearchBar from "./SearchBar.js";
+import SortDropdown from "./SortDropdown.js";
+import CharacterCounter from "./CharacterCounter.js";
 
 interface TodoInterface {
   id: string | number;

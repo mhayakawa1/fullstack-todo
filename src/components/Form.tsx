@@ -2,8 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { FaCheck, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
-import FormInput from "./FormInput";
-import FormButton from "./FormButton";
+import FormInput from "./FormInput.js";
+import FormButton from "./FormButton.js";
 
 interface FormProps {
   title: string;

@@ -5,13 +5,13 @@ import {
   Navigate,
 } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { UserDataProvider } from "./contexts/userDataContext";
+import { UserDataProvider } from "./contexts/userDataContext.js";
 import "./App.css";
-import Header from "./components/Header";
-import Dashboard from "./components/Dashboard";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import Error from "./components/Error";
+import Header from "./components/Header.js";
+import Dashboard from "./components/Dashboard.js";
+import Login from "./components/Login.js";
+import Signup from "./components/Signup.js";
+import Error from "./components/Error.js";
 
 function App() {
   return (
