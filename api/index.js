@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const { default: https } = await import("https");
     const { default: helmet } = await import("helmet");
     const { default: checkAuthorization } = await import(
-      "./_authMiddleware.ts"
+      "./_authMiddleware.js"
     );
     const { default: todoRouter } = await import("./todos/_todo");
     const { default: todosRouter } = await import("./todos/_todos");
