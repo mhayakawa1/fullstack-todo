@@ -1,4 +1,5 @@
-export default async function handler(req, res) {
+import { Request, Response } from "express";
+export default async function handler(req: Request, res: Response) {
   try {
     const { default: bodyParser } = await import("body-parser");
     const { default: express } = await import("express");
@@ -14,16 +15,16 @@ export default async function handler(req, res) {
     const { default: addTodoRouter } = await import("./todos/_addTodo");
     const { default: editTodoRouter } = await import("./todos/_editTodo");
     const { default: deleteTodoRouter } = await import("./todos/_deleteTodo");
-    const { default: userInfoRouter } = await import("./todos/_userInfo");
-    const { default: signupRouter } = await import("./todos/_signup");
-    const { default: loginRouter } = await import("./todos/_login");
-    const { default: googleRouter } = await import("./todos/_google");
-    const { default: logoutRouter } = await import("./todos/_logout");
+    const { default: userInfoRouter } = await import("./auth/_userInfo");
+    const { default: signupRouter } = await import("./auth/_signup");
+    const { default: loginRouter } = await import("./auth/_login");
+    const { default: googleRouter } = await import("./auth/_google");
+    const { default: logoutRouter } = await import("./auth/_logout");
     const app = express();
     const port = 8080;
 
     app.get("/api/data", (req, res) => {
-      reson({ message: "This is a secure API response!" });
+      res.json({ message: "This is a secure API response!" });
     });
 
     const allowedOrigins = [
@@ -32,8 +33,8 @@ export default async function handler(req, res) {
       "https://fullstack-todo-kappa.vercel.app/",
     ];
 
-    app.use(bodyParseron());
-    app.use(expresson());
+    app.use(bodyParser.json());
+    app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(
       helmet({
@@ -46,11 +47,14 @@ export default async function handler(req, res) {
           },
         },
         crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-      }),
+      })
     );
 
     const corsOptions = {
-      origin: function (origin, callback) {
+      origin: function (
+        origin: string | undefined,
+        callback: (err: Error | null, allow?: boolean) => void
+      ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
         } else {
@@ -95,13 +99,16 @@ export default async function handler(req, res) {
       console.log(`Server running at port ${port}`);
     });
     return app(req, res);
-  } catch (err) {
+  } catch (err: unknown) {
+    const errorMessage =
+      err instanceof Error ? err.message : "An unknown error occurred";
+    const errorStack = err instanceof Error ? err.stack : "";
     //eslint-disable-next-line
-    console.error("ERROR:", err.message);
+    console.error("ERROR:", errorMessage);
     res.status(500).json({
       error: "Critical Server Startup Error",
-      message: err.message,
-      path: err.path || "Check your  extensions",
+      message: errorMessage,
+      stack: errorStack,
     });
   }
 }
