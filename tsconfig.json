@@ -13,8 +13,8 @@
     "isolatedModules": true,
     "noEmit": false,
     "typeRoots": ["./node_modules/@types", "src/@types"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "outDir": "dist",
     "rootDir": ".",
     "jsx": "react-jsx"
