@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import SortOption from "./SortOption.js";
+import SortOption from "./SortOption";
 
 interface Options {
   name: string;

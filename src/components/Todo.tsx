@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import TodoText from "./TodoText.js";
-import TodoContainer from "./TodoContainer.js";
-import CharacterCounter from "./CharacterCounter.js";
+import TodoText from "./TodoText";
+import TodoContainer from "./TodoContainer";
+import CharacterCounter from "./CharacterCounter";
 
 interface TodoProps {
   data: {
