@@ -8,16 +8,12 @@ export default async function handler(req, res) {
     const { default: fs } = await import("fs");
     const { default: https } = await import("https");
     const { default: helmet } = await import("helmet");
-    const { default: checkAuthorization } = await import(
-      "./_authMiddleware"
-    );
+    const { default: checkAuthorization } = await import("./_authMiddleware");
     const { default: todoRouter } = await import("./todos/_todo");
     const { default: todosRouter } = await import("./todos/_todos");
     const { default: addTodoRouter } = await import("./todos/_addTodo");
     const { default: editTodoRouter } = await import("./todos/_editTodo");
-    const { default: deleteTodoRouter } = await import(
-      "./todos/_deleteTodo"
-    );
+    const { default: deleteTodoRouter } = await import("./todos/_deleteTodo");
     const { default: userInfoRouter } = await import("./todos/_userInfo");
     const { default: signupRouter } = await import("./todos/_signup");
     const { default: loginRouter } = await import("./todos/_login");
