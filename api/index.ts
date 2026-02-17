@@ -14,12 +14,18 @@ export default async function handler(req: Request, res: Response) {
     );
     const { default: todoRouter } = await import("../server/todos/_todo.js");
     const { default: todosRouter } = await import("../server/todos/_todos.js");
-    const { default: addTodoRouter } = await import("../server/todos/_addTodo.js");
-    const { default: editTodoRouter } = await import("../server/todos/_editTodo.js");
+    const { default: addTodoRouter } = await import(
+      "../server/todos/_addTodo.js"
+    );
+    const { default: editTodoRouter } = await import(
+      "../server/todos/_editTodo.js"
+    );
     const { default: deleteTodoRouter } = await import(
       "../server/todos/_deleteTodo.js"
     );
-    const { default: userInfoRouter } = await import("../server/auth/_userInfo.js");
+    const { default: userInfoRouter } = await import(
+      "../server/auth/_userInfo.js"
+    );
     const { default: signupRouter } = await import("../server/auth/_signup.js");
     const { default: loginRouter } = await import("../server/auth/_login.js");
     const { default: googleRouter } = await import("../server/auth/_google.js");
