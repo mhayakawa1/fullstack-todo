@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { createCookie } from "../../server/createCookie.js";
+import { createCookie } from "../createCookie.js";
 import { findUser } from "../data/_users.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
