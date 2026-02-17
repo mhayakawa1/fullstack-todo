@@ -57,13 +57,13 @@ export default async function handler(req: Request, res: Response) {
           },
         },
         crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-      }),
+      })
     );
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -80,8 +80,11 @@ export default async function handler(req: Request, res: Response) {
 
     const router = express.Router();
     router.use(checkAuthorization);
+    router.use("/todos", todosRouter);
 
-    app.use("/api/todos", todosRouter);
+    app.use("/api", router);
+    app.get("/api", (req, res) => res.json({ status: "API is running" }));
+
     app.use("/api/todos", todoRouter);
     app.use("/api/todos", addTodoRouter);
     app.use("/api/todos", editTodoRouter);
