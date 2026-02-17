@@ -9,17 +9,19 @@ export default async function handler(req: Request, res: Response) {
     const { default: fs } = await import("fs");
     const { default: https } = await import("https");
     const { default: helmet } = await import("helmet");
-    const { default: checkAuthorization } = await import("./_authMiddleware.js");
-    const { default: todoRouter } = await import("./todos/_todo");
-    const { default: todosRouter } = await import("./todos/_todos");
-    const { default: addTodoRouter } = await import("./todos/_addTodo");
-    const { default: editTodoRouter } = await import("./todos/_editTodo");
-    const { default: deleteTodoRouter } = await import("./todos/_deleteTodo");
-    const { default: userInfoRouter } = await import("./auth/_userInfo");
-    const { default: signupRouter } = await import("./auth/_signup");
-    const { default: loginRouter } = await import("./auth/_login");
-    const { default: googleRouter } = await import("./auth/_google");
-    const { default: logoutRouter } = await import("./auth/_logout");
+    const { default: checkAuthorization } = await import(
+      "./_authMiddleware.js"
+    );
+    const { default: todoRouter } = await import("./todos/_todo.js");
+    const { default: todosRouter } = await import("./todos/_todos.js");
+    const { default: addTodoRouter } = await import("./todos/_addTodo.js");
+    const { default: editTodoRouter } = await import("./todos/_editTodo.js");
+    const { default: deleteTodoRouter } = await import("./todos/_deleteTodo.js");
+    const { default: userInfoRouter } = await import("./auth/_userInfo.js");
+    const { default: signupRouter } = await import("./auth/_signup.js");
+    const { default: loginRouter } = await import("./auth/_login.js");
+    const { default: googleRouter } = await import("./auth/_google.js");
+    const { default: logoutRouter } = await import("./auth/_logout.js");
     const app = express();
     const port = 8080;
 
