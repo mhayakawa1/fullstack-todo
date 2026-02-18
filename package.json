@@ -36,7 +36,6 @@
     "dev": "nodemon api/index.js",
     "dev:server": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build": "react-scripts build",
-    "vercel-build": "tsc && react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject",
     "lint": "eslint \"**/*.{ts,tsx}\"",
