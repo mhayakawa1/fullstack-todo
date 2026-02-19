@@ -30,7 +30,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://localhost:3000",
   "https://fullstack-todo-kappa.vercel.app/",
-  "https://fullstack-todo-1-hung.onrender.com"
+  "https://fullstack-todo-1-hung.onrender.com",
 ];
 
 app.use(bodyParser.json());

@@ -65,7 +65,7 @@ export default function Form(props: FormProps) {
   };
 
   async function makeRequest(body: Body, path: string) {
-    fetch(`https://localhost:8080/api/auth/${path}`, {
+    fetch(`https://fullstack-todo-6g45.onrender.com/api/auth/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -35,7 +35,7 @@ interface Options {
 
 export default function Dashboard() {
   const today = new Date();
-  const url = "https://localhost:8080/api/";
+  const url = "https://fullstack-todo-6g45.onrender.com/api/";
   const defaultSortValue = useMemo(
     () => ({
       name: "Date Created (Asc)",

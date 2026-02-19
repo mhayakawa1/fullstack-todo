@@ -76,7 +76,7 @@ export default function UserMenu() {
 
   async function handleLogout() {
     googleLogout();
-    fetch("https://localhost:8080/api/auth/logout", {
+    fetch("https://fullstack-todo-6g45.onrender.com/api/auth/logout", {
       method: "POST",
       credentials: "include",
       headers: {
