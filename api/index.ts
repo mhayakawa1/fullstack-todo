@@ -12,16 +12,16 @@ export default async function handler(req: Request, res: Response) {
     const { default: checkAuthorization } = await import(
       "../server/_authMiddleware.js"
     );
-    const { default: todoRouter } = await import("../server/todos/_todo.js");
-    const { default: todosRouter } = await import("../server/todos/_todos.js");
+    const { default: todoRouter } = await import("./todos/_todo.js");
+    const { default: todosRouter } = await import("./todos/_todos.js");
     const { default: addTodoRouter } = await import(
-      "../server/todos/_addTodo.js"
+      "./todos/_addTodo.js"
     );
     const { default: editTodoRouter } = await import(
-      "../server/todos/_editTodo.js"
+      "./todos/_editTodo.js"
     );
     const { default: deleteTodoRouter } = await import(
-      "../server/todos/_deleteTodo.js"
+      "./todos/_deleteTodo.js"
     );
     const { default: userInfoRouter } = await import(
       "../server/auth/_userInfo.js"
@@ -57,13 +57,13 @@ export default async function handler(req: Request, res: Response) {
           },
         },
         crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-      })
+      }),
     );
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
