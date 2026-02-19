@@ -30,6 +30,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "https://localhost:3000",
   "https://fullstack-todo-kappa.vercel.app/",
+  "https://fullstack-todo-1-hung.onrender.com"
 ];
 
 app.use(bodyParser.json());
@@ -90,7 +91,7 @@ const serverOptions = {
 };
 
 const server = https.createServer(serverOptions, app);
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, "0.0.0.0", () => {
   //eslint-disable-next-line
   console.log(`Server running at https://localhost:${port}/`);
 });
