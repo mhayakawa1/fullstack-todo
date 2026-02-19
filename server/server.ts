@@ -7,7 +7,7 @@ import path from "node:path";
 import fs from "fs";
 import https from "https";
 import helmet from "helmet";
-import checkAuthorization from "./authMiddleware";
+import checkAuthorization from "./authMiddleware.js";
 import "dotenv/config";
 import todosRouter from "./api/todos/todos";
 import todoRouter from "./api/todos/todo";
