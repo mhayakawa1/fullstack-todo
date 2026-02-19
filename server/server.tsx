@@ -20,7 +20,7 @@ import loginRouter from "./api/auth/login";
 import googleRouter from "./api/auth/google";
 import logoutRouter from "./api/auth/logout";
 const app = express();
-const port = 8080;
+const port = 10000;
 
 app.get("/api/data", (req, res) => {
   res.json({ message: "This is a secure API response!" });
@@ -39,7 +39,7 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        "connect-src": ["'self'", "https://localhost:8080"],
+        "connect-src": ["'self'", "https://fullstack-todo-6g45.onrender.com"],
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
@@ -90,7 +90,7 @@ const serverOptions = {
 };
 
 const server = https.createServer(serverOptions, app);
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
   //eslint-disable-next-line
   console.log(`Server running at https://localhost:${port}/`);
 });
