@@ -13,10 +13,7 @@ export default async function handler(req: Request, res: Response) {
       "../server/_authMiddleware.js"
     );
     const { default: todoRouter } = await import("../server/todos/_todo.js");
-    const { default: todosRouter } = await import(
-      // @ts-expect-error: vercel deployment
-      "../dist/server/todos/_todos.js"
-    );
+    const { default: todosRouter } = await import("../server/todos/_todos.js");
     const { default: addTodoRouter } = await import(
       "../server/todos/_addTodo.js"
     );
