@@ -9,7 +9,7 @@ import https from "https";
 import helmet from "helmet";
 import checkAuthorization from "./authMiddleware.js";
 import "dotenv/config";
-import todosRouter from "./api/todos/todos";
+import todosRouter from "./api/todos/todos.js";
 import todoRouter from "./api/todos/todo";
 import addTodoRouter from "./api/todos/addTodo";
 import editTodoRouter from "./api/todos/editTodo";
