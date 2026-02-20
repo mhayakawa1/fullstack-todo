@@ -2,6 +2,7 @@
   "name": "fullstack-todo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
     "@testing-library/dom": "^10.4.1",

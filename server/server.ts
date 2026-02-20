@@ -48,13 +48,13 @@ app.use(
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  })
+  }),
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
