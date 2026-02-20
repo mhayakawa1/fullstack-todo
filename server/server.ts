@@ -23,6 +23,8 @@ import logoutRouter from "./api/auth/logout.js";
 const app = express();
 const port = 10000;
 
+app.get("/ping", (req, res) => res.send("pong"));
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -40,21 +42,24 @@ const allowedOrigins = [
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        "connect-src": ["'self'", "https://fullstack-todo-6g45.onrender.com"],
+
+if (!process.env.RENDER) {
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          "connect-src": ["'self'", "https://fullstack-todo-6g45.onrender.com"],
+        },
       },
-    },
-    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  }),
-);
+      crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    })
+  );
+}
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
