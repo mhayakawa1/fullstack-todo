@@ -89,12 +89,17 @@ app.get("/*path", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-const serverOptions = {
-  key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
-  cert: fs.readFileSync(path.join(__dirname, "localhost+2.pem")),
-};
+let server;
+if (process.env.RENDER) {
+  server = https.createServer(app);
+} else {
+  const serverOptions = {
+    key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "localhost+2.pem")),
+  };
+  server = https.createServer(serverOptions, app);
+}
 
-const server = https.createServer(serverOptions, app);
 server.listen(port, "0.0.0.0", () => {
   //eslint-disable-next-line
   console.log(`Server running at https://localhost:${port}/`);
