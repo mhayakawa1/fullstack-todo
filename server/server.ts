@@ -4,6 +4,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "node:path";
+import { fileURLToPath } from "url";
 import fs from "fs";
 import https from "https";
 import helmet from "helmet";
@@ -21,6 +22,9 @@ import googleRouter from "./api/auth/google.js";
 import logoutRouter from "./api/auth/logout.js";
 const app = express();
 const port = 10000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.get("/api/data", (req, res) => {
   res.json({ message: "This is a secure API response!" });
@@ -44,13 +48,13 @@ app.use(
       },
     },
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  }),
+  })
 );
 
 const corsOptions = {
   origin: function (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
+    callback: (err: Error | null, allow?: boolean) => void
   ) {
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
