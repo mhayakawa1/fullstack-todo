@@ -44,6 +44,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 if (!process.env.RENDER) {
+  //eslint-disable-next-line
+  console.log("helmet running");
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -72,6 +74,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+//eslint-disable-next-line
+console.log("cors options set");
 app.use(cookieParser());
 
 const router = express.Router();
@@ -88,6 +92,8 @@ app.use("/api/auth", signupRouter);
 app.use("/api/auth", loginRouter);
 app.use("/api/auth", googleRouter);
 app.use("/api/auth", logoutRouter);
+//eslint-disable-next-line
+console.log("routes added");
 
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/*path", (req: Request, res: Response) => {
@@ -96,8 +102,12 @@ app.get("/*path", (req: Request, res: Response) => {
 
 let server;
 if (process.env.RENDER) {
+  //eslint-disable-next-line
+  console.log("render environment");
   server = https.createServer(app);
 } else {
+  //eslint-disable-next-line
+  console.log("development environment");
   const serverOptions = {
     key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
     cert: fs.readFileSync(path.join(__dirname, "localhost+2.pem")),
