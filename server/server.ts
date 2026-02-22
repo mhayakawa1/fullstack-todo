@@ -41,29 +41,15 @@ async function startServer() {
       "https://fullstack-todo-kappa.vercel.app/",
       "https://fullstack-todo-1-hung.onrender.com",
     ];
-    app.use((req, res, next) => {
-      //eslint-disable-next-line
-      console.log("1. Before body parser");
-      next();
-    });
+    //eslint-disable-next-line
+    console.log("Parser checks: ");
+    process.stdout.write("1. Body parser");
     app.use(bodyParser.json());
-    app.use((req, res, next) => {
-      //eslint-disable-next-line
-      console.log("2. After body parser");
-      next();
-    });
+    process.stdout.write("2. Body parser");
 
-    app.use((req, res, next) => {
-      //eslint-disable-next-line
-      console.log("1. Before JSON parser");
-      next();
-    });
+    process.stdout.write("1. JSON parser");
     app.use(express.json());
-    app.use((req, res, next) => {
-      //eslint-disable-next-line
-      console.log("2. After JSON parser");
-      next();
-    });
+    process.stdout.write("2. JSON parser");
     app.use(express.urlencoded({ extended: true }));
 
     if (!process.env.RENDER) {
@@ -78,14 +64,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
