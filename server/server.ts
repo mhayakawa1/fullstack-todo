@@ -1,123 +1,133 @@
 import { Request, Response } from "express";
-import bodyParser from "body-parser";
-import express from "express";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import path from "node:path";
 import { fileURLToPath } from "url";
-import fs from "fs";
-import https from "https";
-import helmet from "helmet";
-import checkAuthorization from "./authMiddleware.js";
 import "dotenv/config";
-import todosRouter from "./api/todos/todos.js";
-import todoRouter from "./api/todos/todo.js";
-import addTodoRouter from "./api/todos/addTodo.js";
-import editTodoRouter from "./api/todos/editTodo.js";
-import deleteTodoRouter from "./api/todos/deleteTodo.js";
-import userInfoRouter from "./api/auth/userInfo.js";
-import signupRouter from "./api/auth/signup.js";
-import loginRouter from "./api/auth/login.js";
-import googleRouter from "./api/auth/google.js";
-import logoutRouter from "./api/auth/logout.js";
-const app = express();
-const port = 10000;
+export default async function handler(req: Request, res: Response) {
+  try {
+    const { default: bodyParser } = await import("body-parser");
+    const { default: express } = await import("express");
+    const { default: cookieParser } = await import("cookie-parser");
+    const { default: cors } = await import("cors");
+    const { default: path } = await import("node:path");
+    const { default: fs } = await import("fs");
+    const { default: https } = await import("https");
+    const { default: helmet } = await import("helmet");
+    const { default: checkAuthorization } = await import("./authMiddleware.js");
+    const { default: todoRouter } = await import("./api/todos/todo.js");
+    const { default: todosRouter } = await import("./api/todos/todos.js");
+    const { default: addTodoRouter } = await import("./api/todos/addTodo.js");
+    const { default: editTodoRouter } = await import("./api/todos/editTodo.js");
+    const { default: deleteTodoRouter } = await import(
+      "./api/todos/deleteTodo.js"
+    );
+    const { default: userInfoRouter } = await import("./api/auth/userInfo.js");
+    const { default: signupRouter } = await import("./api/auth/signup.js");
+    const { default: loginRouter } = await import("./api/auth/login.js");
+    const { default: googleRouter } = await import("./api/auth/google.js");
+    const { default: logoutRouter } = await import("./api/auth/logout.js");
+    const app = express();
+    const port = 10000;
 
-app.get("/ping", (req, res) => res.send("pong"));
+    app.get("/ping", (req, res) => res.send("pong"));
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-app.get("/api/data", (req, res) => {
-  res.json({ message: "This is a secure API response!" });
-});
+    app.get("/api/data", (req, res) => {
+      res.json({ message: "This is a secure API response!" });
+    });
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://localhost:3000",
-  "https://fullstack-todo-kappa.vercel.app/",
-  "https://fullstack-todo-1-hung.onrender.com",
-];
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://localhost:3000",
+      "https://fullstack-todo-kappa.vercel.app/",
+      "https://fullstack-todo-1-hung.onrender.com",
+    ];
 
-app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
-if (!process.env.RENDER) {
-  //eslint-disable-next-line
-  console.log("helmet running");
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          "connect-src": ["'self'", "https://fullstack-todo-6g45.onrender.com"],
-        },
-      },
-      crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-    })
-  );
-}
-
-const corsOptions = {
-  origin: function (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
-  ) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+    if (!process.env.RENDER) {
+      app.use(
+        helmet({
+          contentSecurityPolicy: {
+            directives: {
+              "connect-src": [
+                "'self'",
+                "https://fullstack-todo-6g45.onrender.com",
+              ],
+            },
+          },
+          crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+        })
+      );
     }
-  },
-  methods: "GET,PATCH,POST,DELETE",
-  credentials: true,
-};
 
-app.use(cors(corsOptions));
-//eslint-disable-next-line
-console.log("cors options set");
-app.use(cookieParser());
+    const corsOptions = {
+      origin: function (
+        origin: string | undefined,
+        callback: (err: Error | null, allow?: boolean) => void
+      ) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      methods: "GET,PATCH,POST,DELETE",
+      credentials: true,
+    };
 
-const router = express.Router();
-router.use(checkAuthorization);
+    app.use(cors(corsOptions));
+    app.use(cookieParser());
 
-app.use("/api/todos", todosRouter);
-app.use("/api/todos", todoRouter);
-app.use("/api/todos", addTodoRouter);
-app.use("/api/todos", editTodoRouter);
-app.use("/api/todos", deleteTodoRouter);
+    const router = express.Router();
+    router.use(checkAuthorization);
 
-app.use("/api/auth", userInfoRouter);
-app.use("/api/auth", signupRouter);
-app.use("/api/auth", loginRouter);
-app.use("/api/auth", googleRouter);
-app.use("/api/auth", logoutRouter);
-//eslint-disable-next-line
-console.log("routes added");
+    app.use("/api/todos", todosRouter);
+    app.use("/api/todos", todoRouter);
+    app.use("/api/todos", addTodoRouter);
+    app.use("/api/todos", editTodoRouter);
+    app.use("/api/todos", deleteTodoRouter);
 
-app.use(express.static(path.join(__dirname, "public")));
-app.get("/*path", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+    app.use("/api/auth", userInfoRouter);
+    app.use("/api/auth", signupRouter);
+    app.use("/api/auth", loginRouter);
+    app.use("/api/auth", googleRouter);
+    app.use("/api/auth", logoutRouter);
 
-let server;
-if (process.env.RENDER) {
-  //eslint-disable-next-line
-  console.log("render environment");
-  server = https.createServer(app);
-} else {
-  //eslint-disable-next-line
-  console.log("development environment");
-  const serverOptions = {
-    key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "localhost+2.pem")),
-  };
-  server = https.createServer(serverOptions, app);
+    app.use(express.static(path.join(__dirname, "public")));
+    app.get("/*path", (req: Request, res: Response) => {
+      res.sendFile(path.join(__dirname, "public", "index.html"));
+    });
+
+    let server;
+    if (process.env.RENDER) {
+      server = https.createServer(app);
+    } else {
+      const serverOptions = {
+        key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
+        cert: fs.readFileSync(path.join(__dirname, "localhost+2.pem")),
+      };
+      server = https.createServer(serverOptions, app);
+    }
+
+    server.listen(port, "0.0.0.0", () => {
+      //eslint-disable-next-line
+      console.log(`Server running at https://localhost:${port}/`);
+    });
+
+    return app(req, res);
+  } catch (err: unknown) {
+    const errorMessage =
+      err instanceof Error ? err.message : "An unknown error occurred";
+    const errorStack = err instanceof Error ? err.stack : "";
+    //eslint-disable-next-line
+    console.error("ERROR:", errorMessage);
+    res.status(500).json({
+      error: "Critical Server Startup Error",
+      message: errorMessage,
+      stack: errorStack,
+    });
+  }
 }
-
-server.listen(port, "0.0.0.0", () => {
-  //eslint-disable-next-line
-  console.log(`Server running at https://localhost:${port}/`);
-});
-
-export default app;
