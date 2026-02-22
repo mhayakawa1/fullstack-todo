@@ -1,4 +1,3 @@
-// import { Request, Response } from "express";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
 import express from "express";
@@ -57,14 +56,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
+        }),
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -96,9 +95,17 @@ async function startServer() {
 
     app.use(express.static(path.join(__dirname, "..", "public")));
     const indexPath = path.join(__dirname, "..", "public", "index.html");
-    app.get("/*path", (req, res) => {
-      res.sendFile(indexPath);
-    });
+
+    if (fs.existsSync(indexPath)) {
+      //eslint-disable-next-line
+      console.log(indexPath);
+      app.get("/*path", (req, res) => {
+        res.sendFile(indexPath);
+      });
+    } else {
+      //eslint-disable-next-line
+      console.error("ERROR: index.html not found");
+    }
 
     let server;
     if (process.env.RENDER) {
