@@ -24,8 +24,8 @@ const port = 10000;
 
 async function startServer() {
   try {
-    app.set("trust proxy", 1);
-
+    //eslint-disable-next-line
+    console.log("Parser checks");
     app.use((req, res, next) => {
       process.stdout.write("1. Body parser");
       //eslint-disable-next-line
@@ -53,6 +53,8 @@ async function startServer() {
       console.log("2. After JSON parser");
       next();
     });
+    app.set("trust proxy", 1);
+
     app.use(express.urlencoded({ extended: true }));
 
     app.get("/test-route", (req, res) => res.send("Route is working"));
