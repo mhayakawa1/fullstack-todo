@@ -1,39 +1,32 @@
-import { Request, Response } from "express";
+// import { Request, Response } from "express";
 import { fileURLToPath } from "url";
-export default async function handler(req: Request, res: Response) {
+import bodyParser from "body-parser";
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "node:path";
+import fs from "fs";
+import https from "https";
+import helmet from "helmet";
+import checkAuthorization from "./authMiddleware";
+import "dotenv/config";
+import todosRouter from "./api/todos/todos";
+import todoRouter from "./api/todos/todo";
+import addTodoRouter from "./api/todos/addTodo";
+import editTodoRouter from "./api/todos/editTodo";
+import deleteTodoRouter from "./api/todos/deleteTodo";
+import userInfoRouter from "./api/auth/userInfo";
+import signupRouter from "./api/auth/signup";
+import loginRouter from "./api/auth/login";
+import googleRouter from "./api/auth/google";
+import logoutRouter from "./api/auth/logout";
+const app = express();
+const port = 10000;
+
+async function startServer() {
   //eslint-disable-next-line
   console.error("function handler");
   try {
-    //eslint-disable-next-line
-    console.error("try");
-    const { default: bodyParser } = await import("body-parser");
-    const { default: express } = await import("express");
-    const { default: cookieParser } = await import("cookie-parser");
-    const { default: cors } = await import("cors");
-    const { default: path } = await import("node:path");
-    const { default: fs } = await import("fs");
-    const { default: https } = await import("https");
-    const { default: helmet } = await import("helmet");
-    //eslint-disable-next-line
-    console.error("dependencies imported");
-    const { default: checkAuthorization } = await import("./authMiddleware.js");
-    const { default: todoRouter } = await import("./api/todos/todo.js");
-    const { default: todosRouter } = await import("./api/todos/todos.js");
-    const { default: addTodoRouter } = await import("./api/todos/addTodo.js");
-    const { default: editTodoRouter } = await import("./api/todos/editTodo.js");
-    const { default: deleteTodoRouter } = await import(
-      "./api/todos/deleteTodo.js"
-    );
-    const { default: userInfoRouter } = await import("./api/auth/userInfo.js");
-    const { default: signupRouter } = await import("./api/auth/signup.js");
-    const { default: loginRouter } = await import("./api/auth/login.js");
-    const { default: googleRouter } = await import("./api/auth/google.js");
-    const { default: logoutRouter } = await import("./api/auth/logout.js");
-    //eslint-disable-next-line
-    console.error("imports successful");
-    const app = express();
-    const port = 10000;
-
     app.get("/ping", (req, res) => res.send("pong"));
 
     const __filename = fileURLToPath(import.meta.url);
@@ -106,7 +99,7 @@ export default async function handler(req: Request, res: Response) {
     console.error("paths added");
 
     app.use(express.static(path.join(__dirname, "public")));
-    app.get("/*path", (req: Request, res: Response) => {
+    app.get("/*path", (req, res) => {
       res.sendFile(path.join(__dirname, "public", "index.html"));
     });
 
@@ -125,18 +118,18 @@ export default async function handler(req: Request, res: Response) {
       //eslint-disable-next-line
       console.log(`Server running at https://localhost:${port}/`);
     });
-
-    return app(req, res);
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "An unknown error occurred";
-    const errorStack = err instanceof Error ? err.stack : "";
+    const errorStack =
+      err instanceof Error ? err.stack : "Unknown serror stack";
+
     //eslint-disable-next-line
-    console.error("ERROR:", errorMessage);
-    res.status(500).json({
-      error: "Critical Server Startup Error",
-      message: errorMessage,
-      stack: errorStack,
-    });
+    console.error("ERROR:", errorMessage, errorStack);
   }
 }
+
+startServer().catch((err) => {
+  //eslint-disable-next-line
+  console.error("Unhandles promise:", err);
+});
