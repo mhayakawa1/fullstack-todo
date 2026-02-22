@@ -56,14 +56,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
+        }),
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -103,44 +103,8 @@ async function startServer() {
         //eslint-disable-next-line
         console.log("get path");
         res.sendFile(indexPath, (err) => {
-        //eslint-disable-next-line
-        console.log("send file");
-          if (err) {
-            //eslint-disable-next-line
-            console.error("res.sendFile Error:", err);
-            if (!res.headersSent) {
-              res.status(500).send("Server Error: Could not serve index.html");
-            }
-          } else {
-            //eslint-disable-next-line
-            console.error("Error not detected: ", err);
-          }
-        });
-      });
-       app.get("/*path", (req, res) => {
-        //eslint-disable-next-line
-        console.log("get /*path");
-        res.sendFile(indexPath, (err) => {
-        //eslint-disable-next-line
-        console.log("send file");
-          if (err) {
-            //eslint-disable-next-line
-            console.error("res.sendFile Error:", err);
-            if (!res.headersSent) {
-              res.status(500).send("Server Error: Could not serve index.html");
-            }
-          } else {
-            //eslint-disable-next-line
-            console.error("Error not detected: ", err);
-          }
-        });
-      });
-       app.get("*", (req, res) => {
-        //eslint-disable-next-line
-        console.log("get *");
-        res.sendFile(indexPath, (err) => {
-        //eslint-disable-next-line
-        console.log("send file");
+          //eslint-disable-next-line
+          console.log("send file");
           if (err) {
             //eslint-disable-next-line
             console.error("res.sendFile Error:", err);
@@ -182,7 +146,7 @@ async function startServer() {
       err instanceof Error ? err.stack : "Unknown serror stack";
 
     //eslint-disable-next-line
-    console.error("ERROR:", errorMessage, errorStack);
+    console.error("CATCH ERROR:", errorMessage, errorStack);
   }
 }
 
