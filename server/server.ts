@@ -24,10 +24,8 @@ const app = express();
 const port = 10000;
 
 async function startServer() {
-  //eslint-disable-next-line
-  console.error("function handler");
   try {
-    app.get("/ping", (req, res) => res.send("pong"));
+    app.set("trust proxy", 1);
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -59,14 +57,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -95,10 +93,17 @@ async function startServer() {
     app.use("/api/auth", loginRouter);
     app.use("/api/auth", googleRouter);
     app.use("/api/auth", logoutRouter);
-    //eslint-disable-next-line
-    console.error("paths added");
 
     app.use(express.static(path.join(__dirname, "public")));
+    const indexPath = path.join(__dirname, "public", "index.html");
+    //eslint-disable-next-line
+    console.log("Index path 1:", indexPath);
+    app.use(express.static(path.join(__dirname, "..", "public")));
+    //eslint-disable-next-line
+    console.log("Index path 2:", indexPath);
+    app.use(express.static(path.join(__dirname, "..", "public", "index.html")));
+    //eslint-disable-next-line
+    console.log("Index path 3:", indexPath);
     app.get("/*path", (req, res) => {
       res.sendFile(path.join(__dirname, "public", "index.html"));
     });
