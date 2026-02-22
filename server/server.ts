@@ -56,14 +56,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -93,18 +93,26 @@ async function startServer() {
     app.use("/api/auth", googleRouter);
     app.use("/api/auth", logoutRouter);
 
-    app.use(express.static(path.join(__dirname, "..", "public")));
+    app.use(express.static(path.join(__dirname, "..", "public", "index.html")));
     const indexPath = path.join(__dirname, "..", "public", "index.html");
 
     if (fs.existsSync(indexPath)) {
       //eslint-disable-next-line
       console.log(indexPath);
       app.get("/*path", (req, res) => {
-        res.sendFile(indexPath);
+        res.sendFile(indexPath, (err) => {
+          if (err) {
+            //eslint-disable-next-line
+            console.error("res.sendFile Error:", err);
+            if (!res.headersSent) {
+              res.status(500).send("Server Error: Could not serve index.html");
+            }
+          }
+        });
       });
     } else {
       //eslint-disable-next-line
-      console.error("ERROR: index.html not found");
+      console.error(indexPath, "ERROR: index.html not found");
     }
 
     let server;
