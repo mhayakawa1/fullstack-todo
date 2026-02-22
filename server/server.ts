@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "node:path";
 import fs from "fs";
+import http from "node:http";
 import https from "https";
 import helmet from "helmet";
 import checkAuthorization from "./authMiddleware.js";
@@ -25,6 +26,7 @@ async function startServer() {
   try {
     //eslint-disable-next-line
     console.log("Parser checks");
+    app.set("trust proxy", 1);
     app.use((req, res, next) => {
       process.stdout.write("1. Body parser");
       //eslint-disable-next-line
@@ -52,7 +54,6 @@ async function startServer() {
       console.log("2. After JSON parser");
       next();
     });
-    app.set("trust proxy", 1);
 
     app.use(express.urlencoded({ extended: true }));
 
@@ -84,14 +85,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -121,7 +122,7 @@ async function startServer() {
     app.use("/api/auth", googleRouter);
     app.use("/api/auth", logoutRouter);
 
-    app.use(express.static(path.join(__dirname, "..", "public", "index.html")));
+    app.use(express.static(path.join(__dirname, "..", "public")));
     const indexPath = path.join(__dirname, "..", "public", "index.html");
 
     if (fs.existsSync(indexPath)) {
@@ -147,7 +148,7 @@ async function startServer() {
 
     let server;
     if (process.env.RENDER) {
-      server = https.createServer(app);
+      server = http.createServer(app);
     } else {
       const serverOptions = {
         key: fs.readFileSync(path.join(__dirname, "localhost+2-key.pem")),
