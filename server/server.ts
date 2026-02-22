@@ -26,6 +26,8 @@ async function startServer() {
   try {
     app.set("trust proxy", 1);
 
+    app.get("/test-route", (req, res) => res.send("Route is working"));
+
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
 
