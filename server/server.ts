@@ -41,9 +41,29 @@ async function startServer() {
       "https://fullstack-todo-kappa.vercel.app/",
       "https://fullstack-todo-1-hung.onrender.com",
     ];
-
+    app.use((req, res, next) => {
+      //eslint-disable-next-line
+      console.log("1. Before body parser");
+      next();
+    });
     app.use(bodyParser.json());
+    app.use((req, res, next) => {
+      //eslint-disable-next-line
+      console.log("2. After body parser");
+      next();
+    });
+
+    app.use((req, res, next) => {
+      //eslint-disable-next-line
+      console.log("1. Before JSON parser");
+      next();
+    });
     app.use(express.json());
+    app.use((req, res, next) => {
+      //eslint-disable-next-line
+      console.log("2. After JSON parser");
+      next();
+    });
     app.use(express.urlencoded({ extended: true }));
 
     if (!process.env.RENDER) {
