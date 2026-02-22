@@ -26,6 +26,35 @@ async function startServer() {
   try {
     app.set("trust proxy", 1);
 
+    app.use((req, res, next) => {
+      process.stdout.write("1. Body parser");
+      //eslint-disable-next-line
+      console.log("1. Body parser");
+      next();
+    });
+    app.use(bodyParser.json());
+    app.use((req, res, next) => {
+      process.stdout.write("2. After body parser");
+      //eslint-disable-next-line
+      console.log("2. After body parser");
+      next();
+    });
+
+    app.use((req, res, next) => {
+      process.stdout.write("1. Before JSON parser");
+      //eslint-disable-next-line
+      console.log("1. Before JSON parser");
+      next();
+    });
+    app.use(express.json());
+    app.use((req, res, next) => {
+      process.stdout.write("2. After JSON parser");
+      //eslint-disable-next-line
+      console.log("2. After JSON parser");
+      next();
+    });
+    app.use(express.urlencoded({ extended: true }));
+
     app.get("/test-route", (req, res) => res.send("Route is working"));
 
     const __filename = fileURLToPath(import.meta.url);
@@ -41,26 +70,6 @@ async function startServer() {
       "https://fullstack-todo-kappa.vercel.app/",
       "https://fullstack-todo-1-hung.onrender.com",
     ];
-    app.use((req, res, next) => {
-      process.stdout.write("1. Body parser")
-      next();
-    });
-    app.use(bodyParser.json());
-    app.use((req, res, next) => {
-      process.stdout.write("2. After body parser");
-      next();
-    });
-
-    app.use((req, res, next) => {
-      process.stdout.write("1. Before JSON parser");
-      next();
-    });
-    app.use(express.json());
-    app.use((req, res, next) => {
-      process.stdout.write("2. After JSON parser");
-      next();
-    });
-    app.use(express.urlencoded({ extended: true }));
 
     if (!process.env.RENDER) {
       app.use(
@@ -74,14 +83,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
