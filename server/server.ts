@@ -98,9 +98,49 @@ async function startServer() {
 
     if (fs.existsSync(indexPath)) {
       //eslint-disable-next-line
-      console.log(indexPath);
+      console.log("Index path:", indexPath);
       app.get("/*path", (req, res) => {
+        //eslint-disable-next-line
+        console.log("get path");
         res.sendFile(indexPath, (err) => {
+        //eslint-disable-next-line
+        console.log("send file");
+          if (err) {
+            //eslint-disable-next-line
+            console.error("res.sendFile Error:", err);
+            if (!res.headersSent) {
+              res.status(500).send("Server Error: Could not serve index.html");
+            }
+          } else {
+            //eslint-disable-next-line
+            console.error("Error not detected: ", err);
+          }
+        });
+      });
+       app.get("/*path", (req, res) => {
+        //eslint-disable-next-line
+        console.log("get /*path");
+        res.sendFile(indexPath, (err) => {
+        //eslint-disable-next-line
+        console.log("send file");
+          if (err) {
+            //eslint-disable-next-line
+            console.error("res.sendFile Error:", err);
+            if (!res.headersSent) {
+              res.status(500).send("Server Error: Could not serve index.html");
+            }
+          } else {
+            //eslint-disable-next-line
+            console.error("Error not detected: ", err);
+          }
+        });
+      });
+       app.get("*", (req, res) => {
+        //eslint-disable-next-line
+        console.log("get *");
+        res.sendFile(indexPath, (err) => {
+        //eslint-disable-next-line
+        console.log("send file");
           if (err) {
             //eslint-disable-next-line
             console.error("res.sendFile Error:", err);
@@ -133,6 +173,8 @@ async function startServer() {
       //eslint-disable-next-line
       console.log(`Server running at https://localhost:${port}/`);
     });
+
+    return app;
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "An unknown error occurred";
