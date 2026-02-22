@@ -57,14 +57,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
+        }),
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -98,12 +98,13 @@ async function startServer() {
     const indexPath = path.join(__dirname, "public", "index.html");
     //eslint-disable-next-line
     console.log("Index path 1:", indexPath);
-    app.use(express.static(path.join(__dirname, "..", "public")));
     //eslint-disable-next-line
-    console.log("Index path 2:", indexPath);
-    app.use(express.static(path.join(__dirname, "..", "public", "index.html")));
+    console.log("Index path 2:", path.join(__dirname, "..", "public"));
     //eslint-disable-next-line
-    console.log("Index path 3:", indexPath);
+    console.log(
+      "Index path 3:",
+      path.join(__dirname, "..", "public", "index.html"),
+    );
     app.get("/*path", (req, res) => {
       res.sendFile(path.join(__dirname, "public", "index.html"));
     });
