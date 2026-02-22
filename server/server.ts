@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
+//eslint-disable-next-line
+console.error("express imports");
 import { fileURLToPath } from "url";
+//eslint-disable-next-line
+console.error("url import");
 import "dotenv/config";
+//eslint-disable-next-line
+console.error("dotenv import");
 export default async function handler(req: Request, res: Response) {
   try {
     const { default: bodyParser } = await import("body-parser");
@@ -23,7 +29,7 @@ export default async function handler(req: Request, res: Response) {
     const { default: signupRouter } = await import("./api/auth/signup.js");
     const { default: loginRouter } = await import("./api/auth/login.js");
     const { default: googleRouter } = await import("./api/auth/google.js");
-    const { default: logoutRouter } = await import("./api/auth/logout.js"); 
+    const { default: logoutRouter } = await import("./api/auth/logout.js");
     //eslint-disable-next-line
     console.error("imports successful");
     const app = express();
@@ -61,14 +67,14 @@ export default async function handler(req: Request, res: Response) {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -96,7 +102,7 @@ export default async function handler(req: Request, res: Response) {
     app.use("/api/auth", signupRouter);
     app.use("/api/auth", loginRouter);
     app.use("/api/auth", googleRouter);
-    app.use("/api/auth", logoutRouter);  
+    app.use("/api/auth", logoutRouter);
     //eslint-disable-next-line
     console.error("paths added");
 
