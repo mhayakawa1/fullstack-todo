@@ -56,14 +56,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
+        }),
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -99,7 +99,7 @@ async function startServer() {
     if (fs.existsSync(indexPath)) {
       //eslint-disable-next-line
       console.log("Index path:", indexPath);
-      app.get("*", (req, res) => {
+      app.get("/{*any}", (req, res) => {
         //eslint-disable-next-line
         console.log("app.get");
         res.sendFile(indexPath, (err) => {
