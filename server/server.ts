@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-//eslint-disable-next-line
-console.error("express imports");
 import { fileURLToPath } from "url";
-//eslint-disable-next-line
-console.error("url import");
 import "dotenv/config";
-//eslint-disable-next-line
-console.error("dotenv import");
 export default async function handler(req: Request, res: Response) {
+    //eslint-disable-next-line
+    console.error("function handler");
   try {
+    //eslint-disable-next-line
+    console.error("try");
     const { default: bodyParser } = await import("body-parser");
     const { default: express } = await import("express");
     const { default: cookieParser } = await import("cookie-parser");
@@ -17,6 +15,8 @@ export default async function handler(req: Request, res: Response) {
     const { default: fs } = await import("fs");
     const { default: https } = await import("https");
     const { default: helmet } = await import("helmet");
+    //eslint-disable-next-line
+    console.error("dependencies imported");
     const { default: checkAuthorization } = await import("./authMiddleware.js");
     const { default: todoRouter } = await import("./api/todos/todo.js");
     const { default: todosRouter } = await import("./api/todos/todos.js");
@@ -67,14 +67,14 @@ export default async function handler(req: Request, res: Response) {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
+        }),
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
