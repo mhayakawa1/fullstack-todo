@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { fileURLToPath } from "url";
-import "dotenv/config";
 export default async function handler(req: Request, res: Response) {
   //eslint-disable-next-line
   console.error("function handler");
