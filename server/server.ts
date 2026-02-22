@@ -107,6 +107,9 @@ async function startServer() {
             if (!res.headersSent) {
               res.status(500).send("Server Error: Could not serve index.html");
             }
+          } else {
+            //eslint-disable-next-line
+            console.error("Error not detected: ", err);
           }
         });
       });
