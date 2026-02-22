@@ -20,8 +20,7 @@ import loginRouter from "./api/auth/login.js";
 import googleRouter from "./api/auth/google.js";
 import logoutRouter from "./api/auth/logout.js";
 const app = express();
-const port = 10000;
-
+const port = Number(process.env.PORT) || 10000;
 async function startServer() {
   try {
     //eslint-disable-next-line
@@ -85,14 +84,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
+        }),
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void
+        callback: (err: Error | null, allow?: boolean) => void,
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
