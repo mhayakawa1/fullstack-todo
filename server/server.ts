@@ -99,7 +99,7 @@ async function startServer() {
     if (fs.existsSync(indexPath)) {
       //eslint-disable-next-line
       console.log("Index path:", indexPath);
-      app.get("/{*any}", (req, res) => {
+      app.get("/{*splat}", (req, res) => {
         //eslint-disable-next-line
         console.log("app.get");
         res.sendFile(indexPath, (err) => {
