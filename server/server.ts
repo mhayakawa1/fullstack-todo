@@ -56,14 +56,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -99,21 +99,16 @@ async function startServer() {
     if (fs.existsSync(indexPath)) {
       //eslint-disable-next-line
       console.log("Index path:", indexPath);
-      app.get("/*path", (req, res) => {
+      app.get("*", (req, res) => {
         //eslint-disable-next-line
-        console.log("get path");
+        console.log("app.get");
         res.sendFile(indexPath, (err) => {
-          //eslint-disable-next-line
-          console.log("send file");
           if (err) {
             //eslint-disable-next-line
             console.error("res.sendFile Error:", err);
             if (!res.headersSent) {
               res.status(500).send("Server Error: Could not serve index.html");
             }
-          } else {
-            //eslint-disable-next-line
-            console.error("Error not detected: ", err);
           }
         });
       });
