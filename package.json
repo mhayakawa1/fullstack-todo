@@ -37,8 +37,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "NODE_ENV=production node dist/server/server.js",
-    "dev": "NODE_ENV=development node server/server.js && set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
+    "start": "cross-env NODE_ENV=production node dist/server/server.js",
+    "dev": "cross-env NODE_ENV=development node server/server.js && set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
     "build": "react-scripts build && tsc",
     "test": "jest",
     "eject": "react-scripts eject",
@@ -70,6 +70,7 @@
     "@types/jest": "^30.0.0",
     "@types/supertest": "^6.0.3",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.1.0",
     "eslint": "^8.57.1",
     "husky": "^8.0.0",
     "jest": "^30.2.0",

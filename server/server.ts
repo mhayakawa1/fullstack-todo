@@ -21,7 +21,7 @@ import loginRouter from "./api/auth/login.js";
 import googleRouter from "./api/auth/google.js";
 import logoutRouter from "./api/auth/logout.js";
 const app = express();
-const port = Number(process.env.PORT) || 10000;
+const port = process.env.NODE_ENV === 'production' ? 8080 : Number(process.env.PORT) || 10000;
 async function startServer() {
   try {
     app.set("trust proxy", 1);
