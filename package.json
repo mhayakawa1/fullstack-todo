@@ -37,8 +37,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node dist/server/server.js",
-    "dev": "set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
+    "start": "NODE_ENV=production node server/server.js",
+    "dev": "NODE_ENV=development dist/server/server.js && set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
     "build": "react-scripts build && tsc",
     "test": "jest",
     "eject": "react-scripts eject",
