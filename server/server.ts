@@ -21,7 +21,8 @@ import loginRouter from "./api/auth/login.js";
 import googleRouter from "./api/auth/google.js";
 import logoutRouter from "./api/auth/logout.js";
 const app = express();
-const port = process.env.NODE_ENV === 'production' ? 8080 : Number(process.env.PORT) || 10000;
+const isProduction = process.env.RENDER;
+const port = isProduction ? Number(process.env.PORT) || 10000 : 8080;
 async function startServer() {
   try {
     app.set("trust proxy", 1);
@@ -43,26 +44,23 @@ async function startServer() {
       "https://fullstack-todo-1-hung.onrender.com",
     ];
 
-    if (!process.env.RENDER) {
+    if (!isProduction) {
       app.use(
         helmet({
           contentSecurityPolicy: {
             directives: {
-              "connect-src": [
-                "'self'",
-                "https://fullstack-todo-6g45.onrender.com",
-              ],
+              "connect-src": ["'self'", `https://localhost:${port}`],
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
@@ -106,7 +104,7 @@ async function startServer() {
     });
 
     let server;
-    if (process.env.RENDER) {
+    if (isProduction) {
       server = http.createServer(app);
     } else {
       const serverOptions = {
