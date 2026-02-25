@@ -21,16 +21,43 @@ import loginRouter from "./api/auth/login.js";
 import googleRouter from "./api/auth/google.js";
 import logoutRouter from "./api/auth/logout.js";
 const app = express();
-const isProduction = process.env.RENDER;
-const port = isProduction ? Number(process.env.PORT) || 10000 : 8080;
-//eslint-disable-next-line
-console.log(port)
+const port = Number(process.env.PORT) || 10000;
 async function startServer() {
   try {
+    //eslint-disable-next-line
+    console.log("Parser checks");
     app.set("trust proxy", 1);
+    app.use((req, res, next) => {
+      process.stdout.write("1. Body parser");
+      //eslint-disable-next-line
+      console.log("1. Body parser");
+      next();
+    });
     app.use(bodyParser.json());
+    app.use((req, res, next) => {
+      process.stdout.write("2. After body parser");
+      //eslint-disable-next-line
+      console.log("2. After body parser");
+      next();
+    });
+
+    app.use((req, res, next) => {
+      process.stdout.write("1. Before JSON parser");
+      //eslint-disable-next-line
+      console.log("1. Before JSON parser");
+      next();
+    });
     app.use(express.json());
+    app.use((req, res, next) => {
+      process.stdout.write("2. After JSON parser");
+      //eslint-disable-next-line
+      console.log("2. After JSON parser");
+      next();
+    });
+
     app.use(express.urlencoded({ extended: true }));
+
+    app.get("/test-route", (req, res) => res.send("Route is working"));
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -46,12 +73,15 @@ async function startServer() {
       "https://fullstack-todo-1-hung.onrender.com",
     ];
 
-    if (!isProduction) {
+    if (!process.env.RENDER) {
       app.use(
         helmet({
           contentSecurityPolicy: {
             directives: {
-              "connect-src": ["'self'", `https://localhost:${port}`],
+              "connect-src": [
+                "'self'",
+                "https://fullstack-todo-6g45.onrender.com",
+              ],
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
@@ -95,18 +125,29 @@ async function startServer() {
     app.use(express.static(path.join(__dirname, "..", "public")));
     const indexPath = path.join(__dirname, "..", "public", "index.html");
 
-    app.get("/{*splat}", (req, res) => {
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          if (!res.headersSent) {
-            res.status(500).send("Server Error: Could not serve index.html");
+    if (fs.existsSync(indexPath)) {
+      //eslint-disable-next-line
+      console.log("Index path:", indexPath);
+      app.get("/{*splat}", (req, res) => {
+        //eslint-disable-next-line
+        console.log("app.get");
+        res.sendFile(indexPath, (err) => {
+          if (err) {
+            //eslint-disable-next-line
+            console.error("res.sendFile Error:", err);
+            if (!res.headersSent) {
+              res.status(500).send("Server Error: Could not serve index.html");
+            }
           }
-        }
+        });
       });
-    });
+    } else {
+      //eslint-disable-next-line
+      console.error(indexPath, "ERROR: index.html not found");
+    }
 
     let server;
-    if (isProduction) {
+    if (process.env.RENDER) {
       server = http.createServer(app);
     } else {
       const serverOptions = {
@@ -127,6 +168,7 @@ async function startServer() {
       err instanceof Error ? err.message : "An unknown error occurred";
     const errorStack =
       err instanceof Error ? err.stack : "Unknown serror stack";
+
     //eslint-disable-next-line
     console.error("CATCH ERROR:", errorMessage, errorStack);
   }
