@@ -23,6 +23,8 @@ import logoutRouter from "./api/auth/logout.js";
 const app = express();
 const isProduction = process.env.RENDER;
 const port = isProduction ? Number(process.env.PORT) || 10000 : 8080;
+//eslint-disable-next-line
+console.log(port)
 async function startServer() {
   try {
     app.set("trust proxy", 1);
@@ -53,14 +55,14 @@ async function startServer() {
             },
           },
           crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        }),
+        })
       );
     }
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
-        callback: (err: Error | null, allow?: boolean) => void,
+        callback: (err: Error | null, allow?: boolean) => void
       ) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
           callback(null, true);
