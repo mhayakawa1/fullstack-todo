@@ -51,11 +51,11 @@ export default function Form(props: FormProps) {
   const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
-  const origin = process.env.RENDER
+  const origin = process.env.RENDER_EXTERNAL_URL
     ? "fullstack-todo-6g45.onrender.com"
     : "localhost:8080";
   //eslint-disable-next-line
-  console.log(origin);
+  console.log(process.env.RENDER_EXTERNAL_URL, origin);
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
@@ -120,7 +120,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
     const data = await response.json();
     return data;
@@ -135,7 +135,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback"
+          "google/callback",
         );
       }
     },
