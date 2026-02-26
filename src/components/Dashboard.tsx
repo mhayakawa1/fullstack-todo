@@ -35,7 +35,8 @@ interface Options {
 
 export default function Dashboard() {
   const today = new Date();
-  const url = "https://fullstack-todo-6g45.onrender.com/api/";
+  const origin = process.env.RENDER ? "fullstack-todo-6g45.onrender.com" : "localhost:8080"
+  const url = `https://${origin}/api/`;
   const defaultSortValue = useMemo(
     () => ({
       name: "Date Created (Asc)",
@@ -281,7 +282,6 @@ export default function Dashboard() {
       { method: "GET", credentials: "include" },
       sortOptions,
     );
-    // setSearchValue(input);
   };
 
   return (

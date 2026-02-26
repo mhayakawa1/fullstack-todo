@@ -51,6 +51,9 @@ export default function Form(props: FormProps) {
   const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
+  const origin = process.env.RENDER
+    ? "fullstack-todo-6g45.onrender.com"
+    : "localhost:8080";
 
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
@@ -65,7 +68,7 @@ export default function Form(props: FormProps) {
   };
 
   async function makeRequest(body: Body, path: string) {
-    fetch(`https://fullstack-todo-6g45.onrender.com/api/auth/${path}`, {
+    fetch(`https://${origin}/api/auth/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +119,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      },
+      }
     );
     const data = await response.json();
     return data;
@@ -131,7 +134,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback",
+          "google/callback"
         );
       }
     },
