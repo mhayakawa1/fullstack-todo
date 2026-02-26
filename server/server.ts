@@ -22,8 +22,7 @@ import logoutRouter from "./api/auth/logout.js";
 const app = express();
 const isProduction = process.env.RENDER;
 const port = isProduction ? Number(process.env.PORT) || 10000 : 8080;
-//eslint-disable-next-line
-console.log(port);
+
 async function startServer() {
   try {
     app.set("trust proxy", 1);
@@ -45,33 +44,33 @@ async function startServer() {
       "https://fullstack-todo-1-hung.onrender.com",
     ];
 
-    if (!isProduction) {
-      app.use(
-        helmet({
-          contentSecurityPolicy: {
-            directives: {
-              "connect-src": ["'self'", `https://localhost:${port}`],
-            },
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            "connect-src": [
+              "'self'",
+              `https://localhost:${port}`,
+              "https://fullstack-todo-6g45.onrender.com",
+              "https://accounts.google.com",
+            ],
+            "script-src": ["'self'", "https://accounts.google.com"],
+            "frame-src": ["'self'", "https://accounts.google.com"],
           },
-          crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-        })
-      );
-    }
+        },
+        crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+        crossOriginEmbedderPolicy: false,
+      })
+    );
 
     const corsOptions = {
       origin: function (
         origin: string | undefined,
         callback: (err: Error | null, allow?: boolean) => void
       ) {
-        //eslint-disable-next-line
-        console.log(origin);
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-          //eslint-disable-next-line
-          console.log(true);
           callback(null, true);
         } else {
-          //eslint-disable-next-line
-          console.log(false);
           callback(new Error("Not allowed by CORS"));
         }
       },
