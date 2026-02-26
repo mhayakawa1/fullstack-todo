@@ -56,6 +56,8 @@ export default function Form(props: FormProps) {
     : "localhost:8080";
   //eslint-disable-next-line
   console.log(process.env.RENDER_EXTERNAL_URL, origin);
+  //eslint-disable-next-line
+  console.log("Available Env Vars:", Object.keys(process.env).filter(k => k.startsWith('RENDER')));
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
