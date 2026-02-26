@@ -55,12 +55,6 @@ export default function Form(props: FormProps) {
     process.env.NODE_ENV === "production"
       ? "fullstack-todo-6g45.onrender.com"
       : "localhost:8080";
-  //eslint-disable-next-line
-  console.log(process.env.RENDER_EXTERNAL_URL, origin);
-  //eslint-disable-next-line
-  console.log("Available Env Vars:", Object.keys(process.env));
-  //eslint-disable-next-line
-  console.log("Node env:", process.env.NODE_ENV);
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
@@ -125,7 +119,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
     const data = await response.json();
     return data;
@@ -140,7 +134,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback"
+          "google/callback",
         );
       }
     },

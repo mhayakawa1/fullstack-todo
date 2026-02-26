@@ -35,9 +35,10 @@ interface Options {
 
 export default function Dashboard() {
   const today = new Date();
-  const origin = process.env.RENDER
-    ? "fullstack-todo-6g45.onrender.com"
-    : "localhost:8080";
+  const origin =
+    process.env.NODE_ENV === "production"
+      ? "fullstack-todo-6g45.onrender.com"
+      : "localhost:8080";
   const url = `https://${origin}/api/`;
   const defaultSortValue = useMemo(
     () => ({
@@ -48,7 +49,7 @@ export default function Dashboard() {
         page: 1,
       },
     }),
-    [],
+    []
   );
   const [initialRender, setInitialRender] = useState(true);
   const [todos, setTodos] = useState<TodosArray>([]);
@@ -115,7 +116,7 @@ export default function Dashboard() {
           setErrorVisible(true);
         });
     },
-    [navigate],
+    [navigate]
   );
 
   useEffect(() => {
@@ -129,7 +130,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        defaultSortValue,
+        defaultSortValue
       );
       setInitialRender(false);
     }
@@ -170,7 +171,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        null,
+        null
       );
     }
   };
@@ -178,7 +179,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const {
       target: { id, value },
@@ -196,7 +197,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newText: { title: string; description: string } | undefined
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -211,7 +212,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null,
+          null
         )
           .then(() => {
             newTodos.splice(newTodos.indexOf(newTodo), 1);
@@ -246,7 +247,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null,
+          null
         );
       }
     }
@@ -268,13 +269,13 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      newSortOptions,
+      newSortOptions
     );
   };
 
   const searchTodos = (
     event: React.FormEvent<HTMLFormElement>,
-    input: string,
+    input: string
   ) => {
     event.preventDefault();
     const sortedUrl = `${url}todos?search=${input}&`;
@@ -282,7 +283,7 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      sortOptions,
+      sortOptions
     );
   };
 
