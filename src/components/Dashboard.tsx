@@ -35,7 +35,9 @@ interface Options {
 
 export default function Dashboard() {
   const today = new Date();
-  const origin = process.env.RENDER ? "fullstack-todo-6g45.onrender.com" : "localhost:8080"
+  const origin = process.env.RENDER
+    ? "fullstack-todo-6g45.onrender.com"
+    : "localhost:8080";
   const url = `https://${origin}/api/`;
   const defaultSortValue = useMemo(
     () => ({

@@ -54,7 +54,8 @@ export default function Form(props: FormProps) {
   const origin = process.env.RENDER
     ? "fullstack-todo-6g45.onrender.com"
     : "localhost:8080";
-
+  //eslint-disable-next-line
+  console.log(origin);
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
