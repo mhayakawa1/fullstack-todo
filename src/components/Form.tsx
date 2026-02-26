@@ -57,10 +57,7 @@ export default function Form(props: FormProps) {
   //eslint-disable-next-line
   console.log(process.env.RENDER_EXTERNAL_URL, origin);
   //eslint-disable-next-line
-  console.log(
-    "Available Env Vars:",
-    Object.keys(process.env).filter((k) => k.startsWith("RENDER")),
-  );
+  console.log("Available Env Vars:", Object.keys(process.env));
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
@@ -125,7 +122,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      },
+      }
     );
     const data = await response.json();
     return data;
@@ -140,7 +137,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback",
+          "google/callback"
         );
       }
     },
