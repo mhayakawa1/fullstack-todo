@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
+import "dotenv/config";
 const client = new OAuth2Client();
 const secret = process.env.CLIENT_SECRET;
 

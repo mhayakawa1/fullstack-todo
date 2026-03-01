@@ -49,7 +49,7 @@ export default function Dashboard() {
         page: 1,
       },
     }),
-    []
+    [],
   );
   const [initialRender, setInitialRender] = useState(true);
   const [todos, setTodos] = useState<TodosArray>([]);
@@ -73,6 +73,8 @@ export default function Dashboard() {
 
   const makeRequest = useCallback(
     async (url: string, request: RequestInit, options: Options | null) => {
+      const { method } = request;
+      const newTodos = [...todosRef.current];
       if (options && options.params) {
         Object.entries(options.params).forEach((entry, index) => {
           return (url =
@@ -84,13 +86,17 @@ export default function Dashboard() {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
+          if (method === "DELETE") {
+            // const index = newTodos.findIndex((todo) => todo.id === data.id);
+            //const index
+            //
+          }
           return response.json();
         })
         .then((data) => {
           const { items, total } = data;
-          if (request.method === "PATCH") {
-            const newTodos = [...todosRef.current];
-            const index = newTodos.findIndex((todo) => todo.id === data.id);
+          const index = newTodos.findIndex((todo) => todo.id === data.id);
+          if (method === "PATCH") {
             newTodos.splice(index, 1, data);
             updateArrays(newTodos);
             setTitle("New Task");
@@ -116,7 +122,7 @@ export default function Dashboard() {
           setErrorVisible(true);
         });
     },
-    [navigate]
+    [navigate],
   );
 
   useEffect(() => {
@@ -130,7 +136,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        defaultSortValue
+        defaultSortValue,
       );
       setInitialRender(false);
     }
@@ -171,7 +177,7 @@ export default function Dashboard() {
             "Content-Type": "application/json",
           },
         },
-        null
+        null,
       );
     }
   };
@@ -179,7 +185,7 @@ export default function Dashboard() {
   const handleChange = (
     event:
       | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const {
       target: { id, value },
@@ -197,7 +203,7 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined
+    newText: { title: string; description: string } | undefined,
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
@@ -212,13 +218,13 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null
+          null,
         )
           .then(() => {
             newTodos.splice(newTodos.indexOf(newTodo), 1);
             const newDisplayTasks = [...sortedTodos];
             newDisplayTasks.splice(newDisplayTasks.indexOf(newTodo), 1);
-            setSortedTodos(newDisplayTasks);
+            updateArrays(newDisplayTasks);
           })
           .catch(() => {
             setErrorText("Delete unsuccessful");
@@ -247,7 +253,7 @@ export default function Dashboard() {
               "Content-Type": "application/json",
             },
           },
-          null
+          null,
         );
       }
     }
@@ -269,13 +275,13 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      newSortOptions
+      newSortOptions,
     );
   };
 
   const searchTodos = (
     event: React.FormEvent<HTMLFormElement>,
-    input: string
+    input: string,
   ) => {
     event.preventDefault();
     const sortedUrl = `${url}todos?search=${input}&`;
@@ -283,7 +289,7 @@ export default function Dashboard() {
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
-      sortOptions
+      sortOptions,
     );
   };
 
@@ -349,7 +355,7 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center gap-2 w-[400px] ">
         <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
         <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
-          {todos.length
+          {sortedTodos.length
             ? todos.map((todo: TodoInterface) => (
                 <Todo key={todo.id} data={todo} updateTodos={updateTodos} />
               ))

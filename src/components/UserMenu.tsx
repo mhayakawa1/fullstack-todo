@@ -36,6 +36,10 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const [userInfo, setUserInfo] = useState(emptyUserData);
+  const origin =
+    process.env.NODE_ENV === "production"
+      ? "fullstack-todo-6g45.onrender.com"
+      : "localhost:8080";
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
@@ -44,7 +48,7 @@ export default function UserMenu() {
   };
 
   const getUserInfo = useCallback(async () => {
-    fetch("https://localhost:8080/api/auth/userInfo", {
+    fetch(`https://${origin}/api/auth/userInfo`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -68,15 +72,13 @@ export default function UserMenu() {
         }
       })
       .catch(() => {
-        //eslint-disable-next-line
-        console.clear();
         setUserInfo(emptyUserData);
       });
   }, [userInfo]);
 
   async function handleLogout() {
     googleLogout();
-    fetch("https://fullstack-todo-6g45.onrender.com/api/auth/logout", {
+    fetch(`https://${origin}/api/auth/logout`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -100,7 +102,7 @@ export default function UserMenu() {
   }
 
   useEffect(() => {
-    if (location.pathname === "/dashboard") {
+    if (location.pathname === "/dashboard" && !userInfo.email.length) {
       getUserInfo();
     }
   }, [location.search, location.pathname, getUserInfo]);

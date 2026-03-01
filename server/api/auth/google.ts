@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { addUser, createUser, findUser } from "../data/users.js";
 import { createCookie } from "../../createCookie.js";
+import "dotenv/config";
 const googleRouter = express.Router();
 const clientId = process.env.CLIENT_ID;
 const secret = process.env.CLIENT_SECRET;
