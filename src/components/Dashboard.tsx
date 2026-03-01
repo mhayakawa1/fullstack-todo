@@ -86,11 +86,6 @@ export default function Dashboard() {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          if (method === "DELETE") {
-            // const index = newTodos.findIndex((todo) => todo.id === data.id);
-            //const index
-            //
-          }
           return response.json();
         })
         .then((data) => {
