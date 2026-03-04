@@ -47,6 +47,7 @@ export default function Form(props: FormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState([]);
   const [errorVisible, setErrorVisible] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
@@ -55,6 +56,7 @@ export default function Form(props: FormProps) {
     process.env.NODE_ENV === "production"
       ? "fullstack-todo-6g45.onrender.com"
       : "localhost:8080";
+
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
@@ -78,7 +80,10 @@ export default function Form(props: FormProps) {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return response.json().then((data) => {
+            const { errors } = data;
+            setErrors(errors);
+          });
         }
         return response.json();
       })
@@ -119,7 +124,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      },
+      }
     );
     const data = await response.json();
     return data;
@@ -134,7 +139,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback",
+          "google/callback"
         );
       }
     },
@@ -156,6 +161,7 @@ export default function Form(props: FormProps) {
             errorMessage="Please enter your name."
             updateInput={updateInput}
             password=""
+            errors={errors}
           />
         ) : null}
         <FormInput
@@ -165,6 +171,7 @@ export default function Form(props: FormProps) {
           errorMessage="Please enter a valid email."
           updateInput={updateInput}
           password=""
+          errors={errors}
         />
         <FormInput
           type="password"
@@ -173,6 +180,7 @@ export default function Form(props: FormProps) {
           errorMessage="Password must be at least 8 characters."
           updateInput={updateInput}
           password={confirmPassword}
+          errors={errors}
         />
         {isSignup ? (
           <FormInput
@@ -182,6 +190,7 @@ export default function Form(props: FormProps) {
             errorMessage="Passwords do not match."
             updateInput={updateInput}
             password={password}
+            errors={errors}
           />
         ) : null}
         {errorVisible ? (

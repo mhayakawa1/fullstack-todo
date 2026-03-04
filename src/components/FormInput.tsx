@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash, FaCheck } from "react-icons/fa";
 import "../index.css";
+
+interface Error {
+  field: string;
+  message: string;
+}
 
 interface FormProps {
   type: string;
@@ -9,10 +14,19 @@ interface FormProps {
   errorMessage: string;
   updateInput: (label: string, value: string) => void;
   password: string;
+  errors: Array<Error>;
 }
 
 export default function FormInput(props: FormProps) {
-  const { type, label, autoFocus, errorMessage, updateInput, password } = props;
+  const {
+    type,
+    label,
+    autoFocus,
+    errorMessage,
+    updateInput,
+    password,
+    errors,
+  } = props;
   const [isVisible, setIsVisible] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
   const [checkVisible, setCheckVisible] = useState(false);
@@ -42,6 +56,15 @@ export default function FormInput(props: FormProps) {
     updateInput(label, value);
   };
 
+  useEffect(() => {
+    if (errors.find((error: Error) => error.field === type)) {
+      setIsInvalid(true);
+    } else {
+      setIsInvalid(false);
+    }
+    errors.find((error: Error) => error.field === type);
+  }, [errors]);
+
   return (
     <div className="flex flex-col">
       <label htmlFor={type} className="cursor-pointer flex gap-2">
@@ -62,7 +85,9 @@ export default function FormInput(props: FormProps) {
           }
           autoFocus={autoFocus}
           onBlur={checkValidation}
-          className="w-full h-10 px-4 border-none box-border rounded-lg bg-white bg-opacity-15 text-white placeholder-white placeholder-opacity-50"
+          className={`w-full h-10 px-4 ${
+            isInvalid ? "border border-solid border-red-500" : "border-none"
+          } bg-white box-border rounded-lg bg-opacity-15 text-white placeholder-white placeholder-opacity-50`}
           required
         />
         {isPassword ? (
