@@ -35,7 +35,7 @@ signupRouter.post("/signup", async (req: Request, res: Response) => {
         passwordHash: hashedPassword,
       };
       const insert = db.prepare(
-        "INSERT INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)"
+        "INSERT INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)",
       );
       const info = insert.run(newUser);
       return res.status(201).json({

@@ -19,7 +19,7 @@ db.prepare(
         email TEXT UNIQUE NOT NULL,
         passwordHash TEXT NOT NULL
     );
-`
+`,
 ).run();
 
 const defaultUsers: User[] = [
@@ -32,7 +32,7 @@ const defaultUsers: User[] = [
   },
 ];
 const insert = db.prepare(
-  "INSERT OR IGNORE INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)"
+  "INSERT OR IGNORE INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)",
 );
 
 const seedUsers = db.transaction((users) => {

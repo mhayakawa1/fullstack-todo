@@ -124,7 +124,7 @@ export default function Form(props: FormProps) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
     const data = await response.json();
     return data;
@@ -139,7 +139,7 @@ export default function Form(props: FormProps) {
       if (userProfile) {
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
-          "google/callback"
+          "google/callback",
         );
       }
     },
