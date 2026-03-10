@@ -57,7 +57,7 @@ export default function FormInput(props: FormProps) {
   };
 
   useEffect(() => {
-    if (errors.find((error: Error) => error.field === type)) {
+    if (errors && errors.find((error: Error) => error.field === type)) {
       setIsInvalid(true);
     } else {
       setIsInvalid(false);

@@ -1,13 +1,16 @@
 import express, { Request, Response } from "express";
-import users, { createUser } from "../data/users.js";
 import bcrypt from "bcryptjs";
+import db from "../../../db.js";
+import { User } from "../../../db.js";
 const signupRouter = express.Router();
 
 signupRouter.post("/signup", async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
+  const users = db.prepare("SELECT * FROM users").all() as User[];
   const preexistingUser = users.find((user) => user.email === email);
   const passwordValid = password.length >= 8;
+
   if (preexistingUser || !passwordValid) {
     const errors = [];
     if (preexistingUser) {
@@ -24,16 +27,27 @@ signupRouter.post("/signup", async (req: Request, res: Response) => {
     });
   } else if (!preexistingUser && passwordValid) {
     const uuid = crypto.randomUUID();
-    const newUser = createUser(
-      uuid,
-      name,
-      hashedPassword,
-      email,
-      "https://t3.ftcdn.net/jpg/03/46/83/96/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg",
-      false
-    );
-    users.push(newUser);
-    res.status(201).json({ errors: [], message: "User registered." });
+    try {
+      const newUser = {
+        id: uuid,
+        name: name,
+        email: email,
+        passwordHash: hashedPassword,
+      };
+      const insert = db.prepare(
+        "INSERT INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)"
+      );
+      const info = insert.run(newUser);
+      return res.status(201).json({
+        errors: [],
+        message: "User registered.",
+        id: info.lastInsertRowid,
+      });
+    } catch (err) {
+      return res.status(400).json({
+        errors: [err],
+      });
+    }
   }
 });
 

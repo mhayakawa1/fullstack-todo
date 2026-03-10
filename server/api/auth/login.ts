@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { createCookie } from "../../createCookie.js";
-import { findUser } from "../data/users.js";
+import db from "../../../db.js";
+import { User } from "../../../db.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 const secret = process.env.CLIENT_SECRET;
@@ -8,12 +9,13 @@ const loginRouter = express.Router();
 
 loginRouter.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const user = findUser(email);
+  const users = db.prepare("SELECT * FROM users").all() as User[];
+  const user = users.find((user) => user.email === email);
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials" });
   } else if (secret) {
     const { id } = user;
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
