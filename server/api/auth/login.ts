@@ -12,7 +12,7 @@ loginRouter.post("/login", async (req: Request, res: Response) => {
   const users = db.prepare("SELECT * FROM users").all() as User[];
   const user = users.find((user) => user.email === email);
   if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
+    return res.status(401).json({ errors: [], message: "Invalid credentials" });
   } else if (secret) {
     const { id } = user;
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
