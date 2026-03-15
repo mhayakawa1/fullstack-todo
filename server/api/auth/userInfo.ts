@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
-import users from "../data/users.js";
+import db from "../../../db.js";
+import { User } from "../../../db.js";
 const userInfoRouter = express.Router();
 import checkAuthorization from "../../authMiddleware.js";
 
@@ -8,9 +9,10 @@ userInfoRouter.get(
   checkAuthorization,
   (req: Request & { user?: object & { id?: string } }, res: Response) => {
     const { user } = req;
+    const users = db.prepare("SELECT * FROM users").all() as User[];
     if (user) {
       const { id } = user;
-      const userInfo = users.find((element) => element.id == id);
+      const userInfo = users.find((user) => user.id === id);
       if (userInfo) {
         res.status(200).json(userInfo);
       }

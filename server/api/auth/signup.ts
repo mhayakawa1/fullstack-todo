@@ -33,9 +33,11 @@ signupRouter.post("/signup", async (req: Request, res: Response) => {
         name: name,
         email: email,
         passwordHash: hashedPassword,
+        picture: "",
+        isGoogleAccount: 0,
       };
       const insert = db.prepare(
-        "INSERT INTO users (id, name, email, passwordHash) VALUES (:id, :name, :email, :passwordHash)",
+        "INSERT INTO users (id, name, email, passwordHash, picture, isGoogleAccount) VALUES (:id, :name, :email, :passwordHash, :picture, :isGoogleAccount)",
       );
       const info = insert.run(newUser);
       return res.status(201).json({
