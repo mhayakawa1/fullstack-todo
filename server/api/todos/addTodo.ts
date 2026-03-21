@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
-import { todos, createTodo, paginate } from "../data/todosData.js";
+import db from "../../../db.js";
+import { UserTodos, paginate, createTodo } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const addTodoRouter = express.Router();
 
@@ -25,13 +26,22 @@ addTodoRouter.post("/", checkAuthorization, (req: Request, res: Response) => {
       data.createdAt,
       data.updatedAt,
     );
-    const index = todos.findIndex((element) => element.userId === id);
-    todos[index].items.unshift(newTodo);
-    const { length } = todos[index].items;
-    const paginatedTodos = paginate(todos[index].items, length);
-    res
-      .status(201)
-      .json({ items: paginatedTodos[0], page: 1, limit: 2, total: length });
+    const userTodos = db
+      .prepare("SELECT * FROM todos WHERE id = ?")
+      .get(id) as UserTodos;
+    if (userTodos) {
+      const items = JSON.parse(userTodos.items.toString());
+      items.unshift(newTodo);
+      db.prepare("UPDATE todos SET items = :items WHERE id = :id").run({
+        items: JSON.stringify(items),
+        id: id,
+      });
+      const { length } = items;
+      const paginatedTodos = paginate(items, length);
+      res
+        .status(201)
+        .json({ items: paginatedTodos[0], page: 1, limit: 2, total: length });
+    }
   } else {
     res.status(400).send("Invalid data");
   }

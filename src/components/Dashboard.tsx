@@ -135,7 +135,14 @@ export default function Dashboard() {
       );
       setInitialRender(false);
     }
-  }, [makeRequest, todos.length, navigate, defaultSortValue, initialRender]);
+  }, [
+    makeRequest,
+    todos.length,
+    navigate,
+    defaultSortValue,
+    initialRender,
+    url,
+  ]);
 
   const sortTodos = (options: Options) => {
     options.params.page = 1;

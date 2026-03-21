@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
-import { todos } from "../data/todosData.js";
+import db from "../../../db.js";
+import { UserTodos, Todo } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const editTodoRouter = express.Router();
 
@@ -20,9 +21,12 @@ editTodoRouter.patch(
       data.createdAt &&
       data.updatedAt
     ) {
-      const userTodos = todos.find((element) => element.userId == id);
+      const userTodos = db
+        .prepare("SELECT * FROM todos WHERE id = ?")
+        .get(id) as UserTodos;
       if (userTodos) {
-        const todo = userTodos.items.find((element) => element.id === todoId);
+        const items = JSON.parse(userTodos.items.toString());
+        const todo = items.find((element: Todo) => element.id === todoId);
         if (todo) {
           todo.title = data.title;
           todo.description = data.description;

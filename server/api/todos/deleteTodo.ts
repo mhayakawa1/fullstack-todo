@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
-import { todos } from "../data/todosData.js";
+import db from "../../../db.js";
+import { UserTodos, Todo } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const deleteTodoRouter = express.Router();
 
@@ -8,17 +9,19 @@ deleteTodoRouter.delete(
   checkAuthorization,
   (req: Request, res: Response) => {
     const { id } = req.cookies.accessToken;
-    const todoId = JSON.parse(JSON.stringify(req.params)).id;
-    const index = todos.findIndex((element) => element.userId === id);
-    const newTodos = todos.find((element) => element.userId === id);
-
+    const userTodos = db
+      .prepare("SELECT * FROM todos WHERE id = ?")
+      .get(id) as UserTodos;
+    const items = JSON.parse(userTodos.items.toString());
+    const index = items.findIndex((element: Todo) => element.userId === id);
     if (index === -1) {
       return res.status(404).send("Data not found");
-    } else if (newTodos) {
-      const todoIndex = todos[index].items.findIndex(
-        (todo) => todo.id === todoId,
-      );
-      todos[index].items.splice(todoIndex, 1);
+    } else if (items) {
+      items.splice(index, 1);
+      db.prepare("UPDATE todos SET items = :items WHERE id = :id").run({
+        items: JSON.stringify(items),
+        id: id,
+      });
       return res.status(204);
     }
   },

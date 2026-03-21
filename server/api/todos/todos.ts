@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
-import { todos, paginate } from "../data/todosData.js";
+import db from "../../../db.js";
+import { UserTodos, paginate } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const todosRouter = express.Router();
 
@@ -10,11 +11,12 @@ todosRouter.get("/", checkAuthorization, (req: Request, res: Response) => {
   const query = JSON.parse(JSON.stringify(req.query));
   const { status, sortBy, sortOrder, page, search } = query;
   const { id } = req.cookies.accessToken;
-  const userTodos = todos.find((element) => element.userId === id);
+  const allTodos = db.prepare("SELECT * FROM todos").all() as UserTodos[];
+  const userTodos = allTodos.find((element) => element.id === id);
   if (userTodos) {
-    const { items } = userTodos;
-    let newTodos = [...items];
-    if (items && items.length) {
+    const parsedItems = JSON.parse(userTodos.items.toString());
+    let newTodos = [...parsedItems];
+    if (parsedItems && parsedItems.length) {
       if (search) {
         newTodos = newTodos.filter((todo) =>
           `${todo.title} ${todo.description}`.toLowerCase().includes(search),
@@ -50,10 +52,14 @@ todosRouter.get("/", checkAuthorization, (req: Request, res: Response) => {
       total: length,
     });
   } else {
-    todos.push({
-      userId: id,
-      items: [],
-    });
+    const newTodos = {
+      id: id,
+      items: "[]",
+    };
+    const insert = db.prepare(
+      "INSERT INTO todos (id, items) VALUES (:id, :items)",
+    );
+    insert.run(newTodos);
   }
 });
 
