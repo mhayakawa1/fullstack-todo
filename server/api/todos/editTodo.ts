@@ -33,6 +33,10 @@ editTodoRouter.patch(
           todo.status = data.status;
           todo.dueDate = data.dueDate;
           todo.updatedAt = data.updatedAt;
+          db.prepare("UPDATE todos SET items = :items WHERE id = :id").run({
+            items: JSON.stringify(items),
+            id: id,
+          });
           res.status(200).json(todo);
         }
       } else {
