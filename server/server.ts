@@ -52,6 +52,7 @@ async function startServer() {
               "'self'",
               `https://localhost:${port}`,
               "https://fullstack-todo-6g45.onrender.com",
+              "https://fullstack-todo-1-hung.onrender.com",
               "https://accounts.google.com",
             ],
             "script-src": ["'self'", "https://accounts.google.com"],
