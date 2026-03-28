@@ -52,10 +52,7 @@ export default function Form(props: FormProps) {
   const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
-  const origin =
-    process.env.NODE_ENV === "production"
-      ? "fullstack-todo-6g45.onrender.com"
-      : "localhost:8080";
+  const isProduction = process.env.NODE_ENV === "production";
 
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
@@ -70,7 +67,7 @@ export default function Form(props: FormProps) {
   };
 
   async function makeRequest(body: Body, path: string) {
-    fetch(`https://${origin}/api/auth/${path}`, {
+    fetch(`${!isProduction ? "https://localhost:8080" : ""}/api/auth/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
