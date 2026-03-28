@@ -17,7 +17,7 @@ interface TodoProps {
   };
   updateTodos: (
     id: string | number,
-    newchecked: boolean | undefined,
+    newChecked: boolean | undefined,
     newText: { title: string; description: string } | undefined,
     newPage: number,
   ) => void;
@@ -31,7 +31,7 @@ export default function Todo(props: TodoProps) {
   const [newTitle, setNewTitle] = useState(title);
   const [newDueDate, setNewDueDate] = useState(new Date(dueDate));
   const [newDescription, setNewDescription] = useState(description);
-  const checked = status === "complete";
+  const checked = status === "done";
 
   const editText = (
     event:

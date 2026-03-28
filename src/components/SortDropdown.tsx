@@ -20,17 +20,17 @@ interface DropdownProps {
 
 const options = [
   {
-    name: "Date Created (Asc)",
-    params: { sortBy: "createdAt", sortOrder: "asc" },
-  },
-  {
     name: "Date Created (Desc)",
     params: { sortBy: "createdAt", sortOrder: "desc" },
   },
+  {
+    name: "Date Created (Asc)",
+    params: { sortBy: "createdAt", sortOrder: "asc" },
+  },
   { name: "Due Date (Asc)", params: { sortBy: "dueDate", sortOrder: "asc" } },
   { name: "Due Date (Desc)", params: { sortBy: "dueDate", sortOrder: "desc" } },
-  { name: "Incomplete", params: { status: "incomplete" } },
-  { name: "Complete", params: { status: "complete" } },
+  { name: "In Progress", params: { status: "in_progress" } },
+  { name: "Done", params: { status: "done" } },
 ];
 
 export default function SortDropdown(props: DropdownProps) {

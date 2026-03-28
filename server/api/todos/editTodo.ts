@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import db from "../../../db.js";
-import { UserTodos, Todo } from "../../../db.js";
+import { Todo } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const editTodoRouter = express.Router();
 
@@ -21,22 +21,19 @@ editTodoRouter.patch(
       data.createdAt &&
       data.updatedAt
     ) {
-      const userTodos = db
-        .prepare("SELECT * FROM todos WHERE id = ?")
-        .get(id) as UserTodos;
+      const allTodos = db.prepare("SELECT * FROM todos").all() as Todo[];
+      const userTodos = allTodos.filter((element) => element.userId === id);
       if (userTodos) {
-        const items = JSON.parse(userTodos.items.toString());
-        const todo = items.find((element: Todo) => element.id === todoId);
+        const todo = userTodos.find((element: Todo) => element.id === todoId);
         if (todo) {
           todo.title = data.title;
           todo.description = data.description;
           todo.status = data.status;
           todo.dueDate = data.dueDate;
           todo.updatedAt = data.updatedAt;
-          db.prepare("UPDATE todos SET items = :items WHERE id = :id").run({
-            items: JSON.stringify(items),
-            id: id,
-          });
+          db.prepare(
+            "UPDATE todos SET title = :title, description = :description, status = :status, dueDate = :dueDate, updatedAt = :updatedAt WHERE id = :id",
+          ).run({ ...todo });
           res.status(200).json(todo);
         }
       } else {

@@ -42,10 +42,10 @@ export default function Dashboard() {
   const url = `https://${origin}/api/`;
   const defaultSortValue = useMemo(
     () => ({
-      name: "Date Created (Asc)",
+      name: "Date Created (Desc)",
       params: {
-        sortBy: "created",
-        sortOrder: "asc",
+        sortBy: "createdAt",
+        sortOrder: "desc",
         page: 1,
       },
     }),
@@ -84,7 +84,7 @@ export default function Dashboard() {
       fetch(url, request)
         .then((response) => {
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTgTP error! status: ${response.status}`);
           }
           return response.json();
         })
@@ -99,7 +99,7 @@ export default function Dashboard() {
           } else if (items) {
             setPage(data.page);
             if (total) {
-              setTotal(Math.ceil(data.total / 2));
+              setTotal(Math.ceil(data.total / 10));
             }
             updateArrays(items);
           }
@@ -159,7 +159,7 @@ export default function Dashboard() {
       const todoData = {
         title: title,
         description: description,
-        status: "incomplete",
+        status: "in_progress",
         dueDate: dueDate.toISOString(),
         createdAt: date,
         updatedAt: date,
@@ -233,7 +233,7 @@ export default function Dashboard() {
           });
       } else {
         if (newStatus !== undefined) {
-          newTodo.status = newStatus ? "complete" : "incomplete";
+          newTodo.status = newStatus ? "done" : "in_progress";
         } else if (newText) {
           const { title, description } = newText;
           if (title !== newTodo.title) {
@@ -245,6 +245,7 @@ export default function Dashboard() {
         }
         const date = new Date();
         newTodo.updatedAt = date;
+
         makeRequest(
           `${url}todos/${newTodo.id}`,
           {
