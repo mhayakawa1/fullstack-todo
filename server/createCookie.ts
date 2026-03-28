@@ -14,7 +14,7 @@ export function createCookie(
   res.cookie("accessToken", tokenInfo, {
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000,
   });
   return res.send(200);
