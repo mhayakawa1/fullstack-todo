@@ -36,10 +36,7 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const [userInfo, setUserInfo] = useState(emptyUserData);
-  const origin =
-    process.env.NODE_ENV === "production"
-      ? "fullstack-todo-6g45.onrender.com"
-      : "localhost:8080";
+  const origin = `${process.env.NODE_ENV === "production" ? "" : "https://localhost:8080"}/api/auth/`;
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
@@ -48,7 +45,7 @@ export default function UserMenu() {
   };
 
   const getUserInfo = useCallback(async () => {
-    fetch(`https://${origin}/api/auth/userInfo`, {
+    fetch(`${origin}userInfo`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -78,7 +75,7 @@ export default function UserMenu() {
 
   async function handleLogout() {
     googleLogout();
-    fetch(`https://${origin}/api/auth/logout`, {
+    fetch(`${origin}logout`, {
       method: "POST",
       credentials: "include",
       headers: {
