@@ -67,14 +67,17 @@ export default function Form(props: FormProps) {
   };
 
   async function makeRequest(body: Body, path: string) {
-    fetch(`${!isProduction ? "https://localhost:8080" : ""}/api/auth/${path}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    fetch(
+      `${!isProduction ? "https://localhost:8080" : ""}/server/api/auth/${path}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
       },
-      credentials: "include",
-      body: JSON.stringify(body),
-    })
+    )
       .then((response) => {
         if (!response.ok) {
           return response.json().then((data) => {
