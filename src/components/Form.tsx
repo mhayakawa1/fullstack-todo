@@ -68,7 +68,7 @@ export default function Form(props: FormProps) {
 
   async function makeRequest(body: Body, path: string) {
     fetch(
-      `${!isProduction ? "https://localhost:8080" : ""}/server/api/auth/${path}`,
+      `${!isProduction ? "https://localhost:8080" : "/server"}/api/auth/${path}`,
       {
         method: "POST",
         headers: {
@@ -80,7 +80,7 @@ export default function Form(props: FormProps) {
     )
       .then((response) => {
         //eslint-disable-next-line
-        console.log(response);
+        console.log(response.json);
         if (!response.ok) {
           return response.json().then((data) => {
             const { errors } = data;
