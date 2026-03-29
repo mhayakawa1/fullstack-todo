@@ -80,7 +80,7 @@ export default function Form(props: FormProps) {
     )
       .then((response) => {
         //eslint-disable-next-line
-        console.log(response)
+        console.log(response);
         if (!response.ok) {
           return response.json().then((data) => {
             const { errors } = data;
@@ -91,7 +91,7 @@ export default function Form(props: FormProps) {
       })
       .then((data) => {
         //eslint-disable-next-line
-        console.log(data)
+        console.log(data);
         if (data === 200) {
           //eslint-disable-next-line
           console.clear();
@@ -102,7 +102,9 @@ export default function Form(props: FormProps) {
           setErrorVisible(false);
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        //eslint-disable-next-line
+        console.log(error);
         setErrorVisible(true);
       });
   }
