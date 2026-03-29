@@ -42,6 +42,7 @@
     "client": "set HTTPS=true&&set SSL_CRT_FILE=server/localhost+2.pem&&set SSL_KEY_FILE=server/localhost+2-key.pem&&react-scripts start",
     "dev": "cross-env NODE_ENV=development concurrently \"nodemon -e ts --exec tsx server/server.ts\" \"npm run client\"",
     "build": "react-scripts build && tsc",
+    "seed": "tsx seed.ts",
     "test": "jest",
     "eject": "react-scripts eject",
     "lint": "eslint \"**/*.{ts,tsx}\"",
