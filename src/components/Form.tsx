@@ -80,7 +80,7 @@ export default function Form(props: FormProps) {
     )
       .then((response) => {
         //eslint-disable-next-line
-        console.log(response.json);
+        console.log(response.json());
         if (!response.ok) {
           return response.json().then((data) => {
             const { errors } = data;
