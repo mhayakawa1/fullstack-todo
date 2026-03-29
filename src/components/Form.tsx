@@ -79,6 +79,8 @@ export default function Form(props: FormProps) {
       },
     )
       .then((response) => {
+        //eslint-disable-next-line
+        console.log(response)
         if (!response.ok) {
           return response.json().then((data) => {
             const { errors } = data;
@@ -88,6 +90,8 @@ export default function Form(props: FormProps) {
         return response.json();
       })
       .then((data) => {
+        //eslint-disable-next-line
+        console.log(data)
         if (data === 200) {
           //eslint-disable-next-line
           console.clear();
