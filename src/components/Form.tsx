@@ -52,8 +52,6 @@ export default function Form(props: FormProps) {
   const [successVisible, setSuccessVisible] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
-  const isProduction = process.env.NODE_ENV === "production";
-
   const updateInput = (label: string, value: string) => {
     if (label === "Email") {
       setEmail(value);
@@ -68,7 +66,7 @@ export default function Form(props: FormProps) {
 
   async function makeRequest(body: Body, path: string) {
     fetch(
-      `${!isProduction ? "https://localhost:8080" : ""}/api/auth/${path}`,
+      `${process.env.NODE_ENV === "production" ? "" : "https://localhost:8080"}/api/auth/${path}`,
       {
         method: "POST",
         headers: {
@@ -88,8 +86,6 @@ export default function Form(props: FormProps) {
         return response.json();
       })
       .then((data) => {
-        //eslint-disable-next-line
-        console.log(data);
         if (data === 200) {
           //eslint-disable-next-line
           console.clear();
@@ -100,9 +96,7 @@ export default function Form(props: FormProps) {
           setErrorVisible(false);
         }
       })
-      .catch((error) => {
-        //eslint-disable-next-line
-        console.log(error);
+      .catch(() => {
         setErrorVisible(true);
       });
   }
