@@ -148,7 +148,7 @@ export default function Form(props: FormProps) {
   };
 
   return (
-    <div className="relative m-auto flex flex-col justify-center items-center gap-3 p-4 w-[364px] bg-white bg-opacity-25 rounded-lg">
+    <div className="relative m-auto flex flex-col justify-center items-center gap-3 p-4 max-sm:w-[300px] w-[364px] bg-white bg-opacity-25 rounded-lg">
       <form className="w-full flex flex-col gap-3 text-white">
         <h1 className="text-center font-normal">{title}</h1>
         {isSignup ? (

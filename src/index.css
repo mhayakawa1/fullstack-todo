@@ -3,11 +3,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
-  background-image: linear-gradient(to right, #a834ff, #00acf0, #42fcff);
+  background-image: linear-gradient(to right, #7025b1, #1a45bd, #4764fa);
   font-family: "Poppins", sans-serif;
 }
 
-main{  
+main {
   padding: 0 0 16vh 0;
 }
 
@@ -32,10 +32,10 @@ button {
 }
 
 input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0px 1000px rbg(255,255,255,.15) inset !important; 
-        -webkit-text-fill-color: white !important;
-        transition: background-color 5000s ease-in-out 0s;
-    }
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px rbg(255, 255, 255, 0.15) inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
