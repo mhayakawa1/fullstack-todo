@@ -27,7 +27,7 @@ export default function SearchBar(props: SearchProps) {
         searchTodos(event, input);
         setInput("");
       }}
-      className="max-sm:w-[260px] w-[400px] grow flex items-center gap-2 bg-white rounded-lg h-10 pl-4 box-border"
+      className="max-sm:w-[90vw] w-[400px] grow flex items-center gap-2 bg-white rounded-lg h-10 pl-4 box-border"
     >
       <FaSearch className="text-[#3f27c2]" />
       <input

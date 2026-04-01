@@ -18,9 +18,9 @@ export default function TodoText(props: InputProps) {
     onChange: editText,
     className: `${
       isTitle
-        ? "text-lg"
+        ? "w-[95%] text-lg"
         : "w-full h-24 resize-none bg-white bg-opacity-25 rounded-lg p-2 box-border"
-    } text-white bg-transparent border-none outline-none`,
+    } text-white bg-transparent outline-none border-none`,
     value: value,
   };
 

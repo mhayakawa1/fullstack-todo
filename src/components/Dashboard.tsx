@@ -295,7 +295,7 @@ export default function Dashboard() {
 
   return (
     <main className="flex flex-col items-center gap-6 pb-[64vh]">
-      <div className="flex flex-col items-center px-4 gap-4 box-border">
+      <div className="w-full flex flex-col items-center px-4 gap-4 box-border">
         <h1 className="text-white font-medium">TO DO LIST</h1>
         {errorVisible ? (
           <div className="flex flex-col justify-center items-center gap-4 w-[400px] h-fit box-border rounded-lg px-4 bg-white bg-opacity-25">
@@ -314,7 +314,7 @@ export default function Dashboard() {
                   autoFocus
                   minLength={1}
                   maxLength={120}
-                  className="grow max-sm:w-[100px] h-4 p-0 outline-none border-none text-white bg-transparent text-lg m-0"
+                  className="grow h-4 p-0 outline-none border-none text-white bg-transparent text-lg m-0"
                 />
                 <CharacterCounter limit={120} length={title.length} />
               </div>
@@ -352,7 +352,7 @@ export default function Dashboard() {
         </form>
       </div>
       <SearchBar searchTodos={searchTodos} />
-      <div className="flex flex-col items-center justify-center gap-2 max-xs:w-[260px] w-[400px]">
+      <div className="flex flex-col items-center justify-center gap-2 max-sm:w-[90vw] w-[400px]">
         <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
         <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
           {sortedTodos.length

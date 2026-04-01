@@ -71,7 +71,7 @@ export default function Todo(props: TodoProps) {
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-0 grow">
             <div className="w-full flex justify-between">
-              <div className="grow w-full max-sm:w-[100px] flex justify-between items-center">
+              <div className="grow w-full flex justify-between items-center">
                 <TodoText
                   id={id}
                   isTitle={true}
