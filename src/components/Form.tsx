@@ -66,7 +66,7 @@ export default function Form(props: FormProps) {
 
   async function makeRequest(body: Body, path: string) {
     fetch(
-      `${process.env.NODE_ENV === "production" ? "" : "https://localhost:8080"}/api/auth/${path}`,
+      `${process.env.NODE_ENV === "production" ? "https://fullstack-todo-app-server.onrender.com" : "https://localhost:8080"}/api/auth/${path}`,
       {
         method: "POST",
         headers: {
