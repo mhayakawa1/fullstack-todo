@@ -16,7 +16,7 @@ deleteTodoRouter.delete(
       return res.status(404).send("Data not found");
     } else if (userTodos) {
       userTodos.splice(index, 1);
-      db.prepare("DELETE FROM todos WHERE id = ?").run(id);
+      db.prepare("DELETE FROM todos WHERE id = ?").run(userTodos[index].id);
       return res.status(204);
     }
   },

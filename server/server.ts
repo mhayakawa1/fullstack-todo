@@ -41,7 +41,7 @@ async function startServer() {
       "http://localhost:3000",
       "https://localhost:3000",
       "https://fullstack-todo-kappa.vercel.app/",
-      "https://fullstack-todo-1-hung.onrender.com",
+      "https://fullstack-todo-app-server.onrender.com",
     ];
 
     app.use(
@@ -52,7 +52,7 @@ async function startServer() {
               "'self'",
               `https://localhost:${port}`,
               "https://fullstack-todo-6g45.onrender.com",
-              "https://fullstack-todo-1-hung.onrender.com",
+              "https://fullstack-todo-app-server.onrender.com",
               "https://accounts.google.com",
             ],
             "script-src": ["'self'", "https://accounts.google.com"],
