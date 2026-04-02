@@ -36,7 +36,7 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const [userInfo, setUserInfo] = useState(emptyUserData);
-  const origin = `${process.env.NODE_ENV === "production" ? "" : "https://localhost:8080"}/api/auth/`;
+  const origin = `${process.env.NODE_ENV === "production" ? "https://fullstack-todo-app-server.onrender.com" : "https://localhost:8080"}/api/auth/`;
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
