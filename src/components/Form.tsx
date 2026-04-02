@@ -92,7 +92,7 @@ export default function Form(props: FormProps) {
         console.log("data: ", data);
         if (data === 200) {
           //eslint-disable-next-line
-          console.clear();
+          //console.clear();
           navigate("/dashboard");
         }
         if (data.message === "User registered.") {
