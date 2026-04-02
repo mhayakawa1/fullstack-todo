@@ -107,7 +107,7 @@ export default function Dashboard() {
             setErrorText(error.message);
             if (error.message.includes("403")) {
               //eslint-disable-next-line
-              console.clear();
+              //console.clear();
               navigate("/login");
             }
           }
