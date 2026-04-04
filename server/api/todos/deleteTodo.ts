@@ -8,18 +8,15 @@ deleteTodoRouter.delete(
   "/:id",
   checkAuthorization,
   (req: Request, res: Response) => {
-    const { id } = req.cookies.accessToken;
+    const { id } = req.params;
     const allTodos = db.prepare("SELECT * FROM todos").all() as Todo[];
-    const userTodos = allTodos.filter((element) => element.userId === id);
-    const index = userTodos.findIndex((element: Todo) => element.userId === id);
-    if (index === -1) {
-      return res.status(404).send("Data not found");
-    } else if (userTodos) {
-      const todoId = userTodos[index].id;
-      db.prepare("DELETE FROM todos WHERE id = ?").run(todoId);
-      userTodos.splice(index, 1);
+    const index = allTodos.findIndex((element: Todo) => element.id === id);
+    if (index) {
+      db.prepare("DELETE FROM todos WHERE id = ?").run(id);
+      allTodos.splice(index, 1);
       return res.status(204);
     }
+    return res.status(404).send("Data not found");
   },
 );
 
