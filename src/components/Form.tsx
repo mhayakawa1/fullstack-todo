@@ -77,8 +77,6 @@ export default function Form(props: FormProps) {
       },
     )
       .then((response) => {
-        //eslint-disable-next-line
-        console.log("response: ", response);
         if (!response.ok) {
           return response.json().then((data) => {
             const { errors } = data;
@@ -88,11 +86,9 @@ export default function Form(props: FormProps) {
         return response.json();
       })
       .then((data) => {
-        //eslint-disable-next-line
-        console.log("data: ", data);
         if (data === 200) {
           //eslint-disable-next-line
-          //console.clear();
+          console.clear();
           navigate("/dashboard");
         }
         if (data.message === "User registered.") {
@@ -100,9 +96,7 @@ export default function Form(props: FormProps) {
           setErrorVisible(false);
         }
       })
-      .catch((error) => {
-        //eslint-disable-next-line
-        console.log("error: ", error);
+      .catch(() => {
         setErrorVisible(true);
       });
   }

@@ -15,8 +15,9 @@ deleteTodoRouter.delete(
     if (index === -1) {
       return res.status(404).send("Data not found");
     } else if (userTodos) {
+      const todoId = userTodos[index].id;
+      db.prepare("DELETE FROM todos WHERE id = ?").run(todoId);
       userTodos.splice(index, 1);
-      db.prepare("DELETE FROM todos WHERE id = ?").run(userTodos[index].id);
       return res.status(204);
     }
   },

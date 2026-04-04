@@ -103,11 +103,12 @@ export default function Dashboard() {
           setErrorVisible(false);
         })
         .catch((error) => {
-          if (error.message) {
-            setErrorText(error.message);
+          const { message } = error;
+          if (message) {
+            setErrorText(message);
             if (error.message.includes("403")) {
               //eslint-disable-next-line
-              //console.clear();
+              console.clear();
               navigate("/login");
             }
           }
@@ -355,7 +356,7 @@ export default function Dashboard() {
       <div className="flex flex-col items-center justify-center gap-2 max-sm:w-[90vw] w-[400px]">
         <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
         <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
-          {sortedTodos.length
+          {todos.length
             ? todos.map((todo: TodoInterface) => (
                 <Todo key={todo.id} data={todo} updateTodos={updateTodos} />
               ))
