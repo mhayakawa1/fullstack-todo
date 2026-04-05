@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash, FaCheck } from "react-icons/fa";
-import "../index.css";
 
 interface Error {
   field: string;

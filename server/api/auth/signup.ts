@@ -5,27 +5,11 @@ import { User } from "../../../db.js";
 const signupRouter = express.Router();
 
 signupRouter.post("/signup", async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password} = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const users = db.prepare("SELECT * FROM users").all() as User[];
   const preexistingUser = users.find((user) => user.email === email);
-  const passwordValid = password.length >= 8;
-
-  if (preexistingUser || !passwordValid) {
-    const errors = [];
-    if (preexistingUser) {
-      errors.push({ field: "email", message: "Invalid email" });
-    }
-    if (!passwordValid) {
-      errors.push({
-        field: "password",
-        message: "Must be at least 8 characters",
-      });
-    }
-    return res.status(400).json({
-      errors: errors,
-    });
-  } else if (!preexistingUser && passwordValid) {
+  if (!preexistingUser && password) {
     const uuid = crypto.randomUUID();
     try {
       const newUser = {
@@ -50,6 +34,14 @@ signupRouter.post("/signup", async (req: Request, res: Response) => {
         errors: [err],
       });
     }
+  } else {
+    const errors = [];
+    if (preexistingUser) {
+      errors.push({ field: "email", message: "Invalid email" });
+    }
+    return res.status(400).json({
+      errors: errors,
+    });
   }
 });
 

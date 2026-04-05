@@ -110,7 +110,7 @@ export default function Form(props: FormProps) {
 
   const signup = (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    if (name && email && password) {
+    if (name && email && password && password === confirmPassword) {
       makeRequest({ name: name, email: email, password: password }, "signup");
     }
   };
