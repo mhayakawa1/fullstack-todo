@@ -92,7 +92,7 @@ export default function Todo(props: TodoProps) {
                     className="peer w-6 h-6 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border bg-white"
                     id="check"
                   />
-                  <FaCheck className="absolute text-[#3f27c2] opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none" />{" "}
+                  <FaCheck className="absolute text-[#1a45bd] opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none" />{" "}
                 </label>
               </div>
             </div>
@@ -132,13 +132,13 @@ export default function Todo(props: TodoProps) {
         <div className="flex justify-end gap-1">
           <button
             onClick={toggleEdit}
-            className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white"
+            className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#1a45bd] text-[#1a45bd] hover:text-white"
           >
             {disabled ? "Edit" : "Save"}
           </button>
           <button
             onClick={() => updateTodos(id, undefined, undefined, 1)}
-            className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white"
+            className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#1a45bd] text-[#1a45bd] hover:text-white"
           >
             Delete
           </button>

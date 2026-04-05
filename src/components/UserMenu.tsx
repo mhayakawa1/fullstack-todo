@@ -15,9 +15,9 @@ function UserIcon(props: { picture: string; className: string }) {
         />
       ) : (
         <div
-          className={`${className} flex justify-center items-center rounded-full border-solid border-[#3f27c2] aspect-square`}
+          className={`${className} flex justify-center items-center rounded-full border-solid border-[#1a45bd] aspect-square`}
         >
-          <FaUser className="w-[60%] h-[60%] text-[#3f27c2]" />
+          <FaUser className="w-[60%] h-[60%] text-[#1a45bd]" />
         </div>
       )}
     </div>
@@ -114,7 +114,7 @@ export default function UserMenu() {
       </button>
       {isVisible ? (
         <div className="absolute bg-white rounded-lg right-0 mt-2">
-          <ul className="m-0 p-0 list-none text-[#3f27c2]">
+          <ul className="m-0 p-0 list-none text-[#1a45bd]">
             <li className="flex justify-center items-center gap-3 px-4 py-6">
               <UserIcon picture={userInfo.picture} className="w-12 h-12" />
               <ul className="p-0 list-none">
@@ -123,12 +123,12 @@ export default function UserMenu() {
               </ul>
             </li>
             <li className="w-full h-fit">
-              <span className="block w-full h-[1px] bg-[#3f27c2]"></span>
+              <span className="block w-full h-[1px] bg-[#1a45bd]"></span>
             </li>
             <li className="h-fit w-full flex">
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 grow w-full h-full rounded-b-lg no-underline text-[#3f27c2] bg-transparent hover:bg-[#3f27c2] hover:text-white border-none text-left"
+                className="px-4 py-2 grow w-full h-full rounded-b-lg no-underline text-[#1a45bd] bg-transparent hover:bg-[#1a45bd] hover:text-white border-none text-left"
               >
                 Logout
               </button>

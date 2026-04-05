@@ -295,15 +295,15 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="flex flex-col items-center gap-6 pb-[64vh]">
-      <div className="w-full flex flex-col items-center px-4 gap-4 box-border">
+    <main className="flex flex-col items-center gap-6 pb-[64vh] max-sm:w-[90vw] max-w-[400px] mx-auto">
+      <div className="w-full flex flex-col items-center gap-4 box-border">
         <h1 className="text-white font-medium">TO DO LIST</h1>
         {errorVisible ? (
           <div className="flex flex-col justify-center items-center gap-4 w-[400px] h-fit box-border rounded-lg px-4 bg-white bg-opacity-25">
             <p className="text-red-500">{errorText}</p>
           </div>
         ) : null}
-        <form onSubmit={addTodo} className="flex flex-col items-center gap-4">
+        <form onSubmit={addTodo} className="w-full flex flex-col items-center gap-4">
           <TodoContainer>
             <div className="w-full flex flex-col items-center gap-1 m-0">
               <div className="w-full m-0 flex gap-2">
@@ -346,7 +346,7 @@ export default function Dashboard() {
           </TodoContainer>
           <button
             onClick={addTodo}
-            className="flex justify-center items-center m-auto p-0 w-8 h-8 text-base text-[#3f27c2] bg-white border-none rounded-sm"
+            className="flex justify-center items-center m-auto p-0 w-8 h-8 text-base text-[#1a45bd] bg-white border-none rounded-sm"
           >
             <FaPlus />
           </button>
@@ -355,7 +355,7 @@ export default function Dashboard() {
       <SearchBar searchTodos={searchTodos} />
       <div className="flex flex-col items-center justify-center gap-2 max-sm:w-[90vw] w-[400px]">
         <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
-        <ul className="flex flex-col items-center gap-2 list-none p-0 m-0">
+        <ul className="w-full flex flex-col items-center gap-2 list-none p-0 m-0">
           {todos.length
             ? todos.map((todo: TodoInterface) => (
                 <Todo key={todo.id} data={todo} updateTodos={updateTodos} />

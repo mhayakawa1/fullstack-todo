@@ -27,11 +27,11 @@ export default function SearchBar(props: SearchProps) {
         searchTodos(event, input);
         setInput("");
       }}
-      className="max-sm:w-[90vw] w-[400px] grow flex items-center gap-2 bg-white rounded-lg h-10 pl-4 box-border"
+      className="w-full grow flex items-center gap-2 bg-white rounded-lg h-10 pl-4 box-border"
     >
-      <FaSearch className="text-[#3f27c2]" />
+      <FaSearch className="text-[#1a45bd]" />
       <input
-        className="w-full bg-transparent border-none outline-none text-[#3f27c2]"
+        className="w-full bg-transparent border-none outline-none text-[#1a45bd]"
         onChange={handleChange}
         placeholder="Search"
         value={debouncedValue}

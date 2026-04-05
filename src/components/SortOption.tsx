@@ -20,7 +20,7 @@ export default function SortOption(props: OptionProps) {
       <button
         className={`${index === 0 && "rounded-t-md"} ${
           index === 5 && "rounded-b-md"
-        } grow w-full h-8 pl-4 pr-8 border-none text-left bg-white hover:bg-[#3f27c2] text-[#3f27c2] hover:text-white`}
+        } grow w-full h-8 pl-4 pr-8 border-none text-left bg-white hover:bg-[#1a45bd] text-[#1a45bd] hover:text-white`}
         onClick={() => sortTodos(value)}
       >
         <span>{value.name}</span>
