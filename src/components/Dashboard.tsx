@@ -303,7 +303,10 @@ export default function Dashboard() {
             <p className="text-red-500">{errorText}</p>
           </div>
         ) : null}
-        <form onSubmit={addTodo} className="w-full flex flex-col items-center gap-4">
+        <form
+          onSubmit={addTodo}
+          className="w-full flex flex-col items-center gap-4"
+        >
           <TodoContainer>
             <div className="w-full flex flex-col items-center gap-1 m-0">
               <div className="w-full m-0 flex gap-2">
@@ -353,7 +356,7 @@ export default function Dashboard() {
         </form>
       </div>
       <SearchBar searchTodos={searchTodos} />
-      <div className="flex flex-col items-center justify-center gap-2 max-sm:w-[90vw] w-[400px]">
+      <div className="flex flex-col items-center justify-center gap-2 max-sm:w-[90vw] max-w-[400px]">
         <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
         <ul className="w-full flex flex-col items-center gap-2 list-none p-0 m-0">
           {todos.length
