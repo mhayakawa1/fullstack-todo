@@ -31,17 +31,15 @@ Steps to set up environmental variables
 2. Create a new client and select Web Application for application type
 
 3. Add the following URLs to Authorized JavaScript Origins
-
-    - https://localhost
-    - https://localhost:3000
-    - https://localhost:8080
+   - https://localhost
+   - https://localhost:3000
+   - https://localhost:8080
 
 4. Add the following URLs to Authorized redirect URIs
-
-    - https://localhost:3000/login
-    - https://localhost:3000/oauth2/redirect/google
-    - https://localhost:3000/dashboard
-    - https://localhost:8080/api/auth/google/callback
+   - https://localhost:3000/login
+   - https://localhost:3000/oauth2/redirect/google
+   - https://localhost:3000/dashboard
+   - https://localhost:8080/api/auth/google/callback
 
 5. Press "Create" and save the client ID and client secret
 
@@ -72,6 +70,6 @@ npm run seed
 
 Credentials:
 
-* Email: email@email.com
+- Email: email@email.com
 
-* Password: password9
+- Password: password9
