@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { FaCheck, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
+import loading from "../loading.gif";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
 
@@ -50,6 +51,7 @@ export default function Form(props: FormProps) {
   const [errors, setErrors] = useState([]);
   const [errorVisible, setErrorVisible] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const isSignup = formType === "Sign up";
   const navigate = useNavigate();
   const updateInput = (label: string, value: string) => {
@@ -77,6 +79,7 @@ export default function Form(props: FormProps) {
       },
     )
       .then((response) => {
+        setIsLoading(false);
         if (!response.ok) {
           return response.json().then((data) => {
             const { errors } = data;
@@ -104,6 +107,7 @@ export default function Form(props: FormProps) {
   const login = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (email && password) {
+      setIsLoading(true);
       makeRequest({ email: email, password: password }, "login");
     }
   };
@@ -111,6 +115,7 @@ export default function Form(props: FormProps) {
   const signup = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (name && email && password && password === confirmPassword) {
+      setIsLoading(true);
       makeRequest({ name: name, email: email, password: password }, "signup");
     }
   };
@@ -151,67 +156,81 @@ export default function Form(props: FormProps) {
     <div className="relative m-auto flex flex-col justify-center items-center gap-3 p-4 max-w-[364px] max-sm:w-[90vw] bg-white bg-opacity-25 rounded-lg box-border">
       <form className="w-full flex flex-col gap-3 text-white">
         <h1 className="text-center font-normal">{title}</h1>
-        {isSignup ? (
+        <div
+          className={`${successVisible || isLoading ? "pointer-events-none opacity-50" : ""} w-full flex flex-col gap-3`}
+        >
+          {isSignup ? (
+            <FormInput
+              type="name"
+              label="Name"
+              autoFocus={true}
+              errorMessage="Please enter your name."
+              updateInput={updateInput}
+              password=""
+              errors={errors}
+            />
+          ) : null}
           <FormInput
-            type="name"
-            label="Name"
-            autoFocus={true}
-            errorMessage="Please enter your name."
+            type="email"
+            label="Email"
+            autoFocus={!isSignup}
+            errorMessage="Please enter a valid email."
             updateInput={updateInput}
             password=""
             errors={errors}
           />
-        ) : null}
-        <FormInput
-          type="email"
-          label="Email"
-          autoFocus={!isSignup}
-          errorMessage="Please enter a valid email."
-          updateInput={updateInput}
-          password=""
-          errors={errors}
-        />
-        <FormInput
-          type="password"
-          label="Password"
-          autoFocus={false}
-          errorMessage="Password must be at least 8 characters."
-          updateInput={updateInput}
-          password={confirmPassword}
-          errors={errors}
-        />
-        {isSignup ? (
           <FormInput
             type="password"
-            label="Confirm Password"
+            label="Password"
             autoFocus={false}
-            errorMessage="Passwords do not match."
+            errorMessage="Password must be at least 8 characters."
             updateInput={updateInput}
-            password={password}
+            password={confirmPassword}
             errors={errors}
           />
-        ) : null}
-        {errorVisible ? (
-          <div className="w-full h-fit mb-2 bg-white bg-opacity-40 rounded-lg">
-            <p className="text-xs text-center text-red-500">
-              Invalid email or password.
-            </p>
-          </div>
-        ) : null}
-        <FormButton handleClick={isSignup ? signup : login}>
-          {formType}
-        </FormButton>
+          {isSignup ? (
+            <FormInput
+              type="password"
+              label="Confirm Password"
+              autoFocus={false}
+              errorMessage="Passwords do not match."
+              updateInput={updateInput}
+              password={password}
+              errors={errors}
+            />
+          ) : null}
+          {errorVisible ? (
+            <div className="w-full h-fit mb-2 bg-white bg-opacity-40 rounded-lg">
+              <p className="text-xs text-center text-red-500">
+                Invalid email or password.
+              </p>
+            </div>
+          ) : null}
+          <FormButton handleClick={isSignup ? signup : login}>
+            {formType}
+          </FormButton>
+        </div>
       </form>
-      <FormButton handleClick={loginWithGoogle}>
-        <FaGoogle />
-        <span>{formType} with Google</span>
-      </FormButton>
+      <div
+        className={`${successVisible || isLoading ? "pointer-events-none opacity-50" : ""} w-full`}
+      >
+        <FormButton handleClick={loginWithGoogle}>
+          <FaGoogle />
+          <span>{formType} with Google</span>
+        </FormButton>
+      </div>
       <Link
         to={`/${path}`}
         className="w-fit m-0 text-sm text-center no-underline hover:underline text-white"
       >
         {linkText}
       </Link>
+      {isLoading ? (
+        <div className="flex flex-col justify-center items-center gap-[5px]">
+          <p className="text-xs text-center text-white m-0">Loading...</p>
+          <img src={loading} alt="" className="w-[30px]"></img>
+        </div>
+      ) : null}
       {isSignup && successVisible ? (
         <ul className="m-0 list-none text-white text-center w-full p-0 flex flex-col gap-4">
           <li>Success!</li>
