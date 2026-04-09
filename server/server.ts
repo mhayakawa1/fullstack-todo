@@ -40,7 +40,7 @@ async function startServer() {
     const allowedOrigins = [
       "http://localhost:3000",
       "https://localhost:3000",
-      "https://fullstack-todo-kappa.vercel.app/",
+      "https://fullstack-todo-branch-test.onrender.com",
       "https://fullstack-todo-1-hung.onrender.com",
     ];
 
@@ -53,6 +53,7 @@ async function startServer() {
               `https://localhost:${port}`,
               "https://fullstack-todo-app-server.onrender.com",
               "https://fullstack-todo-1-hung.onrender.com",
+              "https://fullstack-todo-branch-test.onrender.com",
               "https://accounts.google.com",
             ],
             "script-src": ["'self'", "https://accounts.google.com"],

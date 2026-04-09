@@ -199,7 +199,7 @@ export default function Form(props: FormProps) {
               errors={errors}
             />
           ) : null}
-          {errorVisible ? (
+          {errorVisible && !isLoading ? (
             <div className="w-full h-fit mb-2 bg-white bg-opacity-40 rounded-lg">
               <p className="text-xs text-center text-red-500">
                 Invalid email or password.
