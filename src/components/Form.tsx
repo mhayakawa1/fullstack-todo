@@ -108,7 +108,7 @@ export default function Form(props: FormProps) {
     event.preventDefault();
     if (email && password) {
       setIsLoading(true);
-  //eslint-disable-next-line
+      //eslint-disable-next-line
       console.log("loading");
       makeRequest({ email: email, password: password }, "login");
     }
@@ -142,6 +142,9 @@ export default function Form(props: FormProps) {
       //eslint-disable-next-line
       const userProfile = await getUserProfile(access_token);
       if (userProfile) {
+        setIsLoading(true);
+        //eslint-disable-next-line
+        console.log("loading");
         makeRequest(
           { tokenResponse: tokenResponse, userProfile: userProfile },
           "google/callback",
