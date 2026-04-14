@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import db from "../../../db.js";
-import { paginate, Todo, createTodo } from "../../../db.js";
+import { Todo, createTodo } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const addTodoRouter = express.Router();
 
@@ -41,12 +41,7 @@ addTodoRouter.post("/", checkAuthorization, (req: Request, res: Response) => {
         data.createdAt,
         data.updatedAt,
       );
-      const newUserTodos = [newTodo, ...userTodos];
-      const { length } = newUserTodos;
-      const paginatedTodos = paginate(newUserTodos, length);
-      res
-        .status(201)
-        .json({ items: paginatedTodos[0], page: 1, limit: 10, total: length });
+      res.status(201).json({ todo: newTodo });
     }
   } else {
     res.status(400).send("Invalid data");

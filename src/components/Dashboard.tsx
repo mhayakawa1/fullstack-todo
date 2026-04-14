@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaX } from "react-icons/fa6";
 import Todo from "./Todo";
 import TodoContainer from "./TodoContainer";
 import ListButtons from "./ListButtons";
@@ -59,6 +59,7 @@ export default function Dashboard() {
   const [errorText, setErrorText] = useState("");
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const [term, setTerm] = useState("");
   const todosRef = useRef<TodosArray>([]);
   const navigate = useNavigate();
 
@@ -81,12 +82,19 @@ export default function Dashboard() {
       fetch(url, request)
         .then((response) => {
           if (!response.ok) {
-            throw new Error(`HTgTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          if (url.includes("search")) {
+            const start = "?search=";
+            const end = "&sortBy=";
+            const startIndex = url.indexOf(start);
+            const endIndex = url.indexOf(end, startIndex + start.length);
+            setTerm(url.substring(startIndex + start.length, endIndex));
           }
           return response.json();
         })
         .then((data) => {
-          const { items, total } = data;
+          const { items, total, todo } = data;
           const index = newTodos.findIndex((todo) => todo.id === data.id);
           if (method === "PATCH") {
             newTodos.splice(index, 1, data);
@@ -99,6 +107,8 @@ export default function Dashboard() {
               setTotal(Math.ceil(data.total / 10));
             }
             updateArrays(items);
+          } else if (todo) {
+            updateArrays([todo, ...todosRef.current]);
           }
           setErrorVisible(false);
         })
@@ -295,7 +305,7 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="flex flex-col items-center gap-6 pb-[64vh] max-w-[400px] max-sm:w-[90vw] mx-auto">
+    <main className="flex flex-col items-center gap-6 p-0 max-w-[400px] max-sm:w-[90vw] mx-auto">
       <div className="w-full flex flex-col items-center gap-4 box-border">
         <h1 className="text-white font-medium">TO DO LIST</h1>
         {errorVisible ? (
@@ -356,9 +366,30 @@ export default function Dashboard() {
         </form>
       </div>
       <SearchBar searchTodos={searchTodos} />
-      <div className="w-full flex flex-col items-center justify-center gap-2">
+      <div className="w-full h-full grow flex flex-col items-center justify-center gap-2 pb-[20vh]">
         <SortDropdown sortOptions={sortOptions} sortTodos={sortTodos} />
-        <ul className="w-full flex flex-col items-center gap-2 list-none p-0 m-0">
+        {term.length ? (
+          <div className="flex justify-center items-center gap-2 pt-[2vh] w-full">
+            <p className="m-0 text-center text-white text-sm">
+              <span>{`"${term}"`}</span>
+              <span>{` - ${todos.length} Results`}</span>
+            </p>
+            <button
+              className="bg-transparent border-solid border-white border-[1.5px] text-white flex justify-center items-center aspect-square rounded-sm w-4 p-0"
+              onClick={() => {
+                setTerm("");
+                makeRequest(
+                  `${url}todos?`,
+                  { method: "GET", credentials: "include" },
+                  sortOptions,
+                );
+              }}
+            >
+              <FaX className="w-2" />
+            </button>
+          </div>
+        ) : null}
+        <ul className="w-full flex flex-col items-center gap-2 list-none p-0 m-0]">
           {todos.length
             ? todos.map((todo: TodoInterface) => (
                 <Todo key={todo.id} data={todo} updateTodos={updateTodos} />
@@ -367,7 +398,9 @@ export default function Dashboard() {
         </ul>
         {sortedTodos.length ? (
           <ListButtons page={page} total={total} updatePage={updatePage} />
-        ) : null}
+        ) : (
+          <p className="text-white text-sm justify-self-end m-0">Empty list.</p>
+        )}
       </div>
     </main>
   );

@@ -11,7 +11,7 @@ deleteTodoRouter.delete(
     const { id } = req.params;
     const allTodos = db.prepare("SELECT * FROM todos").all() as Todo[];
     const index = allTodos.findIndex((element: Todo) => element.id === id);
-    if (index) {
+    if (index >= 0) {
       db.prepare("DELETE FROM todos WHERE id = ?").run(id);
       allTodos.splice(index, 1);
       return res.status(204);
