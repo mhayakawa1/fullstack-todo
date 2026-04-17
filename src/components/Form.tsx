@@ -152,7 +152,7 @@ export default function Form(props: FormProps) {
   const toLogin = () => {
     navigate("/login");
   };
-  
+
   return (
     <div className="relative m-auto flex flex-col justify-center items-center gap-3 p-4 max-w-[364px] max-sm:w-[90vw] bg-white bg-opacity-25 rounded-lg box-border">
       <form className="w-full flex flex-col gap-3 text-white">

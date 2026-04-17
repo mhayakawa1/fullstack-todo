@@ -21,7 +21,11 @@ interface TodoProps {
     newText: { title: string; description: string } | undefined,
     newPage: number,
   ) => void;
-  togglePopup: (id: string | number, popupTitle: string, deleteItem: boolean) => void;
+  togglePopup: (
+    id: string | number,
+    popupTitle: string,
+    deleteItem: boolean,
+  ) => void;
 }
 
 export default function Todo(props: TodoProps) {

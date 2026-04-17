@@ -308,7 +308,11 @@ export default function Dashboard() {
     );
   };
 
-  const togglePopup = (id: string | number, popupTitle: string, deleteItem: boolean) => {
+  const togglePopup = (
+    id: string | number,
+    popupTitle: string,
+    deleteItem: boolean,
+  ) => {
     setPopupTitle(popupTitle);
     setPopupVisible((current: boolean) => !current);
     setDeleteId(id.toString());
