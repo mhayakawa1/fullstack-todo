@@ -21,10 +21,11 @@ interface TodoProps {
     newText: { title: string; description: string } | undefined,
     newPage: number,
   ) => void;
+  togglePopup: (id: string | number, popupTitle: string, deleteItem: boolean) => void;
 }
 
 export default function Todo(props: TodoProps) {
-  const { data, updateTodos } = props;
+  const { data, updateTodos, togglePopup } = props;
   const { id, title, dueDate, description, status } = data;
   const today = new Date().toLocaleDateString("en-ca");
   const [disabled, setDisabled] = useState(true);
@@ -140,7 +141,7 @@ export default function Todo(props: TodoProps) {
             {disabled ? "Edit" : "Save"}
           </button>
           <button
-            onClick={() => updateTodos(id, undefined, undefined, 1)}
+            onClick={() => togglePopup(id, title, true)}
             className="w-16 py-1 px-2 border-none rounded-md bg-white hover:bg-[#1a45bd] text-[#1a45bd] hover:text-white"
           >
             Delete
