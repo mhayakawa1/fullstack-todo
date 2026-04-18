@@ -19,6 +19,8 @@ console.log("clientId import: ", clientId);
 console.log("environment: ", process.env.NODE_ENV);
 //eslint-disable-next-line
 console.log("clientId: ", process.env.CLIENT_ID);
+//eslint-disable-next-line
+console.log("react app clientId: ", process.env.REACT_APP_CLIENT_ID);
 
 function App() {
   return (
