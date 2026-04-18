@@ -12,10 +12,11 @@ import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Error from "./components/Error";
+const clientId = process.env.CLIENT_ID;
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="337374147821-5pqh07hmagj58a6cfinpp971gfj49512.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId || ""}>
       <UserDataProvider>
         <Router>
           <Header />
