@@ -8,7 +8,7 @@ import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 import CharacterCounter from "./CharacterCounter";
 import DeletePopup from "./DeletePopup";
-import url from "../api";
+import url from "../config";
 
 interface TodoInterface {
   id: string | number;

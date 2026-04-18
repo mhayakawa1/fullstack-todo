@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { googleLogout } from "@react-oauth/google";
 import { FaUser } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import url from "../api";
+import url from "../config";
 
 function UserIcon(props: { picture: string; className: string }) {
   const { picture, className } = props;

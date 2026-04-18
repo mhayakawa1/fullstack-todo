@@ -12,11 +12,11 @@ import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Error from "./components/Error";
-const clientId = process.env.REACT_APP_CLIENT_ID;
+import { clientId } from "./config";
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId={clientId || ""}>
+    <GoogleOAuthProvider clientId={clientId}>
       <UserDataProvider>
         <Router>
           <Header />

@@ -3,8 +3,8 @@ import db from "../../../db.js";
 import { User } from "../../../db.js";
 import { createCookie } from "../../createCookie.js";
 import "dotenv/config";
+import { clientId } from "../../../src/config.js";
 const googleRouter = express.Router();
-const clientId = process.env.REACT_APP_CLIENT_ID;
 const secret = process.env.CLIENT_SECRET;
 
 googleRouter.post("/google/callback", async (req: Request, res: Response) => {
