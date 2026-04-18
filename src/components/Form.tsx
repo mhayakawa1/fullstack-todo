@@ -5,7 +5,7 @@ import { useState } from "react";
 import loading from "../loading.gif";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
-import url from "../config";
+import { url } from "../config";
 
 interface FormProps {
   title: string;

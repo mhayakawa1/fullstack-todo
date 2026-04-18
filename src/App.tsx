@@ -13,6 +13,8 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Error from "./components/Error";
 import { clientId } from "./config";
+//eslint-disable-next-line
+console.log("clientId", clientId);
 
 function App() {
   return (
