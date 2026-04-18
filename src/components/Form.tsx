@@ -5,6 +5,7 @@ import { useState } from "react";
 import loading from "../loading.gif";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
+import url from "../api";
 
 interface FormProps {
   title: string;
@@ -67,17 +68,14 @@ export default function Form(props: FormProps) {
   };
 
   async function makeRequest(body: Body, path: string) {
-    fetch(
-      `${process.env.NODE_ENV === "production" ? "https://fullstack-todo-app-server.onrender.com" : "https://localhost:8080"}/api/auth/${path}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(body),
+    fetch(`${url}auth/${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    )
+      credentials: "include",
+      body: JSON.stringify(body),
+    })
       .then((response) => {
         setIsLoading(false);
         if (!response.ok) {

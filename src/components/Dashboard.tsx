@@ -8,6 +8,7 @@ import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 import CharacterCounter from "./CharacterCounter";
 import DeletePopup from "./DeletePopup";
+import url from "../api";
 
 interface TodoInterface {
   id: string | number;
@@ -36,8 +37,6 @@ interface Options {
 
 export default function Dashboard() {
   const today = new Date();
-  const url = `${process.env.NODE_ENV === "production" ? "https://fullstack-todo-app-server.onrender.com" : "https://localhost:8080"}/api/`;
-
   const defaultSortValue = useMemo(
     () => ({
       name: "Date Created (Desc)",

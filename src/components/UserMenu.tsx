@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { googleLogout } from "@react-oauth/google";
 import { FaUser } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import url from "../api";
 
 function UserIcon(props: { picture: string; className: string }) {
   const { picture, className } = props;
@@ -36,7 +37,7 @@ export default function UserMenu() {
   const navigate = useNavigate();
   const location = useLocation();
   const [userInfo, setUserInfo] = useState(emptyUserData);
-  const origin = `${process.env.NODE_ENV === "production" ? "https://fullstack-todo-app-server.onrender.com" : "https://localhost:8080"}/api/auth/`;
+  const origin = `${url}auth/`;
 
   const closeMenu = (event: { relatedTarget: unknown }) => {
     if (!event.relatedTarget) {
@@ -113,7 +114,7 @@ export default function UserMenu() {
         <UserIcon picture={userInfo.picture} className="w-full h-full" />
       </button>
       {isVisible ? (
-        <div className="absolute bg-white rounded-lg right-0 mt-2">
+        <div className="absolute z-10 bg-white rounded-lg right-0 mt-2">
           <ul className="m-0 p-0 list-none text-[#1a45bd]">
             <li className="flex justify-center items-center gap-3 px-4 py-6">
               <UserIcon picture={userInfo.picture} className="w-12 h-12" />
