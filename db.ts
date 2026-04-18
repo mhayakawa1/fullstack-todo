@@ -91,13 +91,4 @@ db.prepare(
   `,
 ).run();
 
-db.prepare(
-  `
-    CREATE TABLE IF NOT EXISTS todos1 (
-        id TEXT PRIMARY KEY,
-        items TEXT NOT NULL
-    );
-  `,
-).run();
-
 export default db;

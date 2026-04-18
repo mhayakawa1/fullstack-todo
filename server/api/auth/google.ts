@@ -4,7 +4,7 @@ import { User } from "../../../db.js";
 import { createCookie } from "../../createCookie.js";
 import "dotenv/config";
 const googleRouter = express.Router();
-const clientId = process.env.CLIENT_ID;
+const clientId = process.env.REACT_APP_CLIENT_ID;
 const secret = process.env.CLIENT_SECRET;
 
 googleRouter.post("/google/callback", async (req: Request, res: Response) => {

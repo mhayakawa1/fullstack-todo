@@ -8,7 +8,6 @@ import fs from "fs";
 import http from "node:http";
 import https from "https";
 import helmet from "helmet";
-import checkAuthorization from "./authMiddleware.js";
 import todosRouter from "./api/todos/todos.js";
 import todoRouter from "./api/todos/todo.js";
 import addTodoRouter from "./api/todos/addTodo.js";
@@ -83,9 +82,6 @@ async function startServer() {
     app.use(cors(corsOptions));
     app.use(cookieParser());
 
-    const router = express.Router();
-    router.use(checkAuthorization);
-
     app.use("/api/todos", todosRouter);
     app.use("/api/todos", todoRouter);
     app.use("/api/todos", addTodoRouter);
@@ -131,8 +127,7 @@ async function startServer() {
   } catch (err: unknown) {
     const errorMessage =
       err instanceof Error ? err.message : "An unknown error occurred";
-    const errorStack =
-      err instanceof Error ? err.stack : "Unknown error stack";
+    const errorStack = err instanceof Error ? err.stack : "Unknown error stack";
     //eslint-disable-next-line
     console.error("CATCH ERROR:", errorMessage, errorStack);
   }
