@@ -132,7 +132,7 @@ async function startServer() {
     const errorMessage =
       err instanceof Error ? err.message : "An unknown error occurred";
     const errorStack =
-      err instanceof Error ? err.stack : "Unknown serror stack";
+      err instanceof Error ? err.stack : "Unknown error stack";
     //eslint-disable-next-line
     console.error("CATCH ERROR:", errorMessage, errorStack);
   }
