@@ -6,7 +6,7 @@ function getClientId() {
   let value = "";
   const id = process.env.CLIENT_ID;
   const reactId = process.env.REACT_APP_CLIENT_ID;
-  if (isProduction && id) {
+  if (id) {
     value = id;
   } else if (reactId) {
     value = reactId;
