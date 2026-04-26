@@ -19,7 +19,9 @@ interface TodoProps {
   updateTodos: (
     id: string | number,
     newChecked: boolean | undefined,
-    newText: { title: string; description: string; dueDate: Date } | undefined,
+    newData:
+      | { title: string; description: string; dueDate: string }
+      | undefined,
     newPage: number,
   ) => void;
   togglePopup: (
@@ -65,7 +67,7 @@ export default function Todo(props: TodoProps) {
         {
           title: newTitle,
           description: newDescription,
-          dueDate: newDueDate,
+          dueDate: newDueDate.toISOString(),
         },
         1,
       );

@@ -218,12 +218,14 @@ export default function Dashboard() {
   const updateTodos = (
     id: string | number,
     newStatus: boolean | undefined,
-    newText: { title: string; description: string } | undefined,
+    newData:
+      | { title: string; description: string; dueDate: string }
+      | undefined,
   ) => {
     const newTodos = [...todos];
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
     if (newTodo !== undefined) {
-      if (!newText && newStatus === undefined) {
+      if (!newData && newStatus === undefined) {
         return makeRequest(
           `${url}todos/${newTodo.id}`,
           {
@@ -248,13 +250,11 @@ export default function Dashboard() {
       } else {
         if (newStatus !== undefined) {
           newTodo.status = newStatus ? "done" : "in_progress";
-        } else if (newText) {
-          const { title, description } = newText;
-          if (title !== newTodo.title) {
-            newTodo.title = title;
-          }
-          if (description !== newTodo.description) {
-            newTodo.description = description;
+        } else if (newData) {
+          const newEntries = Object.entries(newData);
+          for (let i = 0; i < newEntries.length; i++) {
+            (newTodo as unknown as Record<string, unknown>)[newEntries[i][0]] =
+              newEntries[i][1];
           }
         }
         const date = new Date();
