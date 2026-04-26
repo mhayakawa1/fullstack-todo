@@ -57,6 +57,7 @@ export default function Dashboard() {
   const [sortOptions, setSortOptions] = useState<Options>(defaultSortValue);
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [errorId, setErrorId] = useState("");
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [term, setTerm] = useState("");
@@ -82,51 +83,59 @@ export default function Dashboard() {
             url + `${index !== 0 ? "&" : ""}${entry[0]}=${entry[1]}`);
         });
       }
-      fetch(url, request)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+      const response0 = await fetch(url, request);
+      if (url.includes("search")) {
+        const start = "?search=";
+        const end = "&sortBy=";
+        const startIndex = url.indexOf(start);
+        const endIndex = url.indexOf(end, startIndex + start.length);
+        setTerm(url.substring(startIndex + start.length, endIndex));
+      }
+      if (!response0.ok) {
+        if (method === "DELETE" || method === "PATCH") {
+          setErrorId(url.slice(33));
+        }
+        const error = await response0.text();
+        setErrorText(error.length < 50 ? error : response0.statusText);
+        if (response0.status === 401) {
+          //eslint-disable-next-line
+          console.clear();
+          navigate("/login");
+        }
+        setErrorVisible(true);
+        if (method !== "DELETE") {
+          return error;
+        }
+      } else {
+        setErrorId("");
+        setErrorText("");
+        setErrorVisible(false);
+        if (method === "DELETE") {
+          return response0.text;
+        }
+      }
+
+      const data0 = await response0.json();
+      if (data0) {
+        const { items, total, todo } = data0;
+        const index = newTodos.findIndex((todo) => todo.id === data0.id);
+        if (method === "PATCH") {
+          newTodos.splice(index, 1, data0);
+          updateArrays(newTodos);
+          setTitle("New Task");
+          setDescription("Description");
+        } else if (items) {
+          setPage(data0.page);
+          if (total) {
+            setTotal(Math.ceil(data0.total / 2));
           }
-          if (url.includes("search")) {
-            const start = "?search=";
-            const end = "&sortBy=";
-            const startIndex = url.indexOf(start);
-            const endIndex = url.indexOf(end, startIndex + start.length);
-            setTerm(url.substring(startIndex + start.length, endIndex));
-          }
-          return response.json();
-        })
-        .then((data) => {
-          const { items, total, todo } = data;
-          const index = newTodos.findIndex((todo) => todo.id === data.id);
-          if (method === "PATCH") {
-            newTodos.splice(index, 1, data);
-            updateArrays(newTodos);
-            setTitle("New Task");
-            setDescription("Description");
-          } else if (items) {
-            setPage(data.page);
-            if (total) {
-              setTotal(Math.ceil(data.total / 10));
-            }
-            updateArrays(items);
-          } else if (todo) {
-            updateArrays([todo, ...todosRef.current]);
-          }
-          setErrorVisible(false);
-        })
-        .catch((error) => {
-          const { message } = error;
-          if (message) {
-            setErrorText(message);
-            if (error.message.includes("403")) {
-              //eslint-disable-next-line
-              console.clear();
-              navigate("/login");
-            }
-          }
-          setErrorVisible(true);
-        });
+          updateArrays(items);
+        } else if (todo) {
+          updateArrays([todo, ...todosRef.current]);
+        }
+        setErrorVisible(false);
+      }
+      return data0;
     },
     [navigate],
   );
@@ -146,14 +155,7 @@ export default function Dashboard() {
       );
       setInitialRender(false);
     }
-  }, [
-    makeRequest,
-    todos.length,
-    navigate,
-    defaultSortValue,
-    initialRender,
-    url,
-  ]);
+  }, [makeRequest, todos.length, navigate, defaultSortValue, initialRender]);
 
   const sortTodos = (options: Options) => {
     options.params.page = 1;
@@ -222,7 +224,7 @@ export default function Dashboard() {
     const newTodo = todos.find((todo: TodoInterface) => todo.id === id);
     if (newTodo !== undefined) {
       if (!newText && newStatus === undefined) {
-        makeRequest(
+        return makeRequest(
           `${url}todos/${newTodo.id}`,
           {
             method: "DELETE",
@@ -238,6 +240,7 @@ export default function Dashboard() {
             const newDisplayTasks = [...sortedTodos];
             newDisplayTasks.splice(newDisplayTasks.indexOf(newTodo), 1);
             updateArrays(newDisplayTasks);
+            return newDisplayTasks;
           })
           .catch(() => {
             setErrorText("Delete unsuccessful");
@@ -415,6 +418,7 @@ export default function Dashboard() {
                   <Todo
                     key={todo.id}
                     data={todo}
+                    errorId={errorId}
                     updateTodos={updateTodos}
                     togglePopup={togglePopup}
                   />

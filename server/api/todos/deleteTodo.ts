@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import db from "../../../db.js";
-import { Todo } from "../../../db.js";
 import checkAuthorization from "../../authMiddleware.js";
 const deleteTodoRouter = express.Router();
 
@@ -9,14 +8,13 @@ deleteTodoRouter.delete(
   checkAuthorization,
   (req: Request, res: Response) => {
     const { id } = req.params;
-    const allTodos = db.prepare("SELECT * FROM todos").all() as Todo[];
-    const index = allTodos.findIndex((element: Todo) => element.id === id);
-    if (index >= 0) {
-      db.prepare("DELETE FROM todos WHERE id = ?").run(id);
-      allTodos.splice(index, 1);
-      return res.status(204);
+    const statement = db.prepare("DELETE FROM todos WHERE id = ?");
+    const info = statement.run(id);
+    if (info.changes) {
+      return res.status(204).send("Item deleted");
+    } else {
+      return res.status(404).send("Data not found");
     }
-    return res.status(404).send("Data not found");
   },
 );
 

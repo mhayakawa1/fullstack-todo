@@ -9,8 +9,7 @@ editTodoRouter.patch(
   checkAuthorization,
   (req: Request, res: Response) => {
     editTodoRouter.use(express.json());
-    const { id } = req.cookies.accessToken;
-    const todoId = JSON.parse(JSON.stringify(req.params)).id;
+    const { id } = req.params;
     const data = req.body;
     if (
       data.id &&
@@ -21,26 +20,23 @@ editTodoRouter.patch(
       data.createdAt &&
       data.updatedAt
     ) {
-      const allTodos = db.prepare("SELECT * FROM todos").all() as Todo[];
-      const userTodos = allTodos.filter((element) => element.userId === id);
-      if (userTodos) {
-        const todo = userTodos.find((element: Todo) => element.id === todoId);
-        if (todo) {
-          todo.title = data.title;
-          todo.description = data.description;
-          todo.status = data.status;
-          todo.dueDate = data.dueDate;
-          todo.updatedAt = data.updatedAt;
-          db.prepare(
-            "UPDATE todos SET title = :title, description = :description, status = :status, dueDate = :dueDate, updatedAt = :updatedAt WHERE id = :id",
-          ).run({ ...todo });
-          res.status(200).json(todo);
-        }
+      const statement = db.prepare("SELECT * FROM todos WHERE id = ?");
+      const todo = statement.get(id) as unknown as Todo;
+      if (todo) {
+        todo.title = data.title;
+        todo.description = data.description;
+        todo.status = data.status;
+        todo.dueDate = data.dueDate;
+        todo.updatedAt = data.updatedAt;
+        db.prepare(
+          "UPDATE todos SET title = :title, description = :description, status = :status, dueDate = :dueDate, updatedAt = :updatedAt WHERE id = :id",
+        ).run({ ...todo });
+        res.status(200).json(todo);
       } else {
-        res.status(404).send("Todo not found");
+        res.status(404).send("Todo not found. Edit not saved.");
       }
     } else {
-      res.status(400).send("Invalid data");
+      res.status(400).send("Invalid data. Edit not saved.");
     }
   },
 );

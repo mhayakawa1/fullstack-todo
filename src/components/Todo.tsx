@@ -15,6 +15,7 @@ interface TodoProps {
     createdAt: object;
     updatedAt: object;
   };
+  errorId: string;
   updateTodos: (
     id: string | number,
     newChecked: boolean | undefined,
@@ -29,7 +30,7 @@ interface TodoProps {
 }
 
 export default function Todo(props: TodoProps) {
-  const { data, updateTodos, togglePopup } = props;
+  const { data, errorId, updateTodos, togglePopup } = props;
   const { id, title, dueDate, description, status } = data;
   const today = new Date().toLocaleDateString("en-ca");
   const [disabled, setDisabled] = useState(true);
@@ -72,7 +73,7 @@ export default function Todo(props: TodoProps) {
   };
 
   return (
-    <TodoContainer>
+    <TodoContainer errorId={errorId} id={id.toString()}>
       <div className="w-full flex flex-col gap-1">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-0 grow">

@@ -13,7 +13,7 @@ export default function ListButtons(props: ButtonsProps) {
     <div className="w-full flex justify-between items-center text-white p-0 py-2">
       <ListButton isLeft={true} updatePage={updatePage} />
       <span className="text-sm">
-        Showing {page} of {total}
+        Page {page} of {total}
       </span>
       <ListButton isLeft={false} updatePage={updatePage} />
     </div>
