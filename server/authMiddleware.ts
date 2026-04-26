@@ -39,7 +39,7 @@ async function checkAuthorization(
       next();
     }
   } catch {
-    return res.status(403).send({ message: "User not verified." });
+    return res.status(403).send("User not verified.");
   }
 }
 export default checkAuthorization;
