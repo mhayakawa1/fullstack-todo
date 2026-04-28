@@ -59,7 +59,7 @@ export default function Dashboard() {
   const [errorText, setErrorText] = useState("");
   const [errorId, setErrorId] = useState("");
   const [page, setPage] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(1);
   const [term, setTerm] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupTitle, setPopupTitle] = useState("");
@@ -83,7 +83,7 @@ export default function Dashboard() {
             url + `${index !== 0 ? "&" : ""}${entry[0]}=${entry[1]}`);
         });
       }
-      const response0 = await fetch(url, request);
+      const response = await fetch(url, request);
       if (url.includes("search")) {
         const start = "?search=";
         const end = "&sortBy=";
@@ -91,13 +91,13 @@ export default function Dashboard() {
         const endIndex = url.indexOf(end, startIndex + start.length);
         setTerm(url.substring(startIndex + start.length, endIndex));
       }
-      if (!response0.ok) {
+      if (!response.ok) {
         if (method === "DELETE" || method === "PATCH") {
           setErrorId(url.slice(33));
         }
-        const error = await response0.text();
-        setErrorText(error.length < 50 ? error : response0.statusText);
-        if (response0.status === 401) {
+        const error = await response.text();
+        setErrorText(error.length < 50 ? error : response.statusText);
+        if (response.status === 401) {
           //eslint-disable-next-line
           console.clear();
           navigate("/login");
@@ -111,23 +111,23 @@ export default function Dashboard() {
         setErrorText("");
         setErrorVisible(false);
         if (method === "DELETE") {
-          return response0.text;
+          return response.text;
         }
       }
 
-      const data0 = await response0.json();
-      if (data0) {
-        const { items, total, todo } = data0;
-        const index = newTodos.findIndex((todo) => todo.id === data0.id);
+      const data = await response.json();
+      if (data) {
+        const { items, total, todo } = data;
+        const index = newTodos.findIndex((todo) => todo.id === data.id);
         if (method === "PATCH") {
-          newTodos.splice(index, 1, data0);
+          newTodos.splice(index, 1, data);
           updateArrays(newTodos);
           setTitle("New Task");
           setDescription("Description");
         } else if (items) {
-          setPage(data0.page);
+          setPage(data.page);
           if (total) {
-            setTotal(Math.ceil(data0.total / 2));
+            setTotal(Math.ceil(data.total / 2));
           }
           updateArrays(items);
         } else if (todo) {
@@ -135,7 +135,7 @@ export default function Dashboard() {
         }
         setErrorVisible(false);
       }
-      return data0;
+      return data;
     },
     [navigate],
   );
