@@ -19,7 +19,7 @@ todosRouter.get("/", checkAuthorization, (req: Request, res: Response) => {
 
     if (search) {
       params.push(`%${search}%`, `%${search}%`);
-      sql += " AND title LIKE ? OR description LIKE ?";
+      sql += " AND (title LIKE ? OR description LIKE ?)";
     }
     if (status) {
       params.push(status);
