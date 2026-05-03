@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaX } from "react-icons/fa6";
 import Todo from "./Todo";
+import TodoText from "./TodoText";
 import TodoContainer from "./TodoContainer";
 import ListButtons from "./ListButtons";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 import CharacterCounter from "./CharacterCounter";
 import DeletePopup from "./DeletePopup";
+import DateInput from "./DateInput";
 import { url } from "../config";
 
 interface TodoInterface {
@@ -206,7 +208,7 @@ export default function Dashboard() {
       target: { id, value },
     } = event;
     event.preventDefault();
-    if (id === "title") {
+    if (id === "input-title") {
       setTitle(value);
     } else if (id === "due-date") {
       setDueDate(new Date(value));
@@ -342,39 +344,29 @@ export default function Dashboard() {
           >
             <TodoContainer>
               <div className="w-full flex flex-col items-center gap-1 m-0">
-                <div className="w-full m-0 flex gap-2">
-                  <input
-                    id="title"
-                    type="text"
-                    onChange={handleChange}
+                <div className="w-full flex gap-2">
+                  <TodoText
+                    id="input"
+                    isTitle={true}
+                    editText={handleChange}
+                    disabled={false}
                     value={title}
-                    autoFocus
-                    minLength={1}
-                    maxLength={120}
-                    className="grow h-4 p-0 outline-none border-none text-white bg-transparent text-lg m-0"
                   />
                   <CharacterCounter limit={120} length={title.length} />
                 </div>
-                <div className="self-start flex items-center gap-1">
-                  <label htmlFor="due-date" className="text-sm text-white">
-                    Due Date:
-                  </label>
-                  <input
-                    id="due-date"
-                    type="date"
-                    value={dueDate.toLocaleDateString("en-ca")}
-                    onChange={handleChange}
-                    min={today.toLocaleDateString("en-ca")}
-                    className="bg-transparent border-none outline-none text-white w-[112px]"
-                  />
-                </div>
+                <DateInput
+                  value={dueDate.toLocaleDateString("en-ca")}
+                  handleChange={handleChange}
+                  min={today.toLocaleDateString("en-ca")}
+                  disabled={false}
+                />
                 <div className="w-full flex flex-col gap-1">
-                  <textarea
+                  <TodoText
                     id="description"
-                    onChange={handleChange}
+                    isTitle={false}
+                    editText={handleChange}
+                    disabled={false}
                     value={description}
-                    maxLength={2000}
-                    className="w-full m-0 h-24 outline-none border-none text-white bg-white bg-opacity-25 resize-none rounded-lg p-2 box-border"
                   />
                   <CharacterCounter limit={2000} length={description.length} />
                 </div>

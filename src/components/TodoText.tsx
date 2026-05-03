@@ -25,8 +25,15 @@ export default function TodoText(props: InputProps) {
   };
 
   if (isTitle) {
-    return <input {...attributes} />;
+    return (
+      <input
+        {...attributes}
+        minLength={1}
+        maxLength={120}
+        autoFocus={attributes.id === "input-title"}
+      />
+    );
   } else {
-    return <textarea {...attributes} />;
+    return <textarea {...attributes} maxLength={2000} />;
   }
 }

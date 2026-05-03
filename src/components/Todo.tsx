@@ -3,6 +3,7 @@ import { FaCheck } from "react-icons/fa";
 import TodoText from "./TodoText";
 import TodoContainer from "./TodoContainer";
 import CharacterCounter from "./CharacterCounter";
+import DateInput from "./DateInput";
 
 interface TodoProps {
   data: {
@@ -78,7 +79,7 @@ export default function Todo(props: TodoProps) {
     <TodoContainer errorId={errorId} id={id.toString()}>
       <div className="w-full flex flex-col gap-1">
         <div className="flex justify-between items-start">
-          <div className="flex flex-col gap-0 grow">
+          <div className="flex flex-col gap-1 grow">
             <div className="w-full flex justify-between">
               <div className="grow w-full flex justify-between items-center">
                 <TodoText
@@ -108,20 +109,7 @@ export default function Todo(props: TodoProps) {
                 </label>
               </div>
             </div>
-            <div className="self-start flex items-center gap-1 mb-1">
-              <label htmlFor="due-date" className="text-sm text-white">
-                Due Date:
-              </label>
-              <input
-                id="due-date"
-                type="date"
-                value={newDueDate.toLocaleDateString("en-ca")}
-                onChange={editText}
-                disabled={disabled}
-                min={today}
-                className="bg-transparent border-none outline-none text-white w-[112px]"
-              />
-            </div>
+            <DateInput value={newDueDate.toLocaleDateString("en-ca")} handleChange={editText} disabled={disabled} min={today} />
             <div>
               <TodoText
                 id={id}
