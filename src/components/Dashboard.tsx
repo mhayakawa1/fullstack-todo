@@ -113,7 +113,7 @@ export default function Dashboard() {
         setErrorText("");
         setErrorVisible(false);
         if (method === "DELETE") {
-          return response.text;
+          return response.text();
         }
       }
 
@@ -129,7 +129,7 @@ export default function Dashboard() {
         } else if (items) {
           setPage(data.page);
           if (total) {
-            setTotal(Math.ceil(data.total / 2));
+            setTotal(Math.ceil(data.total / data.limit));
           }
           updateArrays(items);
         } else if (todo) {
@@ -290,7 +290,7 @@ export default function Dashboard() {
     }
     const newSortOptions = { ...sortOptions };
     newSortOptions.params.page = newPage;
-    setSortOptions(sortOptions);
+    setSortOptions(newSortOptions);
     makeRequest(
       sortedUrl,
       { method: "GET", credentials: "include" },
